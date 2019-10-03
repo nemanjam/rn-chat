@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
+
 import {
   Container,
   Header,
@@ -12,11 +13,13 @@ import {
   Right,
   Icon,
   Text,
+  Drawer,
 } from 'native-base';
+import SideBar from './SideBar';
 
 const HomeScreen = props => {
-  console.log(props);
   const [tabs, setTabs] = useState([true, false, false]);
+  const drawer = useRef(null);
   function toggleTab1() {
     setTabs([true, false, false]);
   }
@@ -26,40 +29,53 @@ const HomeScreen = props => {
   function toggleTab3() {
     setTabs([false, false, true]);
   }
+  function openDrawer() {
+    drawer.current._root.open();
+  }
+  function closeDrawer() {
+    drawer.current._root.close();
+  }
   return (
     <Container>
-      <Header>
-        <Left>
-          <Button transparent onPress={() => props.navigation.openDrawer()}>
-            <Icon name="menu" />
-          </Button>
-        </Left>
-        <Body>
-          <Title>Home</Title>
-        </Body>
-        <Right />
-      </Header>
+      <Drawer
+        ref={ref => {
+          drawer.current = ref;
+        }}
+        content={<SideBar />}
+        onClose={() => closeDrawer()}>
+        <Header>
+          <Left>
+            <Button transparent onPress={() => openDrawer()}>
+              <Icon name="menu" />
+            </Button>
+          </Left>
+          <Body>
+            <Title>Home</Title>
+          </Body>
+          <Right />
+        </Header>
 
-      <Content padder>
-        <Text>Content 1</Text>
-      </Content>
+        <Content padder>
+          <Text>Content 1</Text>
+        </Content>
 
-      <Footer>
-        <FooterTab>
-          <Button active={tabs[0]} onPress={() => toggleTab1()}>
-            <Icon active={tabs[0]} name="globe" />
-            <Text>Users</Text>
-          </Button>
-          <Button active={tabs[1]} onPress={() => toggleTab2()}>
-            <Icon active={tabs[1]} name="chatbubbles" />
-            <Text>Chats</Text>
-          </Button>
-          <Button active={tabs[2]} onPress={() => toggleTab3()}>
-            <Icon active={tabs[2]} name="contact" />
-            <Text>Profile</Text>
-          </Button>
-        </FooterTab>
-      </Footer>
+        <Footer>
+          <FooterTab>
+            <Button active={tabs[0]} onPress={() => toggleTab1()}>
+              <Icon active={tabs[0]} name="globe" />
+              <Text>Users</Text>
+            </Button>
+            <Button active={tabs[1]} onPress={() => toggleTab2()}>
+              <Icon active={tabs[1]} name="chatbubbles" />
+              <Text>Chats</Text>
+            </Button>
+            <Button active={tabs[2]} onPress={() => toggleTab3()}>
+              <Icon active={tabs[2]} name="contact" />
+              <Text>Profile</Text>
+            </Button>
+          </FooterTab>
+        </Footer>
+      </Drawer>
     </Container>
   );
 };
