@@ -15,7 +15,10 @@ import {
   Text,
   Drawer,
 } from 'native-base';
-import SideBar from './SideBar';
+import SideBar from '../components/SideBar';
+import Users from '../components/Users';
+import Chats from '../components/Chats';
+import Profile from '../components/Profile';
 
 const HomeScreen = props => {
   const [tabs, setTabs] = useState([true, false, false]);
@@ -35,6 +38,15 @@ const HomeScreen = props => {
   function closeDrawer() {
     drawer.current._root.close();
   }
+
+  function getContentComponent() {
+    let ContentComponent = Users;
+    if (tabs[0]) ContentComponent = Users;
+    if (tabs[1]) ContentComponent = Chats;
+    if (tabs[2]) ContentComponent = Profile;
+    return <ContentComponent />;
+  }
+
   return (
     <Container>
       <Drawer
@@ -55,9 +67,7 @@ const HomeScreen = props => {
           <Right />
         </Header>
 
-        <Content padder>
-          <Text>Content 1</Text>
-        </Content>
+        <Content padder>{getContentComponent()}</Content>
 
         <Footer>
           <FooterTab>

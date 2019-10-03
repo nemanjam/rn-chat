@@ -13,8 +13,6 @@ import {
 const routes = ['Home', 'Chat', 'Profile'];
 
 const SideBar = props => {
-  console.log('sidebar', props);
-
   return (
     <Container>
       <Content>
