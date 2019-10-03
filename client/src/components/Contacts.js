@@ -12,7 +12,7 @@ import {
   Button,
 } from 'native-base';
 
-const Users = () => {
+const Contacts = props => {
   return (
     <List>
       {_.range(5).map((item, index) => {
@@ -29,7 +29,7 @@ const Users = () => {
             </Body>
             <Right>
               <Button transparent>
-                <Text>View Profile</Text>
+                <Text>View His Profile</Text>
               </Button>
             </Right>
           </ListItem>
@@ -39,4 +39,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default Contacts;

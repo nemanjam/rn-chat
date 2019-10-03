@@ -6,11 +6,13 @@ import {createStackNavigator} from 'react-navigation-stack';
 
 import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen';
+import ChatsScreen from './screens/ChatsScreen';
 
 const AppNavigator = createStackNavigator(
   {
-    Login: {screen: LoginScreen},
     Home: {screen: HomeScreen},
+    Login: {screen: LoginScreen},
+    Chats: {screen: ChatsScreen},
   },
   {
     initialRouteName: 'Home',
@@ -20,7 +22,7 @@ const AppNavigator = createStackNavigator(
 
 const AppContainer = createAppContainer(AppNavigator);
 
-const App = () => {
+const App = props => {
   return (
     <Root>
       <AppContainer />

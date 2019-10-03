@@ -20,8 +20,8 @@ const LoginScreen = props => {
     <Container>
       <Header>
         <Left>
-          <Button transparent onPress={() => props.navigation.openDrawer()}>
-            <Icon name="ios-menu" />
+          <Button transparent onPress={() => props.navigation.goBack()}>
+            <Icon name="arrow-back" />
           </Button>
         </Left>
         <Body>

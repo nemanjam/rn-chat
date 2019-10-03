@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import _ from 'lodash';
+import {TouchableOpacity} from 'react-native';
 import {
   Container,
   Header,
@@ -11,14 +12,19 @@ import {
   Right,
   Thumbnail,
   Text,
+  Button,
 } from 'native-base';
 
-const Chats = () => {
+const Chats = props => {
   return (
     <List>
       {_.range(5).map((item, index) => {
         return (
-          <ListItem key={index} avatar>
+          <ListItem
+            avatar
+            button
+            key={index}
+            onPress={() => props.navigation.navigate('Chats')}>
             <Left>
               <Thumbnail source={{uri: 'https://i.pravatar.cc/100'}} />
             </Left>
