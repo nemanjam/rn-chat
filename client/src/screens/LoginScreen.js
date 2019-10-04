@@ -67,9 +67,6 @@ const LoginScreen = props => {
               <Button full primary style={{margin: 15, marginTop: 50}}>
                 <Text> Login </Text>
               </Button>
-              {/* <Button full light primary>
-            <Text>Register</Text>
-          </Button> */}
             </Form>
           </Col>
         </Row>

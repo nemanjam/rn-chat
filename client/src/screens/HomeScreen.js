@@ -60,17 +60,19 @@ adb connect 127.0.0.1:62001
         }}
         content={<SideBar {...props} />}
         onClose={() => closeDrawer()}>
-        <Header>
-          <Left>
-            <Button transparent onPress={() => openDrawer()}>
-              <Icon name="menu" />
-            </Button>
-          </Left>
-          <Body>
-            <Title>Home</Title>
-          </Body>
-          <Right />
-        </Header>
+        {!tabs[2] && (
+          <Header>
+            <Left>
+              <Button transparent onPress={() => openDrawer()}>
+                <Icon name="menu" />
+              </Button>
+            </Left>
+            <Body>
+              <Title>Home</Title>
+            </Body>
+            <Right />
+          </Header>
+        )}
 
         <Content padder>{getContentComponent()}</Content>
 

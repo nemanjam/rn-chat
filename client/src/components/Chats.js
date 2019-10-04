@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import _ from 'lodash';
-import {TouchableOpacity} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {
   Container,
   Header,
@@ -21,6 +21,7 @@ const Chats = props => {
       {_.range(5).map((item, index) => {
         return (
           <ListItem
+            style={styles.listItem}
             avatar
             button
             key={index}
@@ -30,9 +31,7 @@ const Chats = props => {
             </Left>
             <Body>
               <Text>Kumar Pratik</Text>
-              <Text note>
-                Doing what you like will always keep you happy . .
-              </Text>
+              <Text note>Doing what you like will</Text>
             </Body>
             <Right>
               <Text note>3:43 pm</Text>
@@ -43,5 +42,9 @@ const Chats = props => {
     </List>
   );
 };
-
+const styles = StyleSheet.create({
+  listItem: {
+    marginLeft: 0,
+  },
+});
 export default Chats;

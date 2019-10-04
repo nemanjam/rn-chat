@@ -8,6 +8,7 @@ import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import ChatsScreen from './screens/ChatsScreen';
+import ContactProfileScreen from './screens/ContactProfileScreen';
 
 const AppNavigator = createStackNavigator(
   {
@@ -15,6 +16,7 @@ const AppNavigator = createStackNavigator(
     Login: {screen: LoginScreen},
     Register: {screen: RegisterScreen},
     Chats: {screen: ChatsScreen},
+    ContactProfile: {screen: ContactProfileScreen},
   },
   {
     initialRouteName: 'Home',
