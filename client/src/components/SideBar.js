@@ -10,7 +10,7 @@ import {
   Icon,
 } from 'native-base';
 
-const routes = ['Login', 'Home'];
+const routes = ['Login', 'Register', 'Home'];
 
 const SideBar = props => {
   return (

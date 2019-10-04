@@ -19,7 +19,7 @@ const Contacts = props => {
         return (
           <ListItem key={index} thumbnail>
             <Left>
-              <Thumbnail large source={{uri: 'https://i.pravatar.cc/200'}} />
+              <Thumbnail source={{uri: 'https://i.pravatar.cc/200'}} />
             </Left>
             <Body>
               <Text>Sankhadeep</Text>
@@ -27,11 +27,6 @@ const Contacts = props => {
                 Its time to build a difference . .
               </Text>
             </Body>
-            <Right>
-              <Button transparent>
-                <Text>View His Profile</Text>
-              </Button>
-            </Right>
           </ListItem>
         );
       })}

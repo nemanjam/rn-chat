@@ -1,4 +1,5 @@
 import React from 'react';
+import {ScrollView} from 'react-native';
 import {
   Container,
   Header,
@@ -12,6 +13,13 @@ import {
   Left,
   Right,
   Body,
+  Form,
+  Item,
+  Label,
+  Input,
+  Grid,
+  Row,
+  Col,
 } from 'native-base';
 
 const LoginScreen = props => {
@@ -29,18 +37,44 @@ const LoginScreen = props => {
         </Body>
         <Right />
       </Header>
+      <Grid>
+        <Row size={1} />
+        <Row size={2}>
+          <Col>
+            <Button full iconLeft primary style={{margin: 15}}>
+              <Icon name="logo-google" />
+              <Text> Login with Google </Text>
+            </Button>
+          </Col>
+        </Row>
+        <Row size={3}>
+          <Col>
+            <Form>
+              <Item floatingLabel error>
+                <Label>Email</Label>
+                <Input />
+                <Icon name="close-circle" />
+              </Item>
+              <Text style={{color: 'red', marginLeft: 15}}>Requred</Text>
 
-      <Content padder>
-        <Text>Content goes here (internal)</Text>
-      </Content>
+              <Item floatingLabel error last>
+                <Label>Password</Label>
+                <Input secureTextEntry={true} />
+                <Icon name="close-circle" />
+              </Item>
+              <Text style={{color: 'red', marginLeft: 15}}>Requred</Text>
 
-      <Footer>
-        <FooterTab>
-          <Button active full>
-            <Text>Footer</Text>
-          </Button>
-        </FooterTab>
-      </Footer>
+              <Button full primary style={{margin: 15, marginTop: 50}}>
+                <Text> Login </Text>
+              </Button>
+              {/* <Button full light primary>
+            <Text>Register</Text>
+          </Button> */}
+            </Form>
+          </Col>
+        </Row>
+        <Row size={3} />
+      </Grid>
     </Container>
   );
 };

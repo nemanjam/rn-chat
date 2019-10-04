@@ -6,12 +6,14 @@ import {createStackNavigator} from 'react-navigation-stack';
 
 import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen';
+import RegisterScreen from './screens/RegisterScreen';
 import ChatsScreen from './screens/ChatsScreen';
 
 const AppNavigator = createStackNavigator(
   {
     Home: {screen: HomeScreen},
     Login: {screen: LoginScreen},
+    Register: {screen: RegisterScreen},
     Chats: {screen: ChatsScreen},
   },
   {
