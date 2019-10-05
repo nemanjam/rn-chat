@@ -37,9 +37,9 @@ export const typeDefs = gql`
 
     contacts(userId: Int): [User]
 
-    chat(id: Int!): chat
+    chat(id: Int!): Chat
 
-    chats(userId: Int!): [chat]
+    chats(userId: Int!): [Chat]
   }
 
   schema {

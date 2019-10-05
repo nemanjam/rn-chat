@@ -2,11 +2,7 @@ import Sequelize from 'sequelize';
 import { _ } from 'lodash';
 import faker from 'faker';
 
-const db = new Sequelize({
-  dialect: 'sqlite',
-  storage: '../../db/db.sqlite',
-  logging: false,
-});
+const db = new Sequelize('postgres://postgres:root@localhost:5432/chat');
 
 // tabele, osnovni tipovi od kojih su sacinjeni ostali iz graphql scheme
 
@@ -33,63 +29,64 @@ const MessageModel = db.define('message', {
 UserModel.belongsToMany(ChatModel, { through: 'ChatUser' });
 UserModel.belongsToMany(UserModel, { through: 'Contacts', as: 'contacts' });
 UserModel.belongsTo(MessageModel);
-
-MessageModel.belongsToMany(ChatModel, { through: 'ChatMessage' });
-MessageModel.belongsTo(ChatModel);
-
 ChatModel.belongsToMany(UserModel, { through: 'ChatUser' });
 
-const CHATS = 4;
-const USERS_PER_CHAT = 2;
-const MESSAGES_PER_USER = 5;
+MessageModel.belongsTo(ChatModel);
 
-faker.seed(123); // get consistent data every time we reload app
+const seed = () => {
+  return Promise.all([
+    UserModel.create({
+      username: 'firstUser',
+      email: faker.internet.email(),
+      avatar: faker.internet.avatar(),
+      description: faker.lorem.sentences(3),
+      password: faker.internet.password(),
+      isActive: true,
+      lastActiveAt: new Date(),
+    }),
+    UserModel.create({
+      username: 'secondUser',
+      email: faker.internet.email(),
+      avatar: faker.internet.avatar(),
+      description: faker.lorem.sentences(3),
+      password: faker.internet.password(),
+      isActive: true,
+      lastActiveAt: new Date(),
+    }),
+    ChatModel.create({
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }),
+    MessageModel.create({
+      text: faker.lorem.sentences(3),
+      createdAt: new Date(),
+    }),
+    MessageModel.create({
+      text: faker.lorem.sentences(3),
+      createdAt: new Date(),
+    }),
+  ])
+    .then(([firstUser, secondUser, firstChat, firstMessage, secondMessage]) => {
+      return Promise.all([
+        firstUser.addChat(firstChat),
+        secondUser.addChat(firstChat),
+        firstUser.addContact(secondUser),
+        secondUser.addContact(firstUser),
+        /* firstChat.addUser(firstUser),// vec su u chatu
+         firstChat.addUser(secondUser),*/
 
-db.sync({ force: true }).then(() =>
-  _.times(GROUPS, () =>
-    GroupModel.create({
-      name: faker.lorem.words(3),
+        firstMessage.setChat(firstChat),
+        secondMessage.setChat(firstChat),
+        firstUser.setMessage(secondMessage),
+        secondUser.setMessage(firstMessage),
+      ]);
     })
-      .then(group =>
-        _.times(USERS_PER_GROUP, () => {
-          return group
-            .createUser({
-              email: faker.internet.email(),
-              username: faker.internet.userName(),
-              avatar: faker.internet.avatar(),
-              description: faker.lorem.sentences(Math.random() * 3),
-              password: faker.internet.password(),
-            })
-            .then(user => {
-              console.log(
-                '{email, username, password}',
-                `{${user.email}, ${user.username}, ${user.password}}`,
-              );
-              _.times(MESSAGES_PER_USER, () =>
-                MessageModel.create({
-                  userId: user.id,
-                  groupId: group.id,
-                  text: faker.lorem.sentences(3),
-                }),
-              );
-              return user;
-            });
-        }),
-      )
-      .then(userPromises => {
-        // make users friends with all users in the group
-        Promise.all(userPromises).then(users => {
-          _.each(users, (current, i) => {
-            _.each(users, (user, j) => {
-              if (i !== j) {
-                current.addContact(user);
-              }
-            });
-          });
-        });
-      }),
-  ),
-);
+    .catch(error => console.log(error));
+};
+
+// db.sync({ force: true })
+//   .then(() => seed())
+//   .catch(error => console.log(error));
 
 const Chat = db.models.chat;
 const Message = db.models.message;
