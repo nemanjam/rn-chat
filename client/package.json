@@ -10,9 +10,16 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@apollo/react-hooks": "^3.1.2",
+    "apollo-cache-inmemory": "^1.6.3",
+    "apollo-client": "^2.6.4",
+    "apollo-link-http": "^1.5.16",
+    "graphql": "^14.5.8",
+    "graphql-tag": "^2.10.1",
     "lodash": "^4.17.15",
     "native-base": "^2.13.8",
     "react": "16.9.0",
+    "react-apollo": "^3.1.2",
     "react-native": "0.61.2",
     "react-native-gesture-handler": "^1.4.1",
     "react-native-gifted-chat": "^0.10.3",
@@ -21,7 +28,10 @@
     "react-native-video": "5.0.2",
     "react-navigation": "^4.0.10",
     "react-navigation-drawer": "^2.2.2",
-    "react-navigation-stack": "^1.9.3"
+    "react-navigation-stack": "^1.9.3",
+    "react-redux": "^7.1.1",
+    "redux": "^4.0.4",
+    "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",

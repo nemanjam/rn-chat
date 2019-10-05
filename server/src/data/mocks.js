@@ -19,6 +19,8 @@ export const mocks = {
   User: () => ({
     email: faker.internet.email(),
     username: faker.internet.userName(),
+    avatar: faker.internet.avatar(),
+    description: faker.lorem.sentences(Math.random() * 3),
   }),
   Group: () => ({
     name: faker.lorem.words(Math.random() * 3),

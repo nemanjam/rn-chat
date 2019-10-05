@@ -51,8 +51,8 @@ export const resolvers = {
     groups(user) {
       return user.getGroups();
     },
-    friends(user) {
-      return user.getFriends();
+    contacts(user) {
+      return user.getContacts();
     },
   },
 };

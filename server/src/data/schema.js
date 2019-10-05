@@ -1,42 +1,45 @@
-import {gql} from 'apollo-server';
+import { gql } from 'apollo-server';
 
 export const typeDefs = gql`
   # declare custom scalars
   scalar Date
 
-  type Group {
-    id: Int!
-    name: String
-    users: [User]!
-    messages: [Message]
-  }
-
-  # a user -- keep type really simple for now
   type User {
     id: Int!
     email: String!
     username: String
-    messages: [Message]
-    groups: [Group]
-    friends: [User]
+    avatar: String
+    description: String
+    chats: [Chat]
+    contacts: [User]
+    isActive: Boolean
+    lastActiveAt: Date
   }
 
-  # a message sent from a user to a group
+  type Chat {
+    id: Int!
+    messages: [Message]
+    users: [User]!
+    lastMessage: Message
+    createdAt: Date!
+    updatedAt: Date!
+  }
+
   type Message {
     id: Int!
-    to: Group!
     from: User!
     text: String!
     createdAt: Date!
   }
 
-  # query for types
   type Query {
     user(email: String, id: Int): User
 
-    messages(groupId: Int, userId: Int): [Message]
+    contacts(userId: Int): [User]
 
-    group(id: Int!): Group
+    chat(id: Int!): chat
+
+    chats(userId: Int!): [chat]
   }
 
   schema {

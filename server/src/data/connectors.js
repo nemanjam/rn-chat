@@ -1,5 +1,5 @@
 import Sequelize from 'sequelize';
-import {_} from 'lodash';
+import { _ } from 'lodash';
 import faker from 'faker';
 
 const db = new Sequelize({
@@ -9,55 +9,61 @@ const db = new Sequelize({
 });
 
 // tabele, osnovni tipovi od kojih su sacinjeni ostali iz graphql scheme
-// define groups
-const GroupModel = db.define('group', {
-  name: {type: Sequelize.STRING},
-});
 
-// define messages
-const MessageModel = db.define('message', {
-  text: {type: Sequelize.STRING},
-});
-
-// define users
 const UserModel = db.define('user', {
-  email: {type: Sequelize.STRING},
-  username: {type: Sequelize.STRING},
-  password: {type: Sequelize.STRING},
+  email: { type: Sequelize.STRING },
+  username: { type: Sequelize.STRING },
+  avatar: { type: Sequelize.STRING },
+  description: { type: Sequelize.TEXT },
+  isActive: { type: Sequelize.BOOLEAN },
+  lastActiveAt: { type: Sequelize.DATE },
+  password: { type: Sequelize.STRING },
 });
 
-UserModel.belongsToMany(GroupModel, {through: 'GroupUser'}); // users belong to multiple groups
-UserModel.belongsToMany(UserModel, {through: 'Friends', as: 'friends'}); // users belong to multiple users as friends
+const ChatModel = db.define('chat', {
+  createdAt: { type: Sequelize.DATE },
+  updatedAt: { type: Sequelize.DATE },
+});
 
-MessageModel.belongsTo(UserModel); // messages are sent from users
-MessageModel.belongsTo(GroupModel); // messages are sent to groups
+const MessageModel = db.define('message', {
+  text: { type: Sequelize.TEXT },
+  createdAt: { type: Sequelize.DATE },
+});
 
-GroupModel.belongsToMany(UserModel, {through: 'GroupUser'}); // groups have multiple users // GroupUser je vezna tabela za m:n
+UserModel.belongsToMany(ChatModel, { through: 'ChatUser' });
+UserModel.belongsToMany(UserModel, { through: 'Contacts', as: 'contacts' });
+UserModel.belongsTo(MessageModel);
 
-const GROUPS = 4;
-const USERS_PER_GROUP = 5;
+MessageModel.belongsToMany(ChatModel, { through: 'ChatMessage' });
+MessageModel.belongsTo(ChatModel);
+
+ChatModel.belongsToMany(UserModel, { through: 'ChatUser' });
+
+const CHATS = 4;
+const USERS_PER_CHAT = 2;
 const MESSAGES_PER_USER = 5;
 
 faker.seed(123); // get consistent data every time we reload app
 
-db.sync({force: true}).then(() =>
+db.sync({ force: true }).then(() =>
   _.times(GROUPS, () =>
     GroupModel.create({
       name: faker.lorem.words(3),
     })
       .then(group =>
         _.times(USERS_PER_GROUP, () => {
-          const password = faker.internet.password();
           return group
             .createUser({
               email: faker.internet.email(),
               username: faker.internet.userName(),
-              password,
+              avatar: faker.internet.avatar(),
+              description: faker.lorem.sentences(Math.random() * 3),
+              password: faker.internet.password(),
             })
             .then(user => {
               console.log(
                 '{email, username, password}',
-                `{${user.email}, ${user.username}, ${password}}`,
+                `{${user.email}, ${user.username}, ${user.password}}`,
               );
               _.times(MESSAGES_PER_USER, () =>
                 MessageModel.create({
@@ -76,7 +82,7 @@ db.sync({force: true}).then(() =>
           _.each(users, (current, i) => {
             _.each(users, (user, j) => {
               if (i !== j) {
-                current.addFriend(user);
+                current.addContact(user);
               }
             });
           });
@@ -85,8 +91,8 @@ db.sync({force: true}).then(() =>
   ),
 );
 
-const Group = db.models.group;
+const Chat = db.models.chat;
 const Message = db.models.message;
 const User = db.models.user;
 
-export {Group, Message, User};
+export { Chat, Message, User };
