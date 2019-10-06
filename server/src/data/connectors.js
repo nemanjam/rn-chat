@@ -29,9 +29,11 @@ const MessageModel = db.define('message', {
 UserModel.belongsToMany(ChatModel, { through: 'ChatUser' });
 UserModel.belongsToMany(UserModel, { through: 'Contacts', as: 'contacts' });
 UserModel.belongsTo(MessageModel);
+
 ChatModel.belongsToMany(UserModel, { through: 'ChatUser' });
 
 MessageModel.belongsTo(ChatModel);
+ChatModel.hasMany(MessageModel);
 
 const seed = () => {
   return Promise.all([
