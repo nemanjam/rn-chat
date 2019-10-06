@@ -35,7 +35,7 @@ export const typeDefs = gql`
   type Query {
     user(email: String, id: Int): User
 
-    contacts(userId: Int): [User]
+    contacts(id: Int!): [User]
 
     chat(id: Int!): Chat
 

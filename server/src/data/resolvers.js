@@ -1,5 +1,5 @@
 import GraphQLDate from 'graphql-date';
-import {Group, Message, User} from './connectors';
+import { ChatModel, MessageModel, UserModel } from './connectors';
 
 // connectori su orm mapiranja, a resolveri su orm upiti mapiranja na graphql
 // Group, Message, User sequelize modeli tabele
@@ -9,47 +9,46 @@ export const resolvers = {
   Date: GraphQLDate,
   // Query tip iz graphql scheme na dnu, jasno
   Query: {
-    group(_, args) {
-      return Group.find({where: args});
+    chat(_, args) {
+      return ChatModel.findOne({ where: args });
     },
-    messages(_, args) {
-      return Message.findAll({
-        where: args,
+    async chats(_, args) {
+      const user = await UserModel.findOne({ where: { id: args.userId } });
+      return user.getChats();
+    },
+    async contacts(_, args) {
+      const user = await UserModel.findOne({ where: args });
+      return user.getContacts();
+    },
+    user(_, args) {
+      return UserModel.findOne({ where: args });
+    },
+  },
+  Chat: {
+    users(chat) {
+      return chat.getUsers();
+    },
+    messages(chat) {
+      return MessageModel.findAll({
+        where: { chatId: chat.id },
         order: [['createdAt', 'DESC']],
       });
     },
-    user(_, args) {
-      return User.findOne({where: args});
-    },
-  },
-  Group: {
-    users(group) {
-      return group.getUsers();
-    },
-    messages(group) {
-      return Message.findAll({
-        where: {groupId: group.id},
+    lastMessage(chat) {
+      return MessageModel.findOne({
+        where: { chatId: chat.id },
         order: [['createdAt', 'DESC']],
       });
     },
   },
   Message: {
-    to(message) {
-      return message.getGroup();
-    },
     from(message) {
       return message.getUser();
     },
   },
   User: {
-    messages(user) {
-      return Message.findAll({
-        where: {userId: user.id},
-        order: [['createdAt', 'DESC']],
-      });
-    },
-    groups(user) {
-      return user.getGroups();
+    chats(user) {
+      return user.getChats();
     },
     contacts(user) {
       return user.getContacts();
