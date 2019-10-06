@@ -28,7 +28,8 @@ export const MessageModel = db.define('message', {
 
 UserModel.belongsToMany(ChatModel, { through: 'ChatUser' });
 UserModel.belongsToMany(UserModel, { through: 'Contacts', as: 'contacts' });
-UserModel.belongsTo(MessageModel);
+MessageModel.belongsTo(UserModel);
+UserModel.hasOne(MessageModel);
 
 ChatModel.belongsToMany(UserModel, { through: 'ChatUser' });
 

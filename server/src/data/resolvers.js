@@ -26,7 +26,18 @@ export const resolvers = {
   },
   Chat: {
     users(chat) {
-      return chat.getUsers();
+      //return chat.getUsers(); //sortiraj prema created at message, pa current user na kraj
+      return UserModel.findAll({
+        include: [
+          {
+            model: ChatModel,
+            through: {
+              where: { chatId: chat.id },
+            },
+          },
+        ],
+        //order: [[MessageModel, 'createdAt', 'DESC']],
+      });
     },
     messages(chat) {
       return MessageModel.findAll({
