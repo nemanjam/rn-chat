@@ -1,8 +1,5 @@
-import React, {useState, useRef} from 'react';
-import {useQuery} from '@apollo/react-hooks';
-import {connect} from 'react-redux';
-
-import {USER_QUERY} from '../graphql/queries';
+import React, { useState, useRef } from 'react';
+import { connect } from 'react-redux';
 
 import {
   Container,
@@ -27,7 +24,6 @@ import Profile from '../components/Profile';
 const HomeScreen = props => {
   const [tabs, setTabs] = useState([true, false, false]);
   const drawer = useRef(null);
-  const {data, loading, error} = useQuery(USER_QUERY);
 
   function openDrawer() {
     drawer.current._root.open();
@@ -56,7 +52,6 @@ netstat -aon | findstr PID
 adb connect 127.0.0.1:62001
 
 */
-  console.log(data);
 
   return (
     <Container>

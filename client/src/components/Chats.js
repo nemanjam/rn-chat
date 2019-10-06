@@ -1,6 +1,8 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import _ from 'lodash';
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
+import { useQuery } from '@apollo/react-hooks';
+
 import {
   Container,
   Header,
@@ -15,10 +17,19 @@ import {
   Button,
 } from 'native-base';
 
+import { CHATS_QUERY } from '../graphql/queries';
+
 const Chats = props => {
+  const { data, loading, error } = useQuery(CHATS_QUERY, {
+    variables: { userId: 1 },
+  });
+  if (loading) return <Text>Loading</Text>;
+  if (error) return <Text>{JSON.stringify(error, null, 2)}</Text>;
+  const { chats } = data;
+  console.log(chats);
   return (
     <List>
-      {_.range(5).map((item, index) => {
+      {chats.map((chat, index) => {
         return (
           <ListItem
             style={styles.listItem}
@@ -27,11 +38,11 @@ const Chats = props => {
             key={index}
             onPress={() => props.navigation.navigate('Chats')}>
             <Left>
-              <Thumbnail source={{uri: 'https://i.pravatar.cc/100'}} />
+              <Thumbnail source={{ uri: chat.users[0].avatar }} />
             </Left>
             <Body>
-              <Text>Kumar Pratik</Text>
-              <Text note>Doing what you like will</Text>
+              <Text>{chat.users[0].username}</Text>
+              <Text note>{chat.lastMessage.text}</Text>
             </Body>
             <Right>
               <Text note>3:43 pm</Text>
