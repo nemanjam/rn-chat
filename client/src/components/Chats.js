@@ -26,7 +26,6 @@ const Chats = props => {
   if (loading) return <Text>Loading</Text>;
   if (error) return <Text>{JSON.stringify(error, null, 2)}</Text>;
   const { chats } = data;
-  console.log(chats);
   return (
     <List>
       {chats.map((chat, index) => {

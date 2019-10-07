@@ -1,5 +1,8 @@
-import React, {Component} from 'react';
-import {Image} from 'react-native';
+import React, { Component } from 'react';
+import { useQuery } from '@apollo/react-hooks';
+import moment from 'moment';
+
+import { Image } from 'react-native';
 import {
   Card,
   CardItem,
@@ -11,30 +14,35 @@ import {
   Body,
 } from 'native-base';
 
+import { USER_QUERY } from '../graphql/queries';
+
 const Profile = () => {
+  const { data, loading, error } = useQuery(USER_QUERY, {
+    variables: { id: 1 },
+  });
+  if (loading) return <Text>Loading</Text>;
+  if (error) return <Text>{JSON.stringify(error, null, 2)}</Text>;
+  const { user } = data;
   return (
-    <Card style={{flex: 0}}>
+    <Card style={{ flex: 0 }}>
       <CardItem>
         <Body>
           <Image
-            source={{uri: 'https://i.pravatar.cc/200'}}
-            style={{height: 300, width: null, flex: 1, alignSelf: 'stretch'}}
+            source={{ uri: user.avatar }}
+            style={{ height: 300, width: null, flex: 1, alignSelf: 'stretch' }}
           />
-          <Text>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur.
-          </Text>
+          <Text>{user.username}</Text>
+          <Text>{user.isActive ? 'Active now' : 'Not active now'}</Text>
+          <Text>{`Last actve: ${moment(user.lastActiveAt).fromNow(
+            true,
+          )}`}</Text>
+          <Text>{user.description}</Text>
         </Body>
       </CardItem>
       <CardItem>
         <Left>
-          <Button transparent textStyle={{color: '#87838B'}}>
-            <Icon name="logo-github" />
-            <Text>1,926 stars</Text>
+          <Button>
+            <Text>Have a chat</Text>
           </Button>
         </Left>
       </CardItem>

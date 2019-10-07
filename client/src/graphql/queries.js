@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
 export const CONTACTS_QUERY = gql`
-  query contacts($id: Int!) {
+  query ContactsQuery($id: Int!) {
     contacts(id: $id) {
       id
       email
@@ -13,7 +13,7 @@ export const CONTACTS_QUERY = gql`
 `;
 
 export const CHATS_QUERY = gql`
-  query chats($userId: Int!) {
+  query ChatsQuery($userId: Int!) {
     chats(userId: $userId) {
       id
       updatedAt
@@ -24,6 +24,20 @@ export const CHATS_QUERY = gql`
         username
         avatar
       }
+    }
+  }
+`;
+
+export const USER_QUERY = gql`
+  query UserQuery($id: Int!) {
+    user(id: $id) {
+      id
+      email
+      username
+      avatar
+      description
+      isActive
+      lastActiveAt
     }
   }
 `;

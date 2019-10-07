@@ -7,6 +7,15 @@ import { ChatModel, MessageModel, UserModel } from './connectors';
 
 export const resolvers = {
   Date: GraphQLDate,
+  Mutation: {
+    createMessage(_, { userId, chatId, text }) {
+      return MessageModel.create({
+        userId,
+        chatId,
+        text,
+      });
+    },
+  },
   // Query tip iz graphql scheme na dnu, jasno
   Query: {
     chat(_, args) {
@@ -24,19 +33,28 @@ export const resolvers = {
       return UserModel.findOne({ where: args });
     },
   },
+  //prouci apollo state
+  //mutacija za chat
+  //paginacija za scroll
+  //subscribtions za chat i chats i contacts
+  //auth
+  //webrtc
   Chat: {
     users(chat) {
-      //return chat.getUsers(); //sortiraj prema created at message, pa current user na kraj
+      // return chat.getUsers(); //sortiraj prema created at message, pa current user na kraj
       return UserModel.findAll({
         include: [
           {
             model: ChatModel,
-            through: {
-              where: { chatId: chat.id },
-            },
+            where: { id: chat.id },
+            include: [
+              {
+                model: MessageModel,
+              },
+            ],
+            order: [[MessageModel, 'userId', 'DESC']],
           },
         ],
-        //order: [[MessageModel, 'createdAt', 'DESC']],
       });
     },
     messages(chat) {
@@ -68,3 +86,19 @@ export const resolvers = {
 };
 
 export default resolvers;
+
+/*
+   async createMessage(_, { userId, chatId, text }) {
+      const chat = await ChatModel.findOne({ where: { id: chatId } });
+      console.log(chat);
+      const message = await MessageModel.create({
+        from: userId,
+        text,
+        createdAt: new Date(),
+      });
+      chat.messages.push(message);
+      chat.lastMessage = message;
+      await chat.save();
+      return message;
+    },
+*/

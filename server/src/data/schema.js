@@ -34,16 +34,18 @@ export const typeDefs = gql`
 
   type Query {
     user(email: String, id: Int): User
-
     contacts(id: Int!): [User]
-
     chat(id: Int!): Chat
-
     chats(userId: Int!): [Chat]
+  }
+
+  type Mutation {
+    createMessage(userId: Int!, chatId: Int!, text: String!): Message
   }
 
   schema {
     query: Query
+    mutation: Mutation
   }
 `;
 export default typeDefs;

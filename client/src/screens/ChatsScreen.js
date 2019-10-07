@@ -1,5 +1,7 @@
 import React from 'react';
-import {GiftedChat} from 'react-native-gifted-chat';
+import { GiftedChat } from 'react-native-gifted-chat';
+import { useApolloClient, useMutation } from '@apollo/react-hooks';
+
 import {
   Container,
   Header,
@@ -16,58 +18,46 @@ import {
   Drawer,
 } from 'native-base';
 
-class ChatsScreen extends React.Component {
-  state = {
-    messages: [],
-  };
+import { CREATE_MESSAGE_MUTATION } from '../graphql/mutations';
 
-  componentWillMount() {
-    this.setState({
-      messages: [
-        {
+const ChatsScreen = props => {
+  const [createMessage, { data, loading, error }] = useMutation(
+    CREATE_MESSAGE_MUTATION,
+  );
+
+  function onSend(messages) {
+    //console.log(messages);
+    const userId = messages[0].user._id;
+    const text = messages[0].text;
+
+    createMessage({ variables: { userId, chatId: 1, text } });
+  }
+
+  console.log('data ', data);
+  console.log('error ', JSON.stringify(error, null, 2));
+
+  return (
+    <Container>
+      <Header>
+        <Left>
+          <Button transparent onPress={() => props.navigation.goBack()}>
+            <Icon name="arrow-back" />
+          </Button>
+        </Left>
+        <Body>
+          <Title>Chats</Title>
+        </Body>
+        <Right />
+      </Header>
+      <GiftedChat
+        messages={[]}
+        onSend={messages => onSend(messages)}
+        user={{
           _id: 1,
-          text: 'Hello developer',
-          createdAt: new Date(),
-          user: {
-            _id: 2,
-            name: 'React Native',
-            avatar: 'https://placeimg.com/140/140/any',
-          },
-        },
-      ],
-    });
-  }
-
-  onSend(messages = []) {
-    this.setState(previousState => ({
-      messages: GiftedChat.append(previousState.messages, messages),
-    }));
-  }
-
-  render() {
-    return (
-      <Container>
-        <Header>
-          <Left>
-            <Button transparent onPress={() => this.props.navigation.goBack()}>
-              <Icon name="arrow-back" />
-            </Button>
-          </Left>
-          <Body>
-            <Title>Chats</Title>
-          </Body>
-          <Right />
-        </Header>
-        <GiftedChat
-          messages={this.state.messages}
-          onSend={messages => this.onSend(messages)}
-          user={{
-            _id: 1,
-          }}
-        />
-      </Container>
-    );
-  }
-}
+        }}
+      />
+    </Container>
+  );
+};
 
 export default ChatsScreen;
