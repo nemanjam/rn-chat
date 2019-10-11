@@ -14,7 +14,7 @@ export const resolvers = {
       subscribe: withFilter(
         () => pubsub.asyncIterator(MESSAGE_ADDED_TOPIC),
         (payload, args) => {
-          return Boolean(true);
+          return Boolean(true /*args.chatId === payload.messageAdded.chatId*/);
         },
       ),
     },
@@ -34,7 +34,7 @@ export const resolvers = {
   // Query tip iz graphql scheme na dnu, jasno
   Query: {
     chat(_, args) {
-      return ChatModel.findOne({ where: args });
+      return ChatModel.findOne({ where: { id: args.chatId } });
     },
     async chats(_, args) {
       const user = await UserModel.findOne({ where: { id: args.userId } });

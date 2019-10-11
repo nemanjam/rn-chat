@@ -35,7 +35,7 @@ export const typeDefs = gql`
   type Query {
     user(email: String, id: Int): User
     contacts(id: Int!): [User]
-    chat(id: Int!): Chat
+    chat(chatId: Int!): Chat
     chats(userId: Int!): [Chat]
   }
 
@@ -43,7 +43,7 @@ export const typeDefs = gql`
     createMessage(userId: Int!, chatId: Int!, text: String!): Message
   }
   type Subscription {
-    messageAdded(userId: Int, chatId: Int): Message
+    messageAdded(chatId: Int): Message
   }
   schema {
     query: Query

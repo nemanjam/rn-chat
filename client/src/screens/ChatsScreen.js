@@ -1,6 +1,11 @@
 import React, { useEffect } from 'react';
 import { GiftedChat } from 'react-native-gifted-chat';
-import { useApolloClient, useMutation, useQuery } from '@apollo/react-hooks';
+import {
+  useApolloClient,
+  useMutation,
+  useQuery,
+  useSubscription,
+} from '@apollo/react-hooks';
 import { GraphqlQueryControls, graphql, compose } from 'react-apollo';
 import moment from 'moment';
 import idx from 'idx';
@@ -31,21 +36,38 @@ const ChatsScreen = props => {
   );
 
   const { subscribeToMore, ...queryResult } = useQuery(CHAT_QUERY, {
-    variables: { id: 1 },
+    variables: { chatId: 1 },
+  });
+
+  const { data, error, loading } = useSubscription(MESSAGE_ADDED_SUBSCRIPTION, {
+    variables: {
+      chatId: 1,
+    },
   });
 
   useEffect(() => {
+    //subscribeToNewMesages();
+  }, []);
+
+  function subscribeToNewMesages() {
     subscribeToMore({
       document: MESSAGE_ADDED_SUBSCRIPTION,
       variables: {
-        id: props.navigation.getParam('userId'),
+        chatId: 1,
       },
       updateQuery: (previous, { subscriptionData }) => {
-        console.log(subscriptionData);
+        console.log('previous ', previous);
+        console.log('subscriptionData ', subscriptionData);
+        if (!subscriptionData.data) return previous;
+        const newMessage = subscriptionData.data.messageAdded;
+
+        return {
+          ...previous,
+          messages: [...previous.messages, newMessage],
+        };
       },
     });
-  }, []);
-
+  }
   function onSend(messages) {
     //console.log(messages);
     const userId = messages[0].user._id;
@@ -54,8 +76,9 @@ const ChatsScreen = props => {
     createMessage({ variables: { userId, chatId: 1, text } });
   }
 
-  console.log('result ', queryResult);
-  console.log('error ', JSON.stringify(queryResult.error, null, 2));
+  console.log('data ', data);
+  console.log('loading ', loading);
+  console.log('error ', JSON.stringify(error, null, 2));
 
   return (
     <Container>

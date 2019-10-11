@@ -1,15 +1,16 @@
 import gql from 'graphql-tag';
 
 export const MESSAGE_ADDED_SUBSCRIPTION = gql`
-  subscription onMessageAdded($userId: Int, $chatId: Int, $text: String) {
-    messageAdded(userId: $userId, chatId: $chatId, text: $text) {
+  subscription onMessageAdded($chatId: Int) {
+    messageAdded(chatId: $chatId) {
       id
+      createdAt
+      text
       from {
         id
         username
+        avatar
       }
-      createdAt
-      text
     }
   }
 `;

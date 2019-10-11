@@ -43,8 +43,8 @@ export const USER_QUERY = gql`
 `;
 
 export const CHAT_QUERY = gql`
-  query ChatQuery($id: Int!) {
-    chat(id: $id) {
+  query ChatQuery($chatId: Int!) {
+    chat(chatId: $chatId) {
       id
       createdAt
       messages {
