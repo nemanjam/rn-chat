@@ -10,6 +10,7 @@ if (process.env.NODE_ENV === 'production') {
   port = process.env.PORT || 80;
 }
 
-server
-  .listen({ port })
-  .then(({ url }) => console.log(`Server ready at ${url}`));
+server.listen(port).then(({ url, subscriptionsUrl }) => {
+  console.log(`🚀 Apollo server ready on ${url}`);
+  console.log(`🚀 Subscriptions ready at ${subscriptionsUrl}`);
+});

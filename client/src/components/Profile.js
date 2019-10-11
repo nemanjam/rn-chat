@@ -16,9 +16,9 @@ import {
 
 import { USER_QUERY } from '../graphql/queries';
 
-const Profile = () => {
+const Profile = props => {
   const { data, loading, error } = useQuery(USER_QUERY, {
-    variables: { id: 1 },
+    variables: { id: props.userId || 1 },
   });
   if (loading) return <Text>Loading</Text>;
   if (error) return <Text>{JSON.stringify(error, null, 2)}</Text>;

@@ -1,5 +1,5 @@
 import React from 'react';
-import {ScrollView} from 'react-native';
+import { ScrollView } from 'react-native';
 import {
   Container,
   Header,
@@ -24,8 +24,8 @@ import {
 
 import Profile from '../components/Profile';
 
-const LoginScreen = props => {
-  console.log(props);
+const ContactProfileScreen = props => {
+  const userId = props.navigation.getParam('userId');
   return (
     <Container>
       <Header>
@@ -40,10 +40,10 @@ const LoginScreen = props => {
         <Right />
       </Header>
       <Content>
-        <Profile />
+        <Profile userId={userId} />
       </Content>
     </Container>
   );
 };
 
-export default LoginScreen;
+export default ContactProfileScreen;

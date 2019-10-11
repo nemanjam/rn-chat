@@ -31,54 +31,54 @@ import { MESSAGE_ADDED_SUBSCRIPTION } from '../graphql/subscriptions';
 import { CHAT_QUERY } from '../graphql/queries';
 
 const ChatsScreen = props => {
+  const chatId = props.navigation.getParam('chatId');
+
   const [createMessage, { ...mutationResult }] = useMutation(
     CREATE_MESSAGE_MUTATION,
   );
 
   const { subscribeToMore, ...queryResult } = useQuery(CHAT_QUERY, {
-    variables: { chatId: 1 },
-  });
-
-  const { data, error, loading } = useSubscription(MESSAGE_ADDED_SUBSCRIPTION, {
-    variables: {
-      chatId: 1,
-    },
+    variables: { chatId },
   });
 
   useEffect(() => {
-    //subscribeToNewMesages();
+    subscribeToNewMesages();
   }, []);
 
   function subscribeToNewMesages() {
     subscribeToMore({
       document: MESSAGE_ADDED_SUBSCRIPTION,
       variables: {
-        chatId: 1,
+        chatId,
       },
       updateQuery: (previous, { subscriptionData }) => {
-        console.log('previous ', previous);
-        console.log('subscriptionData ', subscriptionData);
+        // console.log('previous ', previous);
+        // console.log('subscriptionData ', subscriptionData);
         if (!subscriptionData.data) return previous;
         const newMessage = subscriptionData.data.messageAdded;
 
-        return {
+        const result = {
           ...previous,
-          messages: [...previous.messages, newMessage],
+          chat: {
+            ...previous.chat,
+            messages: [newMessage, ...previous.chat.messages],
+          },
         };
+        console.log(result);
+        return result;
       },
     });
   }
   function onSend(messages) {
-    //console.log(messages);
     const userId = messages[0].user._id;
     const text = messages[0].text;
 
-    createMessage({ variables: { userId, chatId: 1, text } });
+    createMessage({ variables: { userId, chatId, text } });
   }
 
-  console.log('data ', data);
-  console.log('loading ', loading);
-  console.log('error ', JSON.stringify(error, null, 2));
+  console.log('queryResult ', queryResult.data);
+  // console.log('loading ', loading);
+  // console.log('error ', JSON.stringify(error, null, 2));
 
   return (
     <Container>

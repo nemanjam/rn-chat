@@ -17,8 +17,8 @@ import {
   Text,
 } from 'native-base';
 import SideBar from '../components/SideBar';
-import Contacts from '../components/Contacts';
-import Chats from '../components/Chats';
+import ContactsTab from '../components/ContactsTab';
+import ChatsTab from '../components/ChatsTab';
 import Profile from '../components/Profile';
 
 const HomeScreen = props => {
@@ -43,8 +43,8 @@ const HomeScreen = props => {
   }
 
   function getContentComponent() {
-    if (tabs[0]) return <Contacts {...props} />;
-    if (tabs[1]) return <Chats {...props} />;
+    if (tabs[0]) return <ContactsTab {...props} />;
+    if (tabs[1]) return <ChatsTab {...props} />;
     if (tabs[2]) return <Profile {...props} />;
   }
   /*

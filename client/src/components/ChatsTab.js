@@ -19,7 +19,7 @@ import {
 
 import { CHATS_QUERY } from '../graphql/queries';
 
-const Chats = props => {
+const ChatsTab = props => {
   const { data, loading, error } = useQuery(CHATS_QUERY, {
     variables: { userId: 1 },
   });
@@ -35,7 +35,9 @@ const Chats = props => {
             avatar
             button
             key={index}
-            onPress={() => props.navigation.navigate('Chats')}>
+            onPress={() =>
+              props.navigation.navigate('Chats', { chatId: chat.id })
+            }>
             <Left>
               <Thumbnail source={{ uri: chat.users[0].avatar }} />
             </Left>
@@ -57,4 +59,4 @@ const styles = StyleSheet.create({
     marginLeft: 0,
   },
 });
-export default Chats;
+export default ChatsTab;
