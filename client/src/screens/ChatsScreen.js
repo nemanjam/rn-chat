@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { GiftedChat } from 'react-native-gifted-chat';
-import { useApolloClient, useMutation } from '@apollo/react-hooks';
+import { useApolloClient, useMutation, useQuery } from '@apollo/react-hooks';
+import { GraphqlQueryControls, graphql, compose } from 'react-apollo';
+import moment from 'moment';
+import idx from 'idx';
 
 import {
   Container,
@@ -19,11 +22,29 @@ import {
 } from 'native-base';
 
 import { CREATE_MESSAGE_MUTATION } from '../graphql/mutations';
+import { MESSAGE_ADDED_SUBSCRIPTION } from '../graphql/subscriptions';
+import { CHAT_QUERY } from '../graphql/queries';
 
 const ChatsScreen = props => {
-  const [createMessage, { data, loading, error }] = useMutation(
+  const [createMessage, { ...mutationResult }] = useMutation(
     CREATE_MESSAGE_MUTATION,
   );
+
+  const { subscribeToMore, ...queryResult } = useQuery(CHAT_QUERY, {
+    variables: { id: 1 },
+  });
+
+  useEffect(() => {
+    subscribeToMore({
+      document: MESSAGE_ADDED_SUBSCRIPTION,
+      variables: {
+        id: props.navigation.getParam('userId'),
+      },
+      updateQuery: (previous, { subscriptionData }) => {
+        console.log(subscriptionData);
+      },
+    });
+  }, []);
 
   function onSend(messages) {
     //console.log(messages);
@@ -33,8 +54,8 @@ const ChatsScreen = props => {
     createMessage({ variables: { userId, chatId: 1, text } });
   }
 
-  console.log('data ', data);
-  console.log('error ', JSON.stringify(error, null, 2));
+  console.log('result ', queryResult);
+  console.log('error ', JSON.stringify(queryResult.error, null, 2));
 
   return (
     <Container>
@@ -50,11 +71,24 @@ const ChatsScreen = props => {
         <Right />
       </Header>
       <GiftedChat
-        messages={[]}
         onSend={messages => onSend(messages)}
         user={{
-          _id: 1,
+          _id: 2,
         }}
+        messages={(idx(queryResult.data, _ => _.chat.messages) || []).map(
+          message => {
+            return {
+              _id: message.id,
+              text: message.text,
+              createdAt: message.createdAt,
+              user: {
+                _id: message.from.id,
+                name: message.from.username,
+                avatar: message.from.avatar,
+              },
+            };
+          },
+        )}
       />
     </Container>
   );

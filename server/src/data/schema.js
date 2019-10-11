@@ -42,10 +42,13 @@ export const typeDefs = gql`
   type Mutation {
     createMessage(userId: Int!, chatId: Int!, text: String!): Message
   }
-
+  type Subscription {
+    messageAdded(userId: Int, chatId: Int): Message
+  }
   schema {
     query: Query
     mutation: Mutation
+    subscription: Subscription
   }
 `;
 export default typeDefs;

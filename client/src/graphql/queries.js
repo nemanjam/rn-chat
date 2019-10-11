@@ -41,3 +41,22 @@ export const USER_QUERY = gql`
     }
   }
 `;
+
+export const CHAT_QUERY = gql`
+  query ChatQuery($id: Int!) {
+    chat(id: $id) {
+      id
+      createdAt
+      messages {
+        id
+        text
+        createdAt
+        from {
+          id
+          username
+          avatar
+        }
+      }
+    }
+  }
+`;

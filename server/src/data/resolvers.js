@@ -1,18 +1,33 @@
 import GraphQLDate from 'graphql-date';
+import { withFilter } from 'apollo-server';
 import { ChatModel, MessageModel, UserModel } from './connectors';
-
+import { pubsub } from './subscriptions';
 // connectori su orm mapiranja, a resolveri su orm upiti mapiranja na graphql
 // Group, Message, User sequelize modeli tabele
 //
+const MESSAGE_ADDED_TOPIC = 'messageAdded';
 
 export const resolvers = {
   Date: GraphQLDate,
+  Subscription: {
+    messageAdded: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(MESSAGE_ADDED_TOPIC),
+        (payload, args) => {
+          return Boolean(true);
+        },
+      ),
+    },
+  },
   Mutation: {
     createMessage(_, { userId, chatId, text }) {
       return MessageModel.create({
         userId,
         chatId,
         text,
+      }).then(message => {
+        pubsub.publish(MESSAGE_ADDED_TOPIC, { [MESSAGE_ADDED_TOPIC]: message });
+        return message;
       });
     },
   },
@@ -35,6 +50,7 @@ export const resolvers = {
   },
   //prouci apollo state
   //mutacija za chat
+  //mutacija kreiraj chat, contact
   //paginacija za scroll
   //subscribtions za chat i chats i contacts
   //auth
