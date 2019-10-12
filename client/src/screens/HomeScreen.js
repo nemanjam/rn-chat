@@ -81,7 +81,11 @@ adb connect 127.0.0.1:62001
           <FooterTab>
             <Button active={tabs[0]} onPress={() => toggleTab1()}>
               <Icon active={tabs[0]} name="globe" />
-              <Text>Contacts</Text>
+              <Text>Users</Text>
+            </Button>
+            <Button active={tabs[0]} onPress={() => toggleTab1()}>
+              <Icon active={tabs[0]} name="people" />
+              <Text>Groups</Text>
             </Button>
             <Button active={tabs[1]} onPress={() => toggleTab2()}>
               <Icon active={tabs[1]} name="chatbubbles" />

@@ -39,13 +39,6 @@ const Profile = props => {
           <Text>{user.description}</Text>
         </Body>
       </CardItem>
-      <CardItem>
-        <Left>
-          <Button>
-            <Text>Have a chat</Text>
-          </Button>
-        </Left>
-      </CardItem>
     </Card>
   );
 };

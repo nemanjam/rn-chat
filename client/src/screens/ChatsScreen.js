@@ -1,12 +1,6 @@
 import React, { useEffect } from 'react';
 import { GiftedChat } from 'react-native-gifted-chat';
-import {
-  useApolloClient,
-  useMutation,
-  useQuery,
-  useSubscription,
-} from '@apollo/react-hooks';
-import { GraphqlQueryControls, graphql, compose } from 'react-apollo';
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import moment from 'moment';
 import idx from 'idx';
 
@@ -52,8 +46,6 @@ const ChatsScreen = props => {
         chatId,
       },
       updateQuery: (previous, { subscriptionData }) => {
-        // console.log('previous ', previous);
-        // console.log('subscriptionData ', subscriptionData);
         if (!subscriptionData.data) return previous;
         const newMessage = subscriptionData.data.messageAdded;
 
@@ -64,7 +56,6 @@ const ChatsScreen = props => {
             messages: [newMessage, ...previous.chat.messages],
           },
         };
-        console.log(result);
         return result;
       },
     });
@@ -76,8 +67,7 @@ const ChatsScreen = props => {
     createMessage({ variables: { userId, chatId, text } });
   }
 
-  console.log('queryResult ', queryResult.data);
-  // console.log('loading ', loading);
+  // console.log('queryResult ', queryResult.data);
   // console.log('error ', JSON.stringify(error, null, 2));
 
   return (

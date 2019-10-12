@@ -1,3 +1,4 @@
+import Sequelize from 'sequelize';
 import GraphQLDate from 'graphql-date';
 import { withFilter } from 'apollo-server';
 import { ChatModel, MessageModel, UserModel } from './connectors';
@@ -6,6 +7,7 @@ import { pubsub } from './subscriptions';
 // Group, Message, User sequelize modeli tabele
 //
 const MESSAGE_ADDED_TOPIC = 'messageAdded';
+const Op = Sequelize.Op;
 
 export const resolvers = {
   Date: GraphQLDate,
@@ -14,7 +16,8 @@ export const resolvers = {
       subscribe: withFilter(
         () => pubsub.asyncIterator(MESSAGE_ADDED_TOPIC),
         (payload, args) => {
-          return Boolean(true /*args.chatId === payload.messageAdded.chatId*/);
+          // console.log(JSON.stringify(payload, null, 2));
+          return Boolean(args.chatId === payload.messageAdded.chatId);
         },
       ),
     },
@@ -29,6 +32,58 @@ export const resolvers = {
         pubsub.publish(MESSAGE_ADDED_TOPIC, { [MESSAGE_ADDED_TOPIC]: message });
         return message;
       });
+    },
+    async createChat(_, { userId, contactId }) {
+      //check if users are in the chat already
+      const usersChatIds = await ChatModel.findAll({
+        attributes: ['id'],
+        include: [
+          {
+            model: UserModel,
+            through: {
+              where: { userId },
+            },
+            where: { id: { [Op.not]: null } },
+            attributes: [],
+          },
+        ],
+      }).map(item => item.id);
+      const contactsChatIds = await ChatModel.findAll({
+        attributes: ['id'],
+        include: [
+          {
+            model: UserModel,
+            through: {
+              where: { userId: contactId },
+            },
+            where: { id: { [Op.not]: null } },
+            attributes: [],
+          },
+        ],
+      }).map(item => item.id);
+      const chatIdExists = usersChatIds.filter(value =>
+        contactsChatIds.includes(value),
+      );
+
+      // console.log(JSON.stringify(usersChatIds));
+      // console.log(JSON.stringify(contactsChatIds));
+      // console.log(JSON.stringify(chatIdExists));
+      if (chatIdExists.length > 0)
+        return await ChatModel.findOne({ where: { id: chatIdExists[0] } });
+
+      const chat = await ChatModel.create({});
+      const user = await UserModel.findOne({ where: { id: userId } });
+      const contact = await UserModel.findOne({ where: { id: contactId } });
+      const message = await MessageModel.create({
+        text: 'Hello, I would like to start conversation.',
+      });
+      user.addChat(chat);
+      contact.addChat(chat);
+      message.setChat(chat);
+      //add contact?
+      user.addContact(contact);
+      contact.addContact(user);
+      return chat;
     },
   },
   // Query tip iz graphql scheme na dnu, jasno
@@ -51,10 +106,12 @@ export const resolvers = {
   //prouci apollo state
   //mutacija za chat
   //mutacija kreiraj chat, contact
-  //paginacija za scroll
+  //paginacija za scroll, fetch more
   //subscribtions za chat i chats i contacts
   //auth
   //webrtc
+  //accept, ignore chat request, block user
+  //css za profile page, fab button start chat
   Chat: {
     users(chat) {
       // return chat.getUsers(); //sortiraj prema created at message, pa current user na kraj

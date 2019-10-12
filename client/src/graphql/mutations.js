@@ -13,3 +13,14 @@ export const CREATE_MESSAGE_MUTATION = gql`
     }
   }
 `;
+export const CREATE_CHAT_MUTATION = gql`
+  mutation createChat($userId: Int!, $contactId: Int!) {
+    createChat(userId: $userId, contactId: $contactId) {
+      id
+      users {
+        id
+        username
+      }
+    }
+  }
+`;
