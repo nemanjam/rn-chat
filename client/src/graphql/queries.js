@@ -12,6 +12,18 @@ export const CONTACTS_QUERY = gql`
   }
 `;
 
+export const USERS_QUERY = gql`
+  query UsersQuery($id: Int!) {
+    users(id: $id) {
+      id
+      email
+      username
+      avatar
+      description
+    }
+  }
+`;
+
 export const CHATS_QUERY = gql`
   query ChatsQuery($userId: Int!) {
     chats(userId: $userId) {

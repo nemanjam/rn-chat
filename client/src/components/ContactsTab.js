@@ -14,18 +14,18 @@ import {
   Button,
 } from 'native-base';
 
-import { CONTACTS_QUERY } from '../graphql/queries';
+import { USERS_QUERY } from '../graphql/queries';
 
 const ContactsTab = props => {
-  const { data, loading, error } = useQuery(CONTACTS_QUERY, {
+  const { data, loading, error } = useQuery(USERS_QUERY, {
     variables: { id: 1 },
   });
   if (loading) return <Text>Loading</Text>;
   if (error) return <Text>{JSON.stringify(error, null, 2)}</Text>;
-  const { contacts } = data;
+  const { users } = data;
   return (
     <List>
-      {contacts.map((contact, index) => {
+      {users.map((user, index) => {
         return (
           <ListItem
             style={styles.listItem}
@@ -34,16 +34,16 @@ const ContactsTab = props => {
             button
             onPress={() =>
               props.navigation.navigate('ContactProfile', {
-                userId: contact.id,
+                userId: user.id,
               })
             }>
             <Left>
-              <Thumbnail source={{ uri: contact.avatar }} />
+              <Thumbnail source={{ uri: user.avatar }} />
             </Left>
             <Body>
-              <Text>{contact.username}</Text>
+              <Text>{user.username}</Text>
               <Text note numberOfLines={1}>
-                {contact.description}
+                {user.description}
               </Text>
             </Body>
           </ListItem>

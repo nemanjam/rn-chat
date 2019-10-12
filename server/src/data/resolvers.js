@@ -95,6 +95,12 @@ export const resolvers = {
       const user = await UserModel.findOne({ where: { id: args.userId } });
       return user.getChats();
     },
+    async users(_, args) {
+      const users = await UserModel.findAll({
+        where: { id: { [Op.not]: args.id } },
+      });
+      return users;
+    },
     async contacts(_, args) {
       const user = await UserModel.findOne({ where: args });
       return user.getContacts();

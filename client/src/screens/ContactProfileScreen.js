@@ -30,13 +30,22 @@ import { CREATE_CHAT_MUTATION } from '../graphql/mutations';
 
 const ContactProfileScreen = props => {
   const userId = props.navigation.getParam('userId');
-  const [createChat, { ...mutationResult }] = useMutation(CREATE_CHAT_MUTATION);
-  const { data, error, loading } = mutationResult;
+  const [createChat, { ...mutationResult }] = useMutation(
+    CREATE_CHAT_MUTATION,
+    {
+      onCompleted(data) {
+        props.navigation.navigate('Chats', {
+          chatId: data.createChat.id,
+        });
+      },
+    },
+  );
+  const { error, loading } = mutationResult;
+
   function onFabPress() {
     createChat({ variables: { userId: 1, contactId: userId } });
-    // console.log('onPress ', data);
-    props.navigation.navigate('Chats', { chatId: data.createChat.id });
   }
+  if (loading) return <Text>Loading...</Text>;
   // console.log('error ', JSON.stringify(error, null, 2));
   return (
     <Container>
@@ -51,18 +60,17 @@ const ContactProfileScreen = props => {
         </Body>
         <Right />
       </Header>
-      <Content contentContainerStyle={{ flex: 1 }}>
-        <Fab
-          active={true}
-          direction="up"
-          style={{ backgroundColor: '#5067FF' }}
-          position="bottomRight"
-          onPress={() => onFabPress()}>
-          <Icon name="chatboxes" />
-        </Fab>
-
+      <Content>
         <Profile userId={userId} />
       </Content>
+      <Fab
+        active={true}
+        direction="up"
+        style={{ backgroundColor: '#5067FF' }}
+        position="bottomRight"
+        onPress={() => onFabPress()}>
+        <Icon name="chatboxes" />
+      </Fab>
     </Container>
   );
 };
