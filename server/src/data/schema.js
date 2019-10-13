@@ -12,7 +12,6 @@ export const typeDefs = gql`
     description: String
     chats: [Chat]
     contacts: [User]
-    isActive: Boolean
     lastActiveAt: Date
   }
 

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import { StyleSheet } from 'react-native';
 import { useQuery } from '@apollo/react-hooks';
+import moment from 'moment';
 
 import {
   Container,
@@ -15,6 +16,7 @@ import {
   Thumbnail,
   Text,
   Button,
+  Spinner,
 } from 'native-base';
 
 import { CHATS_QUERY } from '../graphql/queries';
@@ -23,7 +25,7 @@ const ChatsTab = props => {
   const { data, loading, error } = useQuery(CHATS_QUERY, {
     variables: { userId: 1 },
   });
-  if (loading) return <Text>Loading</Text>;
+  if (loading) return <Spinner />;
   if (error) return <Text>{JSON.stringify(error, null, 2)}</Text>;
   const { chats } = data;
   return (
@@ -43,10 +45,14 @@ const ChatsTab = props => {
             </Left>
             <Body>
               <Text>{chat.users[0].username}</Text>
-              <Text note>{chat.lastMessage.text}</Text>
+              <Text note numberOfLines={2} style={styles.lastMessage}>
+                {chat.lastMessage.text}
+              </Text>
             </Body>
             <Right>
-              <Text note>3:43 pm</Text>
+              <Text note>
+                {moment(chat.lastMessage.createdAt).format('LT')}
+              </Text>
             </Right>
           </ListItem>
         );
@@ -58,5 +64,6 @@ const styles = StyleSheet.create({
   listItem: {
     marginLeft: 0,
   },
+  lastMessage: {},
 });
 export default ChatsTab;

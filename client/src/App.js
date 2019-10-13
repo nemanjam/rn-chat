@@ -35,6 +35,7 @@ const AppNavigator = createStackNavigator(
 const AppContainer = createAppContainer(AppNavigator);
 
 const uri = '10.0.2.2:5000';
+// const uri = '192.168.0.185:5000';
 const httpLink = createHttpLink({ uri: `http://${uri}` });
 
 const wsLink = new WebSocketLink({

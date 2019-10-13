@@ -23,6 +23,7 @@ import {
   Col,
   Fab,
   View,
+  Spinner,
 } from 'native-base';
 
 import Profile from '../components/Profile';
@@ -45,7 +46,7 @@ const ContactProfileScreen = props => {
   function onFabPress() {
     createChat({ variables: { userId: 1, contactId: userId } });
   }
-  if (loading) return <Text>Loading...</Text>;
+  if (loading) return <Spinner />;
   // console.log('error ', JSON.stringify(error, null, 2));
   return (
     <Container>

@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { connect } from 'react-redux';
+import { StyleSheet } from 'react-native';
 
 import {
   Container,
@@ -81,19 +81,19 @@ adb connect 127.0.0.1:62001
           <FooterTab>
             <Button active={tabs[0]} onPress={() => toggleTab1()}>
               <Icon active={tabs[0]} name="globe" />
-              <Text>Contacts</Text>
+              <Text style={styles.tabText}>World</Text>
             </Button>
-            {/* <Button active={tabs[0]} onPress={() => toggleTab1()}>
+            <Button active={tabs[0]} onPress={() => toggleTab1()}>
               <Icon active={tabs[0]} name="people" />
-              <Text>Groups</Text>
-            </Button> */}
+              <Text style={styles.tabText}>Groups</Text>
+            </Button>
             <Button active={tabs[1]} onPress={() => toggleTab2()}>
               <Icon active={tabs[1]} name="chatbubbles" />
-              <Text>Chats</Text>
+              <Text style={styles.tabText}>Chats</Text>
             </Button>
             <Button active={tabs[2]} onPress={() => toggleTab3()}>
               <Icon active={tabs[2]} name="contact" />
-              <Text>Profile</Text>
+              <Text style={styles.tabText}>Profile</Text>
             </Button>
           </FooterTab>
         </Footer>
@@ -101,5 +101,11 @@ adb connect 127.0.0.1:62001
     </Container>
   );
 };
+
+const styles = StyleSheet.create({
+  tabText: {
+    fontSize: 10,
+  },
+});
 
 export default HomeScreen;

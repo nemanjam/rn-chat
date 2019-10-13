@@ -12,6 +12,7 @@ import {
   Thumbnail,
   Text,
   Button,
+  Spinner,
 } from 'native-base';
 
 import { USERS_QUERY } from '../graphql/queries';
@@ -20,7 +21,7 @@ const ContactsTab = props => {
   const { data, loading, error } = useQuery(USERS_QUERY, {
     variables: { id: 1 },
   });
-  if (loading) return <Text>Loading</Text>;
+  if (loading) return <Spinner />;
   if (error) return <Text>{JSON.stringify(error, null, 2)}</Text>;
   const { users } = data;
   return (
@@ -42,7 +43,7 @@ const ContactsTab = props => {
             </Left>
             <Body>
               <Text>{user.username}</Text>
-              <Text note numberOfLines={1}>
+              <Text note numberOfLines={2}>
                 {user.description}
               </Text>
             </Body>

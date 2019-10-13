@@ -2,7 +2,9 @@ import Sequelize from 'sequelize';
 import { _ } from 'lodash';
 import seed from './seed';
 
-const db = new Sequelize('postgres://postgres:root@localhost:5432/chat');
+const db = new Sequelize('postgres://postgres:root@localhost:5432/chat', {
+  logging: false,
+});
 
 // tabele, osnovni tipovi od kojih su sacinjeni ostali iz graphql scheme
 
@@ -11,7 +13,6 @@ export const UserModel = db.define('user', {
   username: { type: Sequelize.STRING },
   avatar: { type: Sequelize.STRING },
   description: { type: Sequelize.TEXT },
-  isActive: { type: Sequelize.BOOLEAN },
   lastActiveAt: { type: Sequelize.DATE },
   password: { type: Sequelize.STRING },
 });

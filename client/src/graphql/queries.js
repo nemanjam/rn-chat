@@ -31,6 +31,7 @@ export const CHATS_QUERY = gql`
       updatedAt
       lastMessage {
         text
+        createdAt
       }
       users {
         username
@@ -48,7 +49,6 @@ export const USER_QUERY = gql`
       username
       avatar
       description
-      isActive
       lastActiveAt
     }
   }
@@ -59,6 +59,7 @@ export const CHAT_QUERY = gql`
     chat(chatId: $chatId) {
       id
       createdAt
+      updatedAt
       messages {
         id
         text
