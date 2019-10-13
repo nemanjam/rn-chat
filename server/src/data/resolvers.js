@@ -1,7 +1,7 @@
 import Sequelize from 'sequelize';
 import GraphQLDate from 'graphql-date';
 import { withFilter } from 'apollo-server';
-import { ChatModel, MessageModel, UserModel } from './connectors';
+import { ChatModel, MessageModel, UserModel, GroupModel } from './connectors';
 import { pubsub } from './subscriptions';
 // connectori su orm mapiranja, a resolveri su orm upiti mapiranja na graphql
 // Group, Message, User sequelize modeli tabele
@@ -95,15 +95,22 @@ export const resolvers = {
       const user = await UserModel.findOne({ where: { id: args.userId } });
       return user.getChats();
     },
+    group(_, args) {
+      return GroupModel.findOne({ where: { id: args.groupId } });
+    },
+    async groups(_, args) {
+      const user = await UserModel.findOne({ where: { id: args.userId } });
+      return user.getGroups();
+    },
     async users(_, args) {
       const users = await UserModel.findAll({
         where: { id: { [Op.not]: args.id } },
       });
       return users;
     },
-    async contacts(_, args) {
+    async friends(_, args) {
       const user = await UserModel.findOne({ where: args });
-      return user.getContacts();
+      return user.getFriends();
     },
     user(_, args) {
       return UserModel.findOne({ where: args });
@@ -118,6 +125,42 @@ export const resolvers = {
   //webrtc
   //accept, ignore chat request, block user
   //css za profile page, fab button start chat
+  Group: {
+    users(group) {
+      // return chat.getUsers(); //sortiraj prema created at message, pa current user na kraj
+      return UserModel.findAll({
+        include: [
+          {
+            model: ChatModel,
+            where: { id: group.id },
+            include: [
+              {
+                model: MessageModel,
+              },
+            ],
+            order: [[MessageModel, 'groupId', 'DESC']],
+          },
+        ],
+      });
+    },
+    messages(group) {
+      return MessageModel.findAll({
+        where: { groupId: group.id },
+        order: [['createdAt', 'DESC']],
+      });
+    },
+    lastMessage(group) {
+      return MessageModel.findOne({
+        where: { groupId: group.id },
+        order: [['createdAt', 'DESC']],
+      });
+    },
+  },
+  Message: {
+    from(message) {
+      return message.getUser();
+    },
+  },
   Chat: {
     users(chat) {
       // return chat.getUsers(); //sortiraj prema created at message, pa current user na kraj
@@ -158,8 +201,11 @@ export const resolvers = {
     chats(user) {
       return user.getChats();
     },
+    groups(user) {
+      return user.getGroups();
+    },
     contacts(user) {
-      return user.getContacts();
+      return user.getFriends();
     },
   },
 };

@@ -1,5 +1,5 @@
 import faker from 'faker';
-import { UserModel, ChatModel, MessageModel } from './connectors';
+import { UserModel, ChatModel, MessageModel, GroupModel } from './connectors';
 
 const seed = () => {
   return Promise.all([
@@ -96,6 +96,16 @@ const seed = () => {
       text: faker.lorem.sentences(3),
       createdAt: new Date(),
     }),
+    GroupModel.create({
+      name: 'firstGroup',
+      avatar: faker.internet.avatar(),
+      description: faker.lorem.sentences(3),
+    }),
+    GroupModel.create({
+      name: 'secondGroup',
+      avatar: faker.internet.avatar(),
+      description: faker.lorem.sentences(3),
+    }),
   ])
     .then(
       ([
@@ -116,12 +126,14 @@ const seed = () => {
         sixthMessage,
         seventhMessage,
         eighthMessage,
+        firstGroup,
+        secondGroup,
       ]) => {
         return Promise.all([
           firstUser.addChat(firstChat),
           secondUser.addChat(firstChat),
-          firstUser.addContact(secondUser),
-          secondUser.addContact(firstUser), //
+          firstUser.addFriend(secondUser),
+          secondUser.addFriend(firstUser), //
           firstMessage.setChat(firstChat),
           secondMessage.setChat(firstChat),
           firstUser.setMessage(secondMessage),
@@ -129,17 +141,18 @@ const seed = () => {
 
           firstUser.addChat(secondChat),
           thirdUser.addChat(secondChat),
-          firstUser.addContact(thirdUser),
-          thirdUser.addContact(firstUser), //
+          firstUser.addFriend(thirdUser),
+          thirdUser.addFriend(firstUser), //
           thirdMessage.setChat(secondChat),
           fourthMessage.setChat(secondChat),
           firstUser.setMessage(fourthMessage),
           thirdUser.setMessage(thirdMessage),
 
+          /*
           firstUser.addChat(thirdChat),
           fourthUser.addChat(thirdChat),
-          firstUser.addContact(fourthUser),
-          fourthUser.addContact(firstUser), //
+          // firstUser.addFriend(fourthUser),
+          // fourthUser.addFriend(firstUser),
           fifthMessage.setChat(thirdChat),
           sixthMessage.setChat(thirdChat),
           firstUser.setMessage(sixthMessage),
@@ -147,10 +160,25 @@ const seed = () => {
 
           firstUser.addChat(fourthChat),
           fifthUser.addChat(fourthChat),
-          firstUser.addContact(fifthUser),
-          fifthUser.addContact(firstUser), //
+          // firstUser.addFriend(fifthUser),
+          // fifthUser.addFriend(firstUser),
           seventhMessage.setChat(fourthChat),
           eighthMessage.setChat(fourthChat),
+          firstUser.setMessage(eighthMessage),
+          fifthUser.setMessage(seventhMessage),
+          */
+
+          firstUser.addGroup(firstGroup),
+          fourthUser.addGroup(firstGroup),
+          fifthMessage.setGroup(firstGroup),
+          sixthMessage.setGroup(firstGroup),
+          firstUser.setMessage(sixthMessage),
+          fourthUser.setMessage(fifthMessage),
+
+          firstUser.addGroup(secondGroup),
+          fifthUser.addGroup(secondGroup),
+          seventhMessage.setGroup(secondGroup),
+          eighthMessage.setGroup(secondGroup),
           firstUser.setMessage(eighthMessage),
           fifthUser.setMessage(seventhMessage),
         ]);

@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
-export const CONTACTS_QUERY = gql`
-  query ContactsQuery($id: Int!) {
-    contacts(id: $id) {
+export const FRIENDS_QUERY = gql`
+  query FriendsQuery($id: Int!) {
+    friends(id: $id) {
       id
       email
       username

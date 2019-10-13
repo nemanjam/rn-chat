@@ -29,7 +29,7 @@ import {
 import Profile from '../components/Profile';
 import { CREATE_CHAT_MUTATION } from '../graphql/mutations';
 
-const ContactProfileScreen = props => {
+const UserProfileScreen = props => {
   const userId = props.navigation.getParam('userId');
   const [createChat, { ...mutationResult }] = useMutation(
     CREATE_CHAT_MUTATION,
@@ -57,7 +57,7 @@ const ContactProfileScreen = props => {
           </Button>
         </Left>
         <Body>
-          <Title>Contact Profile</Title>
+          <Title>User Profile</Title>
         </Body>
         <Right />
       </Header>
@@ -76,4 +76,4 @@ const ContactProfileScreen = props => {
   );
 };
 
-export default ContactProfileScreen;
+export default UserProfileScreen;

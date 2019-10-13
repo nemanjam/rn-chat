@@ -1,5 +1,5 @@
 import React from 'react';
-import {AppRegistry, Image, StatusBar} from 'react-native';
+import { AppRegistry, Image, StatusBar } from 'react-native';
 import {
   Button,
   Text,
@@ -10,7 +10,7 @@ import {
   Icon,
 } from 'native-base';
 
-const routes = ['Login', 'Register', 'Home'];
+const routes = ['Login', 'Register', 'Home', 'Settings'];
 
 const SideBar = props => {
   return (
@@ -44,7 +44,7 @@ const SideBar = props => {
         />
         <List
           dataArray={routes}
-          contentContainerStyle={{marginTop: 120}}
+          contentContainerStyle={{ marginTop: 120 }}
           renderRow={data => {
             return (
               <ListItem button onPress={() => props.navigation.navigate(data)}>

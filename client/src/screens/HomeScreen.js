@@ -15,14 +15,17 @@ import {
   Right,
   Icon,
   Text,
+  Segment,
 } from 'native-base';
 import SideBar from '../components/SideBar';
-import ContactsTab from '../components/ContactsTab';
+import UsersTab from '../components/UsersTab';
 import ChatsTab from '../components/ChatsTab';
 import Profile from '../components/Profile';
+import FriendsTab from '../components/FriendsTab';
 
 const HomeScreen = props => {
   const [tabs, setTabs] = useState([true, false, false]);
+  const [segment, setSegment] = useState(0);
   const drawer = useRef(null);
 
   function openDrawer() {
@@ -43,7 +46,10 @@ const HomeScreen = props => {
   }
 
   function getContentComponent() {
-    if (tabs[0]) return <ContactsTab {...props} />;
+    if (tabs[0]) {
+      if (segment === 0) return <UsersTab {...props} />;
+      if (segment === 1) return <FriendsTab {...props} />;
+    }
     if (tabs[1]) return <ChatsTab {...props} />;
     if (tabs[2]) return <Profile {...props} />;
   }
@@ -62,7 +68,7 @@ adb connect 127.0.0.1:62001
         content={<SideBar {...props} />}
         onClose={() => closeDrawer()}>
         {!tabs[2] && (
-          <Header>
+          <Header hasTabs>
             <Left>
               <Button transparent onPress={() => openDrawer()}>
                 <Icon name="menu" />
@@ -75,13 +81,30 @@ adb connect 127.0.0.1:62001
           </Header>
         )}
 
+        {tabs[0] && (
+          <Segment>
+            <Button
+              first
+              active={segment === 0 ? true : false}
+              onPress={() => setSegment(0)}>
+              <Text>All</Text>
+            </Button>
+            <Button
+              last
+              active={segment === 1 ? true : false}
+              onPress={() => setSegment(1)}>
+              <Text>Friends</Text>
+            </Button>
+          </Segment>
+        )}
+
         <Content padder>{getContentComponent()}</Content>
 
         <Footer>
           <FooterTab>
             <Button active={tabs[0]} onPress={() => toggleTab1()}>
               <Icon active={tabs[0]} name="globe" />
-              <Text style={styles.tabText}>World</Text>
+              <Text style={styles.tabText}>Users</Text>
             </Button>
             <Button active={tabs[0]} onPress={() => toggleTab1()}>
               <Icon active={tabs[0]} name="people" />

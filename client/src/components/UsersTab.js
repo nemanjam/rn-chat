@@ -17,7 +17,7 @@ import {
 
 import { USERS_QUERY } from '../graphql/queries';
 
-const ContactsTab = props => {
+const UsersTab = props => {
   const { data, loading, error } = useQuery(USERS_QUERY, {
     variables: { id: 1 },
   });
@@ -34,7 +34,7 @@ const ContactsTab = props => {
             thumbnail
             button
             onPress={() =>
-              props.navigation.navigate('ContactProfile', {
+              props.navigation.navigate('UserProfile', {
                 userId: user.id,
               })
             }>
@@ -59,4 +59,4 @@ const styles = StyleSheet.create({
     marginLeft: 0,
   },
 });
-export default ContactsTab;
+export default UsersTab;

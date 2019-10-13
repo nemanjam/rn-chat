@@ -11,12 +11,25 @@ export const typeDefs = gql`
     avatar: String
     description: String
     chats: [Chat]
+    groups: [Group]
     contacts: [User]
     lastActiveAt: Date
   }
 
   type Chat {
     id: Int!
+    messages: [Message]
+    users: [User]!
+    lastMessage: Message
+    createdAt: Date!
+    updatedAt: Date!
+  }
+
+  type Group {
+    id: Int!
+    name: String!
+    avatar: String
+    description: String
     messages: [Message]
     users: [User]!
     lastMessage: Message
@@ -34,9 +47,11 @@ export const typeDefs = gql`
   type Query {
     user(email: String, id: Int): User
     users(id: Int!): [User]
-    contacts(id: Int!): [User]
+    friends(id: Int!): [User]
     chat(chatId: Int!): Chat
     chats(userId: Int!): [Chat]
+    group(groupId: Int!): Group
+    groups(userId: Int!): [Group]
   }
 
   type Mutation {

@@ -15,6 +15,8 @@ export const UserModel = db.define('user', {
   description: { type: Sequelize.TEXT },
   lastActiveAt: { type: Sequelize.DATE },
   password: { type: Sequelize.STRING },
+  createdAt: { type: Sequelize.DATE },
+  updatedAt: { type: Sequelize.DATE },
 });
 
 export const ChatModel = db.define('chat', {
@@ -22,17 +24,31 @@ export const ChatModel = db.define('chat', {
   updatedAt: { type: Sequelize.DATE },
 });
 
+export const GroupModel = db.define('group', {
+  name: { type: Sequelize.STRING },
+  avatar: { type: Sequelize.STRING },
+  description: { type: Sequelize.STRING },
+  createdAt: { type: Sequelize.DATE },
+  updatedAt: { type: Sequelize.DATE },
+});
+
 export const MessageModel = db.define('message', {
   text: { type: Sequelize.TEXT },
   createdAt: { type: Sequelize.DATE },
+  updatedAt: { type: Sequelize.DATE },
 });
 
 UserModel.belongsToMany(ChatModel, { through: 'ChatUser' });
-UserModel.belongsToMany(UserModel, { through: 'Contacts', as: 'contacts' });
+UserModel.belongsToMany(UserModel, { through: 'Friends', as: 'friends' });
 MessageModel.belongsTo(UserModel);
 UserModel.hasOne(MessageModel);
 
 ChatModel.belongsToMany(UserModel, { through: 'ChatUser' });
+
+GroupModel.belongsToMany(UserModel, { through: 'GroupUser' });
+UserModel.belongsToMany(GroupModel, { through: 'GroupUser' });
+MessageModel.belongsTo(GroupModel);
+GroupModel.hasMany(MessageModel);
 
 MessageModel.belongsTo(ChatModel);
 ChatModel.hasMany(MessageModel);
