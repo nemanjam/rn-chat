@@ -41,6 +41,25 @@ export const CHATS_QUERY = gql`
   }
 `;
 
+export const GROUPS_QUERY = gql`
+  query GroupsQuery($userId: Int!) {
+    groups(userId: $userId) {
+      id
+      name
+      description
+      updatedAt
+      lastMessage {
+        text
+        createdAt
+      }
+      users {
+        username
+        avatar
+      }
+    }
+  }
+`;
+
 export const USER_QUERY = gql`
   query UserQuery($id: Int!) {
     user(id: $id) {

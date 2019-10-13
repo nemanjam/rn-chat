@@ -20,11 +20,12 @@ import {
 import SideBar from '../components/SideBar';
 import UsersTab from '../components/UsersTab';
 import ChatsTab from '../components/ChatsTab';
+import GroupsTab from '../components/GroupsTab';
 import Profile from '../components/Profile';
 import FriendsTab from '../components/FriendsTab';
 
 const HomeScreen = props => {
-  const [tabs, setTabs] = useState([true, false, false]);
+  const [tabs, setTabs] = useState([true, false, false, false]);
   const [segment, setSegment] = useState(0);
   const drawer = useRef(null);
 
@@ -36,13 +37,16 @@ const HomeScreen = props => {
   }
 
   function toggleTab1() {
-    setTabs([true, false, false]);
+    setTabs([true, false, false, false]);
   }
   function toggleTab2() {
-    setTabs([false, true, false]);
+    setTabs([false, true, false, false]);
   }
   function toggleTab3() {
-    setTabs([false, false, true]);
+    setTabs([false, false, true, false]);
+  }
+  function toggleTab4() {
+    setTabs([false, false, false, true]);
   }
 
   function getContentComponent() {
@@ -50,8 +54,9 @@ const HomeScreen = props => {
       if (segment === 0) return <UsersTab {...props} />;
       if (segment === 1) return <FriendsTab {...props} />;
     }
-    if (tabs[1]) return <ChatsTab {...props} />;
-    if (tabs[2]) return <Profile {...props} />;
+    if (tabs[1]) return <GroupsTab {...props} />;
+    if (tabs[2]) return <ChatsTab {...props} />;
+    if (tabs[3]) return <Profile {...props} />;
   }
   /*
 netstat -aon | findstr PID
@@ -67,7 +72,7 @@ adb connect 127.0.0.1:62001
         }}
         content={<SideBar {...props} />}
         onClose={() => closeDrawer()}>
-        {!tabs[2] && (
+        {!tabs[3] && (
           <Header hasTabs>
             <Left>
               <Button transparent onPress={() => openDrawer()}>
@@ -106,16 +111,16 @@ adb connect 127.0.0.1:62001
               <Icon active={tabs[0]} name="globe" />
               <Text style={styles.tabText}>Users</Text>
             </Button>
-            <Button active={tabs[0]} onPress={() => toggleTab1()}>
-              <Icon active={tabs[0]} name="people" />
+            <Button active={tabs[1]} onPress={() => toggleTab2()}>
+              <Icon active={tabs[1]} name="people" />
               <Text style={styles.tabText}>Groups</Text>
             </Button>
-            <Button active={tabs[1]} onPress={() => toggleTab2()}>
-              <Icon active={tabs[1]} name="chatbubbles" />
+            <Button active={tabs[2]} onPress={() => toggleTab3()}>
+              <Icon active={tabs[2]} name="chatbubbles" />
               <Text style={styles.tabText}>Chats</Text>
             </Button>
-            <Button active={tabs[2]} onPress={() => toggleTab3()}>
-              <Icon active={tabs[2]} name="contact" />
+            <Button active={tabs[3]} onPress={() => toggleTab4()}>
+              <Icon active={tabs[3]} name="contact" />
               <Text style={styles.tabText}>Profile</Text>
             </Button>
           </FooterTab>

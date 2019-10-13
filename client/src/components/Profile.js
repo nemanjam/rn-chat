@@ -45,6 +45,14 @@ const Profile = props => {
           </List>
         </Body>
       </CardItem>
+      <CardItem>
+        <Left>
+          <Button>
+            <Icon style={styles.friendIcon} name="contacts" />
+            <Text>Add As Friend</Text>
+          </Button>
+        </Left>
+      </CardItem>
     </Card>
   );
 };
@@ -76,6 +84,9 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     fontSize: 12,
     color: 'green',
+  },
+  friendIcon: {
+    marginRight: 0,
   },
 });
 

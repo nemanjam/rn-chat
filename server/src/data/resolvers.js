@@ -127,11 +127,11 @@ export const resolvers = {
   //css za profile page, fab button start chat
   Group: {
     users(group) {
-      // return chat.getUsers(); //sortiraj prema created at message, pa current user na kraj
+      // return group.getUsers();
       return UserModel.findAll({
         include: [
           {
-            model: ChatModel,
+            model: GroupModel,
             where: { id: group.id },
             include: [
               {
