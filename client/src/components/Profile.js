@@ -11,6 +11,7 @@ import {
   Button,
   Icon,
   Left,
+  Right,
   Body,
   List,
   ListItem,
@@ -32,26 +33,25 @@ const Profile = props => {
         <Body>
           <Image source={{ uri: user.avatar }} style={styles.image} />
           <List>
-            <ListItem>
-              <Text style={styles.usernameText}>{user.username}</Text>
+            <ListItem style={styles.usernameBlock}>
+              <Body>
+                <Text style={styles.usernameText}>{user.username}</Text>
 
-              <Text style={styles.timeAgo}>{`• ${moment(
-                user.lastActiveAt,
-              ).fromNow(true)} ago`}</Text>
+                <Text style={styles.timeAgo}>{`• ${moment(
+                  user.lastActiveAt,
+                ).fromNow()}`}</Text>
+              </Body>
+              <Right>
+                <Button style={styles.friendButton}>
+                  <Text style={styles.buttonText}>Add As Friend</Text>
+                </Button>
+              </Right>
             </ListItem>
             <ListItem>
               <Text>{user.description}</Text>
             </ListItem>
           </List>
         </Body>
-      </CardItem>
-      <CardItem>
-        <Left>
-          <Button>
-            <Icon style={styles.friendIcon} name="contacts" />
-            <Text>Add As Friend</Text>
-          </Button>
-        </Left>
       </CardItem>
     </Card>
   );
@@ -81,12 +81,13 @@ const styles = StyleSheet.create({
     paddingRight: 0,
   },
   timeAgo: {
-    marginLeft: 5,
     fontSize: 12,
     color: 'green',
   },
-  friendIcon: {
-    marginRight: 0,
+
+  buttonText: {},
+  friendButton: {
+    width: 140,
   },
 });
 

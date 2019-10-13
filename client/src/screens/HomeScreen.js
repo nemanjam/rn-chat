@@ -80,27 +80,27 @@ adb connect 127.0.0.1:62001
               </Button>
             </Left>
             <Body>
-              <Title>Home</Title>
+              {tabs[0] ? (
+                <Segment>
+                  <Button
+                    first
+                    active={segment === 0 ? true : false}
+                    onPress={() => setSegment(0)}>
+                    <Text>All</Text>
+                  </Button>
+                  <Button
+                    last
+                    active={segment === 1 ? true : false}
+                    onPress={() => setSegment(1)}>
+                    <Text>Friends</Text>
+                  </Button>
+                </Segment>
+              ) : (
+                <Title>Home</Title>
+              )}
             </Body>
             <Right />
           </Header>
-        )}
-
-        {tabs[0] && (
-          <Segment>
-            <Button
-              first
-              active={segment === 0 ? true : false}
-              onPress={() => setSegment(0)}>
-              <Text>All</Text>
-            </Button>
-            <Button
-              last
-              active={segment === 1 ? true : false}
-              onPress={() => setSegment(1)}>
-              <Text>Friends</Text>
-            </Button>
-          </Segment>
         )}
 
         <Content padder>{getContentComponent()}</Content>
