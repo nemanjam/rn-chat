@@ -17,6 +17,7 @@ export const typeDefs = gql`
 
   type Chat {
     id: Int!
+    ownerId: Int
     name: String
     avatar: String
     description: String

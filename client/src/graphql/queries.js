@@ -93,3 +93,26 @@ export const CHAT_QUERY = gql`
     }
   }
 `;
+
+export const GROUP_QUERY = gql`
+  query GroupQuery($groupId: Int!) {
+    chat(chatId: $groupId) {
+      id
+      name
+      avatar
+      description
+      createdAt
+      updatedAt
+      messages {
+        id
+        text
+        createdAt
+        from {
+          id
+          username
+          avatar
+        }
+      }
+    }
+  }
+`;

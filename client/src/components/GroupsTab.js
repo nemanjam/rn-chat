@@ -54,7 +54,7 @@ const GroupsTab = props => {
                 props.navigation.navigate('Chats', { chatId: group.id })
               }>
               <Left>
-                <Thumbnail source={{ uri: group.avatar }} />
+                <Thumbnail square source={{ uri: group.avatar }} />
               </Left>
               <Body>
                 <Text>{group.name}</Text>
@@ -63,9 +63,16 @@ const GroupsTab = props => {
                 </Text>
               </Body>
               <Right>
-                <Text note>
-                  {moment(group.lastMessage.createdAt).format('LT')}
-                </Text>
+                <Button
+                  bordered
+                  small
+                  onPress={() =>
+                    props.navigation.navigate('GroupDetails', {
+                      groupId: group.id,
+                    })
+                  }>
+                  <Text>Details</Text>
+                </Button>
               </Right>
             </ListItem>
           );
