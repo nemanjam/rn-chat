@@ -20,11 +20,6 @@ export const UserModel = db.define('user', {
 });
 
 export const ChatModel = db.define('chat', {
-  createdAt: { type: Sequelize.DATE },
-  updatedAt: { type: Sequelize.DATE },
-});
-
-export const GroupModel = db.define('group', {
   name: { type: Sequelize.STRING },
   avatar: { type: Sequelize.STRING },
   description: { type: Sequelize.STRING },
@@ -44,11 +39,6 @@ MessageModel.belongsTo(UserModel);
 UserModel.hasOne(MessageModel);
 
 ChatModel.belongsToMany(UserModel, { through: 'ChatUser' });
-
-GroupModel.belongsToMany(UserModel, { through: 'GroupUser' });
-UserModel.belongsToMany(GroupModel, { through: 'GroupUser' });
-MessageModel.belongsTo(GroupModel);
-GroupModel.hasMany(MessageModel);
 
 MessageModel.belongsTo(ChatModel);
 ChatModel.hasMany(MessageModel);

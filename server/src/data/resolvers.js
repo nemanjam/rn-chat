@@ -23,17 +23,7 @@ export const resolvers = {
       ),
     },
   },
-  Subscription: {
-    groupMessageAdded: {
-      subscribe: withFilter(
-        () => pubsub.asyncIterator(GROUP_MESSAGE_ADDED_TOPIC),
-        (payload, args) => {
-          // console.log(JSON.stringify(payload, null, 2));
-          return Boolean(args.groupId === payload.messageAdded.groupId);
-        },
-      ),
-    },
-  },
+
   Mutation: {
     createMessage(_, { userId, chatId, text }) {
       return MessageModel.create({
@@ -45,18 +35,7 @@ export const resolvers = {
         return message;
       });
     },
-    createGroupMessage(_, { userId, groupId, text }) {
-      return MessageModel.create({
-        userId,
-        groupId,
-        text,
-      }).then(message => {
-        pubsub.publish(GROUP_MESSAGE_ADDED_TOPIC, {
-          [GROUP_MESSAGE_ADDED_TOPIC]: message,
-        });
-        return message;
-      });
-    },
+
     async createChat(_, { userId, contactId }) {
       //check if users are in the chat already
       const usersChatIds = await ChatModel.findAll({
@@ -119,12 +98,9 @@ export const resolvers = {
       const user = await UserModel.findOne({ where: { id: args.userId } });
       return user.getChats();
     },
-    group(_, args) {
-      return GroupModel.findOne({ where: { id: args.groupId } });
-    },
     async groups(_, args) {
       const user = await UserModel.findOne({ where: { id: args.userId } });
-      return user.getGroups();
+      return user.getChats({ where: { name: { [Op.not]: null } } });
     },
     async users(_, args) {
       const users = await UserModel.findAll({
@@ -149,37 +125,7 @@ export const resolvers = {
   //webrtc
   //accept, ignore chat request, block user
   //css za profile page, fab button start chat
-  Group: {
-    users(group) {
-      // return group.getUsers();
-      return UserModel.findAll({
-        include: [
-          {
-            model: GroupModel,
-            where: { id: group.id },
-            include: [
-              {
-                model: MessageModel,
-              },
-            ],
-            order: [[MessageModel, 'groupId', 'DESC']],
-          },
-        ],
-      });
-    },
-    messages(group) {
-      return MessageModel.findAll({
-        where: { groupId: group.id },
-        order: [['createdAt', 'DESC']],
-      });
-    },
-    lastMessage(group) {
-      return MessageModel.findOne({
-        where: { groupId: group.id },
-        order: [['createdAt', 'DESC']],
-      });
-    },
-  },
+
   Message: {
     from(message) {
       return message.getUser();
@@ -224,9 +170,6 @@ export const resolvers = {
   User: {
     chats(user) {
       return user.getChats();
-    },
-    groups(user) {
-      return user.getGroups();
     },
     contacts(user) {
       return user.getFriends();

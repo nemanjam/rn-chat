@@ -39,6 +39,7 @@ const GroupsTab = props => {
   if (loading) return <Spinner />;
   if (error) return <Text>{JSON.stringify(error, null, 2)}</Text>;
   const { groups } = data;
+  console.log(groups);
   return (
     <>
       <List>
@@ -50,7 +51,7 @@ const GroupsTab = props => {
               button
               key={index}
               onPress={() =>
-                props.navigation.navigate('GroupChats', { groupId: group.id })
+                props.navigation.navigate('Chats', { chatId: group.id })
               }>
               <Left>
                 <Thumbnail source={{ uri: group.avatar }} />

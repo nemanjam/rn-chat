@@ -16,7 +16,6 @@ import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import ChatsScreen from './screens/ChatsScreen';
-import GroupChatsScreen from './screens/GroupChatsScreen';
 import UserProfileScreen from './screens/UserProfileScreen';
 
 const AppNavigator = createStackNavigator(
@@ -25,7 +24,6 @@ const AppNavigator = createStackNavigator(
     Login: { screen: LoginScreen },
     Register: { screen: RegisterScreen },
     Chats: { screen: ChatsScreen },
-    GroupChats: { screen: GroupChatsScreen },
     UserProfile: { screen: UserProfileScreen },
   },
   {

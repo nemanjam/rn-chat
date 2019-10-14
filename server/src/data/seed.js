@@ -96,12 +96,12 @@ const seed = () => {
       text: faker.lorem.sentences(3),
       createdAt: new Date(),
     }),
-    GroupModel.create({
+    ChatModel.create({
       name: 'firstGroup',
       avatar: faker.internet.avatar(),
       description: faker.lorem.sentences(3),
     }),
-    GroupModel.create({
+    ChatModel.create({
       name: 'secondGroup',
       avatar: faker.internet.avatar(),
       description: faker.lorem.sentences(3),
@@ -168,17 +168,17 @@ const seed = () => {
           fifthUser.setMessage(seventhMessage),
           */
 
-          firstUser.addGroup(firstGroup),
-          fourthUser.addGroup(firstGroup),
-          fifthMessage.setGroup(firstGroup),
-          sixthMessage.setGroup(firstGroup),
+          firstUser.addChat(firstGroup),
+          fourthUser.addChat(firstGroup),
+          fifthMessage.setChat(firstGroup),
+          sixthMessage.setChat(firstGroup),
           firstUser.setMessage(sixthMessage),
           fourthUser.setMessage(fifthMessage),
 
-          firstUser.addGroup(secondGroup),
-          fifthUser.addGroup(secondGroup),
-          seventhMessage.setGroup(secondGroup),
-          eighthMessage.setGroup(secondGroup),
+          firstUser.addChat(secondGroup),
+          fifthUser.addChat(secondGroup),
+          seventhMessage.setChat(secondGroup),
+          eighthMessage.setChat(secondGroup),
           firstUser.setMessage(eighthMessage),
           fifthUser.setMessage(seventhMessage),
         ]);
