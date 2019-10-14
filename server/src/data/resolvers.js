@@ -98,9 +98,12 @@ export const resolvers = {
       const user = await UserModel.findOne({ where: { id: args.userId } });
       return user.getChats({ where: { name: { [Op.eq]: null } } });
     },
+    group(_, args) {
+      return GroupModel.findOne({ where: { id: args.groupId } });
+    },
     async groups(_, args) {
       const user = await UserModel.findOne({ where: { id: args.userId } });
-      return user.getChats({ where: { name: { [Op.not]: null } } });
+      return user.getGroups();
     },
     async users(_, args) {
       const users = await UserModel.findAll({
@@ -126,28 +129,9 @@ export const resolvers = {
   //accept, ignore chat request, block user
   //css za profile page, fab button start chat
 
-  Message: {
-    from(message) {
-      return message.getUser();
-    },
-  },
   Chat: {
     users(chat) {
-      // return chat.getUsers(); //sortiraj prema created at message, pa current user na kraj
-      return UserModel.findAll({
-        include: [
-          {
-            model: ChatModel,
-            where: { id: chat.id },
-            include: [
-              {
-                model: MessageModel,
-              },
-            ],
-            order: [[MessageModel, 'userId', 'DESC']],
-          },
-        ],
-      });
+      return chat.getUsers(); //sortiraj prema created at message, pa current user na kraj
     },
     messages(chat) {
       return MessageModel.findAll({
@@ -162,6 +146,20 @@ export const resolvers = {
       });
     },
   },
+  Group: {
+    users(group) {
+      return group.getUsers();
+    },
+    bannedUsers(group) {
+      return group.getBannedUsers();
+    },
+    owner(group) {
+      return group.getUser();
+    },
+    chat(group) {
+      return group.getChat();
+    },
+  },
   Message: {
     from(message) {
       return message.getUser();
@@ -171,8 +169,11 @@ export const resolvers = {
     chats(user) {
       return user.getChats();
     },
-    contacts(user) {
+    friends(user) {
       return user.getFriends();
+    },
+    groups(user) {
+      return user.getGroups();
     },
   },
 };

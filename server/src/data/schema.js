@@ -11,19 +11,29 @@ export const typeDefs = gql`
     avatar: String
     description: String
     chats: [Chat]
-    contacts: [User]
+    friends: [User]
+    groups: [Group]
     lastActiveAt: Date
   }
 
   type Chat {
     id: Int!
-    ownerId: Int
-    name: String
-    avatar: String
-    description: String
     messages: [Message]
     users: [User]!
     lastMessage: Message
+    createdAt: Date!
+    updatedAt: Date!
+  }
+
+  type Group {
+    id: Int!
+    name: String
+    avatar: String
+    description: String
+    owner: User
+    users: [User]
+    bannedUsers: [User]
+    chat: Chat
     createdAt: Date!
     updatedAt: Date!
   }
@@ -41,7 +51,8 @@ export const typeDefs = gql`
     friends(id: Int!): [User]
     chat(chatId: Int!): Chat
     chats(userId: Int!): [Chat]
-    groups(userId: Int!): [Chat]
+    group(groupId: Int!): Group
+    groups(userId: Int!): [Group]
   }
 
   type Mutation {

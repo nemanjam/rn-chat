@@ -31,7 +31,7 @@ const GroupDetailsScreen = props => {
   if (loading) return <Spinner />;
   if (error) return <Text>{JSON.stringify(error, null, 2)}</Text>;
 
-  const { chat: group } = data;
+  const { group } = data;
   //   console.log(data);
   return (
     <Container>

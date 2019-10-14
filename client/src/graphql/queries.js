@@ -49,10 +49,6 @@ export const GROUPS_QUERY = gql`
       avatar
       description
       updatedAt
-      lastMessage {
-        text
-        createdAt
-      }
       users {
         username
         avatar
@@ -96,21 +92,25 @@ export const CHAT_QUERY = gql`
 
 export const GROUP_QUERY = gql`
   query GroupQuery($groupId: Int!) {
-    chat(chatId: $groupId) {
+    group(groupId: $groupId) {
       id
       name
       avatar
       description
-      createdAt
-      updatedAt
-      messages {
+      owner {
         id
-        text
-        createdAt
-        from {
+        username
+      }
+      chat {
+        messages {
           id
-          username
-          avatar
+          text
+          createdAt
+          from {
+            id
+            username
+            avatar
+          }
         }
       }
     }
