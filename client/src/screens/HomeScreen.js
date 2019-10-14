@@ -27,6 +27,8 @@ import FriendsTab from '../components/FriendsTab';
 const HomeScreen = props => {
   const [tabs, setTabs] = useState([true, false, false, false]);
   const [segment, setSegment] = useState(0);
+  const [modal, setModal] = useState(false);
+
   const drawer = useRef(null);
 
   function openDrawer() {
@@ -49,12 +51,17 @@ const HomeScreen = props => {
     setTabs([false, false, false, true]);
   }
 
+  function toggleModal() {
+    setModal(!modal);
+  }
+
   function getContentComponent() {
     if (tabs[0]) {
       if (segment === 0) return <UsersTab {...props} />;
       if (segment === 1) return <FriendsTab {...props} />;
     }
-    if (tabs[1]) return <GroupsTab {...props} />;
+    if (tabs[1])
+      return <GroupsTab toggleModal={toggleModal} modal={modal} {...props} />;
     if (tabs[2]) return <ChatsTab {...props} />;
     if (tabs[3]) return <Profile {...props} />;
   }
@@ -95,8 +102,15 @@ adb connect 127.0.0.1:62001
                     <Text>Friends</Text>
                   </Button>
                 </Segment>
+              ) : tabs[1] ? (
+                <Button
+                  small
+                  style={styles.button}
+                  onPress={() => setModal(true)}>
+                  <Text>New Group</Text>
+                </Button>
               ) : (
-                <Title>Home</Title>
+                <Title></Title>
               )}
             </Body>
             <Right />
@@ -133,6 +147,11 @@ adb connect 127.0.0.1:62001
 const styles = StyleSheet.create({
   tabText: {
     fontSize: 10,
+  },
+  button: {
+    borderWidth: 1,
+    borderColor: 'white',
+    marginRight: -50,
   },
 });
 

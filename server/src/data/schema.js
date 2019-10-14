@@ -56,11 +56,13 @@ export const typeDefs = gql`
 
   type Mutation {
     createMessage(userId: Int!, chatId: Int!, text: String!): Message
+    createGroupMessage(userId: Int!, groupId: Int!, text: String!): Message
     createChat(userId: Int!, contactId: Int!): Chat
   }
 
   type Subscription {
     messageAdded(chatId: Int): Message
+    groupMessageAdded(groupId: Int): Message
   }
 
   schema {

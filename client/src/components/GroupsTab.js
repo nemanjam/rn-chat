@@ -30,18 +30,17 @@ import {
 import { GROUPS_QUERY } from '../graphql/queries';
 
 const GroupsTab = props => {
-  const [modal, setModal] = useState(false);
   const { data, loading, error } = useQuery(GROUPS_QUERY, {
     variables: { userId: 1 },
   });
+
+  function onNewGroupPress() {}
+
   if (loading) return <Spinner />;
   if (error) return <Text>{JSON.stringify(error, null, 2)}</Text>;
   const { groups } = data;
   return (
     <>
-      <Button small style={styles.button} onPress={() => setModal(true)}>
-        <Text>New Group</Text>
-      </Button>
       <List>
         {groups.map((group, index) => {
           return (
@@ -51,7 +50,7 @@ const GroupsTab = props => {
               button
               key={index}
               onPress={() =>
-                props.navigation.navigate('GroupChats', { chatId: group.id })
+                props.navigation.navigate('GroupChats', { groupId: group.id })
               }>
               <Left>
                 <Thumbnail source={{ uri: group.avatar }} />
@@ -74,15 +73,12 @@ const GroupsTab = props => {
       <Modal
         animationType="slide"
         transparent={true}
-        visible={modal}
+        visible={props.modal}
         onRequestClose={() => {
           Alert.alert('Modal has been closed.');
         }}>
         <Content contentContainerStyle={styles.content}>
           <Card>
-            <CardItem header bordered>
-              <Text>Create new group</Text>
-            </CardItem>
             <CardItem bordered>
               <Body>
                 <Form style={styles.form}>
@@ -104,12 +100,12 @@ const GroupsTab = props => {
             </CardItem>
             <CardItem footer bordered>
               <Left>
-                <Button bordered small onPress={() => setModal(!modal)}>
+                <Button bordered small onPress={() => props.toggleModal()}>
                   <Text>Cancel</Text>
                 </Button>
               </Left>
               <Right>
-                <Button small onPress={() => setModal(!modal)}>
+                <Button small onPress={() => props.toggleModal()}>
                   <Text>Create</Text>
                 </Button>
               </Right>
@@ -125,14 +121,6 @@ const styles = StyleSheet.create({
     marginLeft: 0,
   },
   lastMessage: {},
-  button: {
-    width: 120,
-    alignSelf: 'center',
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
   content: {
     flex: 1,
     justifyContent: 'center',

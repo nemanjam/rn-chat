@@ -7,6 +7,7 @@ import { pubsub } from './subscriptions';
 // Group, Message, User sequelize modeli tabele
 //
 const MESSAGE_ADDED_TOPIC = 'messageAdded';
+const GROUP_MESSAGE_ADDED_TOPIC = 'groupMessageAdded';
 const Op = Sequelize.Op;
 
 export const resolvers = {
@@ -22,6 +23,17 @@ export const resolvers = {
       ),
     },
   },
+  Subscription: {
+    groupMessageAdded: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(GROUP_MESSAGE_ADDED_TOPIC),
+        (payload, args) => {
+          // console.log(JSON.stringify(payload, null, 2));
+          return Boolean(args.groupId === payload.messageAdded.groupId);
+        },
+      ),
+    },
+  },
   Mutation: {
     createMessage(_, { userId, chatId, text }) {
       return MessageModel.create({
@@ -30,6 +42,18 @@ export const resolvers = {
         text,
       }).then(message => {
         pubsub.publish(MESSAGE_ADDED_TOPIC, { [MESSAGE_ADDED_TOPIC]: message });
+        return message;
+      });
+    },
+    createGroupMessage(_, { userId, groupId, text }) {
+      return MessageModel.create({
+        userId,
+        groupId,
+        text,
+      }).then(message => {
+        pubsub.publish(GROUP_MESSAGE_ADDED_TOPIC, {
+          [GROUP_MESSAGE_ADDED_TOPIC]: message,
+        });
         return message;
       });
     },

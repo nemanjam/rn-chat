@@ -92,3 +92,25 @@ export const CHAT_QUERY = gql`
     }
   }
 `;
+
+export const GROUP_QUERY = gql`
+  query GroupQuery($groupId: Int!) {
+    group(groupId: $groupId) {
+      id
+      name
+      avatar
+      createdAt
+      updatedAt
+      messages {
+        id
+        text
+        createdAt
+        from {
+          id
+          username
+          avatar
+        }
+      }
+    }
+  }
+`;
