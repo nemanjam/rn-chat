@@ -25,3 +25,30 @@ export const CREATE_CHAT_MUTATION = gql`
     }
   }
 `;
+
+export const CREATE_GROUP_MUTATION = gql`
+  mutation createGroup($group: CreateGroupInput!) {
+    createGroup(group: $group) {
+      id
+      name
+      avatar
+      description
+      owner {
+        id
+        username
+      }
+      chat {
+        messages {
+          id
+          text
+          createdAt
+          from {
+            id
+            username
+            avatar
+          }
+        }
+      }
+    }
+  }
+`;

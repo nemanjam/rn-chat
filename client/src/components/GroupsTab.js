@@ -1,7 +1,7 @@
 import React, { Component, useState } from 'react';
 import _ from 'lodash';
 import { StyleSheet, Modal, TouchableHighlight } from 'react-native';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery, useMutation } from '@apollo/react-hooks';
 import moment from 'moment';
 
 import {
@@ -29,16 +29,20 @@ import {
 
 import CreateGroupModal from './CreateGroupModal';
 import { GROUPS_QUERY } from '../graphql/queries';
+import { CREATE_GROUP_MUTATION } from '../graphql/mutations';
 
 const GroupsTab = props => {
   const { data, loading, error } = useQuery(GROUPS_QUERY, {
     variables: { userId: 1 },
   });
 
+  const [createGroup, { ...mutationResult }] = useMutation(
+    CREATE_GROUP_MUTATION,
+  );
+
   if (loading) return <Spinner />;
   if (error) return <Text>{JSON.stringify(error, null, 2)}</Text>;
   const { groups } = data;
-  console.log(groups);
   return (
     <>
       <List>
@@ -77,7 +81,11 @@ const GroupsTab = props => {
           );
         })}
       </List>
-      <CreateGroupModal modal={props.modal} toggleModal={props.toggleModal} />
+      <CreateGroupModal
+        createGroup={createGroup}
+        modal={props.modal}
+        toggleModal={props.toggleModal}
+      />
     </>
   );
 };

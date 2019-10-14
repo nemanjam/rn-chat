@@ -7,7 +7,6 @@ import { pubsub } from './subscriptions';
 // Group, Message, User sequelize modeli tabele
 //
 const MESSAGE_ADDED_TOPIC = 'messageAdded';
-const GROUP_MESSAGE_ADDED_TOPIC = 'groupMessageAdded';
 const Op = Sequelize.Op;
 
 export const resolvers = {
@@ -34,6 +33,19 @@ export const resolvers = {
         pubsub.publish(MESSAGE_ADDED_TOPIC, { [MESSAGE_ADDED_TOPIC]: message });
         return message;
       });
+    },
+    async createGroup(_, { group }) {
+      const owner = await UserModel.findOne({ where: { id: group.ownerId } });
+      const chat = await ChatModel.create({});
+      const _group = await GroupModel.create({
+        name: group.name,
+        avatar: group.avatarUrl,
+        description: group.description,
+      });
+      owner.addGroup(_group);
+      owner.setGroup(_group);
+      chat.setGroup(_group);
+      return _group;
     },
 
     async createChat(_, { userId, contactId }) {
