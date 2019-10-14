@@ -13,8 +13,8 @@ import {
   Left,
   Right,
   Body,
-  List,
-  ListItem,
+  Row,
+  Col,
   Spinner,
 } from 'native-base';
 
@@ -32,26 +32,26 @@ const Profile = props => {
       <CardItem style={styles.cardItem}>
         <Body>
           <Image source={{ uri: user.avatar }} style={styles.image} />
-          <List>
-            <ListItem style={styles.usernameBlock}>
-              <Body>
-                <Text style={styles.usernameText}>{user.username}</Text>
-
-                <Text style={styles.timeAgo}>{`• ${moment(
-                  user.lastActiveAt,
-                ).fromNow()}`}</Text>
-              </Body>
-              <Right>
-                <Button style={styles.friendButton}>
-                  <Text style={styles.buttonText}>Add As Friend</Text>
-                </Button>
-              </Right>
-            </ListItem>
-            <ListItem>
-              <Text>{user.description}</Text>
-            </ListItem>
-          </List>
         </Body>
+      </CardItem>
+      <CardItem>
+        <Left>
+          <Col>
+            <Text style={styles.usernameText}>{user.username}</Text>
+            <Text style={styles.timeAgo}>{`• ${moment(
+              user.lastActiveAt,
+            ).fromNow()}`}</Text>
+          </Col>
+        </Left>
+        <Body />
+        <Right>
+          <Button bordered small style={styles.friendButton}>
+            <Text style={styles.buttonText}>Add As Friend</Text>
+          </Button>
+        </Right>
+      </CardItem>
+      <CardItem>
+        <Text>{user.description}</Text>
       </CardItem>
     </Card>
   );
@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
   usernameText: {
     fontWeight: 'bold',
     fontSize: 18,
+    alignSelf: 'flex-start',
   },
   image: {
     height: 300,
@@ -83,6 +84,7 @@ const styles = StyleSheet.create({
   timeAgo: {
     fontSize: 12,
     color: 'green',
+    alignSelf: 'flex-start',
   },
 
   buttonText: {},

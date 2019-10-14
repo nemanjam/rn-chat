@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import { StyleSheet, Image } from 'react-native';
 
@@ -19,17 +19,24 @@ import {
   CardItem,
   Spinner,
 } from 'native-base';
+import CreateGroupModal from '../components/CreateGroupModal';
 
 import { GROUP_QUERY } from '../graphql/queries';
 
 const GroupDetailsScreen = props => {
   const groupId = props.navigation.getParam('groupId');
+  const [modal, setModal] = useState(false);
+
   const { data, error, loading } = useQuery(GROUP_QUERY, {
     variables: { groupId },
   });
 
   if (loading) return <Spinner />;
   if (error) return <Text>{JSON.stringify(error, null, 2)}</Text>;
+
+  function toggleModal() {
+    setModal(!modal);
+  }
 
   const { group } = data;
   //   console.log(data);
@@ -54,7 +61,7 @@ const GroupDetailsScreen = props => {
             </Body>
           </CardItem>
           <CardItem>
-            <Text>Owner:</Text>
+            <Text>Owner: {group.owner.username}</Text>
           </CardItem>
           <CardItem>
             <Body>
@@ -67,19 +74,20 @@ const GroupDetailsScreen = props => {
                 <Text>Join</Text>
               </Button>
             </Left>
-            <Body>
-              <Button small bordered>
+            <Body style={{ alignItems: 'center' }}>
+              <Button small bordered onPress={() => setModal(true)}>
                 <Text>Edit</Text>
               </Button>
             </Body>
-            <Right>
+            <Right style={{ flex: 1 }}>
               <Button small bordered>
-                <Text>Del</Text>
+                <Text>Delete</Text>
               </Button>
             </Right>
           </CardItem>
         </Card>
       </Content>
+      <CreateGroupModal modal={modal} toggleModal={toggleModal} />
     </Container>
   );
 };

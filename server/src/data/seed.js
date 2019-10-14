@@ -175,6 +175,7 @@ const seed = () => {
           thirdChat.setGroup(firstGroup),
           firstUser.setMessage(sixthMessage),
           fourthUser.setMessage(fifthMessage),
+          firstUser.setGroup(firstGroup),
 
           firstUser.addGroup(secondGroup),
           fifthUser.addGroup(secondGroup),
@@ -183,6 +184,7 @@ const seed = () => {
           fourthChat.setGroup(secondGroup),
           firstUser.setMessage(eighthMessage),
           fifthUser.setMessage(seventhMessage),
+          firstUser.setGroup(secondGroup),
         ]);
       },
     )

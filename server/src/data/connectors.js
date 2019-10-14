@@ -49,8 +49,8 @@ UserModel.belongsToMany(GroupModel, {
   through: 'BannedGroupUser',
   as: 'bannedUsers',
 });
-UserModel.belongsTo(GroupModel);
-GroupModel.hasOne(UserModel);
+GroupModel.belongsTo(UserModel);
+UserModel.hasOne(GroupModel);
 ChatModel.belongsTo(GroupModel);
 GroupModel.hasOne(ChatModel);
 

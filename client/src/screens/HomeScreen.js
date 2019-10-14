@@ -117,7 +117,7 @@ adb connect 127.0.0.1:62001
           </Header>
         )}
 
-        <Content padder contentContainerStyle={{ paddingTop: 0 }}>
+        <Content padder={!tabs[3]} contentContainerStyle={{ paddingTop: 0 }}>
           {getContentComponent()}
         </Content>
 

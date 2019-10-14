@@ -27,14 +27,13 @@ import {
   Textarea,
 } from 'native-base';
 
+import CreateGroupModal from './CreateGroupModal';
 import { GROUPS_QUERY } from '../graphql/queries';
 
 const GroupsTab = props => {
   const { data, loading, error } = useQuery(GROUPS_QUERY, {
     variables: { userId: 1 },
   });
-
-  function onNewGroupPress() {}
 
   if (loading) return <Spinner />;
   if (error) return <Text>{JSON.stringify(error, null, 2)}</Text>;
@@ -78,49 +77,7 @@ const GroupsTab = props => {
           );
         })}
       </List>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={props.modal}
-        onRequestClose={() => {
-          Alert.alert('Modal has been closed.');
-        }}>
-        <Content contentContainerStyle={styles.content}>
-          <Card>
-            <CardItem bordered>
-              <Body>
-                <Form style={styles.form}>
-                  <Item style={styles.input}>
-                    <Input placeholder="Group Name" />
-                  </Item>
-                  <Item style={styles.input}>
-                    <Input placeholder="Avatar url" />
-                  </Item>
-                  <Item style={styles.input} last>
-                    <Input
-                      multiline
-                      numberOfLines={3}
-                      placeholder="Description"
-                    />
-                  </Item>
-                </Form>
-              </Body>
-            </CardItem>
-            <CardItem footer bordered>
-              <Left>
-                <Button bordered small onPress={() => props.toggleModal()}>
-                  <Text>Cancel</Text>
-                </Button>
-              </Left>
-              <Right>
-                <Button small onPress={() => props.toggleModal()}>
-                  <Text>Create</Text>
-                </Button>
-              </Right>
-            </CardItem>
-          </Card>
-        </Content>
-      </Modal>
+      <CreateGroupModal modal={props.modal} toggleModal={props.toggleModal} />
     </>
   );
 };
@@ -129,22 +86,5 @@ const styles = StyleSheet.create({
     marginLeft: 0,
   },
   lastMessage: {},
-  content: {
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
-  form: {
-    alignSelf: 'stretch',
-    // backgroundColor: 'red',
-    color: 'green',
-  },
-  input: {
-    marginLeft: 0,
-    paddingLeft: 0,
-  },
-  textArea: {
-    width: '100%',
-  },
 });
 export default GroupsTab;
