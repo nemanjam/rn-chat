@@ -14,6 +14,7 @@ export const typeDefs = gql`
     friends: [User]
     groups: [Group]
     lastActiveAt: Date
+    jwt: String
   }
 
   type Chat {
@@ -66,6 +67,8 @@ export const typeDefs = gql`
     createMessage(userId: Int!, chatId: Int!, text: String!): Message
     createChat(userId: Int!, contactId: Int!): Chat
     createGroup(group: CreateGroupInput!): Group
+    login(email: String!, password: String!): User
+    register(username: String!, email: String!, password: String!): User
   }
 
   type Subscription {

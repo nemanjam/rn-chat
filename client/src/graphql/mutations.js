@@ -52,3 +52,27 @@ export const CREATE_GROUP_MUTATION = gql`
     }
   }
 `;
+
+export const REGISTER_MUTATION = gql`
+  mutation register($username: String!, $email: String!, $password: String!) {
+    register(username: $username, email: $email, password: $password) {
+      id
+      email
+      username
+      avatar
+      description
+    }
+  }
+`;
+
+export const LOGIN_MUTATION = gql`
+  mutation login($email: String!, $password: String!) {
+    login(email: $email, password: $password) {
+      id
+      email
+      username
+      avatar
+      description
+    }
+  }
+`;

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import { useMutation } from '@apollo/react-hooks';
 
 import {
   Container,
@@ -23,7 +24,10 @@ import {
   Grid,
   Row,
   Col,
+  Spinner,
 } from 'native-base';
+
+import { REGISTER_MUTATION } from '../graphql/mutations';
 
 const registerSchema = Yup.object().shape({
   name: Yup.string()
@@ -49,9 +53,22 @@ const registerSchema = Yup.object().shape({
 });
 
 const RegisterScreen = props => {
-  function formSubmit(values) {
-    console.log(values);
+  const [register, { ...mutationResult }] = useMutation(REGISTER_MUTATION);
+
+  async function formSubmit(values) {
+    await register({
+      variables: {
+        username: values.name,
+        email: values.email,
+        password: values.password,
+      },
+    });
+    props.navigation.navigate('Login');
   }
+
+  if (mutationResult.loading) return <Spinner />;
+  if (mutationResult.error)
+    return <Text>{JSON.stringify(mutationResult.error, null, 2)}</Text>;
 
   return (
     <Container>

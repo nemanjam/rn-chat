@@ -1,8 +1,13 @@
 import Sequelize from 'sequelize';
 import GraphQLDate from 'graphql-date';
 import { withFilter } from 'apollo-server';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import faker from 'faker';
+
 import { ChatModel, MessageModel, UserModel, GroupModel } from './connectors';
 import { pubsub } from './subscriptions';
+import { JWT_SECRET } from '../config';
 // connectori su orm mapiranja, a resolveri su orm upiti mapiranja na graphql
 // Group, Message, User sequelize modeli tabele
 //
@@ -12,6 +17,7 @@ const Op = Sequelize.Op;
 
 export const resolvers = {
   Date: GraphQLDate,
+
   Subscription: {
     messageAdded: {
       subscribe: withFilter(
@@ -33,6 +39,53 @@ export const resolvers = {
   },
 
   Mutation: {
+    login(_, { email, password }, ctx) {
+      return UserModel.findOne({ where: { email } }).then(user => {
+        if (user) {
+          return bcrypt.compare(password, user.password).then(res => {
+            if (res) {
+              const token = jwt.sign(
+                {
+                  id: user.id,
+                  email: user.email,
+                },
+                JWT_SECRET,
+              );
+              user.jwt = token;
+              ctx.user = Promise.resolve(user);
+              return user;
+            }
+            return Promise.reject('password incorrect');
+          });
+        }
+        return Promise.reject('email not found');
+      });
+    },
+    register(_, { email, password, username }, ctx) {
+      return UserModel.findOne({ where: { email } }).then(existing => {
+        if (!existing) {
+          return bcrypt
+            .hash(password, 10)
+            .then(hash =>
+              UserModel.create({
+                email,
+                password: hash,
+                username,
+                avatar: faker.internet.avatar(),
+                description: faker.lorem.sentences(3),
+              }),
+            )
+            .then(user => {
+              const { id } = user;
+              const token = jwt.sign({ id, email }, JWT_SECRET);
+              user.jwt = token;
+              ctx.user = Promise.resolve(user);
+              return user;
+            });
+        }
+        return Promise.reject('email already exists'); // email already exists
+      });
+    },
     createMessage(_, { userId, chatId, text }) {
       return MessageModel.create({
         userId,
