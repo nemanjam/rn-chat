@@ -35,7 +35,7 @@ const createSchema = Yup.object().shape({
 
 const CreateGroupModal = ({ modal, toggleModal, createGroup }) => {
   async function formSubmit(values) {
-    console.log(values);
+    // console.log(values);
     await createGroup({
       variables: {
         group: {

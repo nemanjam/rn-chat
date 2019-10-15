@@ -17,11 +17,7 @@ export const UserModel = db.define('user', {
   password: { type: Sequelize.STRING },
 });
 
-export const ChatModel = db.define('chat', {
-  name: { type: Sequelize.STRING },
-  avatar: { type: Sequelize.STRING },
-  description: { type: Sequelize.STRING },
-});
+export const ChatModel = db.define('chat', {});
 
 export const GroupModel = db.define('group', {
   name: { type: Sequelize.STRING },

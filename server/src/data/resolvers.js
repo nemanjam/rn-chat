@@ -7,6 +7,7 @@ import { pubsub } from './subscriptions';
 // Group, Message, User sequelize modeli tabele
 //
 const MESSAGE_ADDED_TOPIC = 'messageAdded';
+const GROUP_ADDED_TOPIC = 'groupAdded';
 const Op = Sequelize.Op;
 
 export const resolvers = {
@@ -16,8 +17,16 @@ export const resolvers = {
       subscribe: withFilter(
         () => pubsub.asyncIterator(MESSAGE_ADDED_TOPIC),
         (payload, args) => {
-          // console.log(JSON.stringify(payload, null, 2));
           return Boolean(args.chatId === payload.messageAdded.chatId);
+        },
+      ),
+    },
+    groupAdded: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(GROUP_ADDED_TOPIC),
+        (payload, args) => {
+          // console.log(JSON.stringify(payload, null, 2));
+          return Boolean(true /*args.userId === payload.groupAdded.userId*/);
         },
       ),
     },
@@ -34,20 +43,28 @@ export const resolvers = {
         return message;
       });
     },
-    async createGroup(_, { group }) {
-      const owner = await UserModel.findOne({ where: { id: group.ownerId } });
-      const chat = await ChatModel.create({});
-      const _group = await GroupModel.create({
-        name: group.name,
-        avatar: group.avatarUrl,
-        description: group.description,
-      });
-      owner.addGroup(_group);
-      owner.setGroup(_group);
-      chat.setGroup(_group);
-      return _group;
+    createGroup(_, { group }) {
+      return Promise.all([
+        UserModel.findOne({ where: { id: group.ownerId } }),
+        ChatModel.create({}),
+        GroupModel.create({
+          name: group.name,
+          avatar: group.avatarUrl,
+          description: group.description,
+        }),
+      ])
+        .then(([owner, chat, _group]) => {
+          return Promise.all([
+            owner.addGroup(_group),
+            owner.setGroup(_group),
+            chat.setGroup(_group),
+          ]);
+        })
+        .then(([groupUser, _group, chats]) => {
+          pubsub.publish(GROUP_ADDED_TOPIC, { [GROUP_ADDED_TOPIC]: _group });
+          return _group;
+        });
     },
-
     async createChat(_, { userId, contactId }) {
       //check if users are in the chat already
       const usersChatIds = await ChatModel.findAll({
@@ -205,5 +222,21 @@ export default resolvers;
       chat.lastMessage = message;
       await chat.save();
       return message;
+    },
+*/
+/*
+    async createGroup(_, { group }) {
+      const owner = await UserModel.findOne({ where: { id: group.ownerId } });
+      const chat = await ChatModel.create({});
+      const _group = await GroupModel.create({
+        name: group.name,
+        avatar: group.avatarUrl,
+        description: group.description,
+      });
+      await owner.addGroup(_group);
+      await owner.setGroup(_group);
+      await chat.setGroup(_group);
+      pubsub.publish(GROUP_ADDED_TOPIC, { [GROUP_ADDED_TOPIC]: _group });
+      return _group;
     },
 */

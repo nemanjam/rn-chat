@@ -48,11 +48,6 @@ export const GROUPS_QUERY = gql`
       name
       avatar
       description
-      updatedAt
-      users {
-        username
-        avatar
-      }
     }
   }
 `;

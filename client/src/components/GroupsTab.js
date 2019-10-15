@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
 import { StyleSheet, Modal, TouchableHighlight } from 'react-native';
 import { useQuery, useMutation } from '@apollo/react-hooks';
@@ -30,19 +30,43 @@ import {
 import CreateGroupModal from './CreateGroupModal';
 import { GROUPS_QUERY } from '../graphql/queries';
 import { CREATE_GROUP_MUTATION } from '../graphql/mutations';
+import { GROUP_ADDED_SUBSCRIPTION } from '../graphql/subscriptions';
 
 const GroupsTab = props => {
-  const { data, loading, error } = useQuery(GROUPS_QUERY, {
+  useEffect(() => {
+    subscribeToNewGroups();
+  }, []);
+
+  const { subscribeToMore, ...queryResult } = useQuery(GROUPS_QUERY, {
     variables: { userId: 1 },
   });
+
+  function subscribeToNewGroups() {
+    subscribeToMore({
+      document: GROUP_ADDED_SUBSCRIPTION,
+      variables: {
+        userId: 1,
+      },
+      updateQuery: (previous, { subscriptionData }) => {
+        if (!subscriptionData.data) return previous;
+        const newGroup = subscriptionData.data.groupAdded;
+        const result = {
+          ...previous,
+          groups: [...previous.groups, newGroup],
+        };
+        return result;
+      },
+    });
+  }
 
   const [createGroup, { ...mutationResult }] = useMutation(
     CREATE_GROUP_MUTATION,
   );
 
-  if (loading) return <Spinner />;
-  if (error) return <Text>{JSON.stringify(error, null, 2)}</Text>;
-  const { groups } = data;
+  if (queryResult.loading) return <Spinner />;
+  if (queryResult.error)
+    return <Text>{JSON.stringify(queryResult.error, null, 2)}</Text>;
+  const { groups } = queryResult.data;
   return (
     <>
       <List>

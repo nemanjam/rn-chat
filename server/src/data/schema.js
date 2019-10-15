@@ -45,6 +45,13 @@ export const typeDefs = gql`
     createdAt: Date!
   }
 
+  input CreateGroupInput {
+    name: String!
+    avatarUrl: String!
+    description: String!
+    ownerId: Int!
+  }
+
   type Query {
     user(email: String, id: Int): User
     users(id: Int!): [User]
@@ -55,13 +62,6 @@ export const typeDefs = gql`
     groups(userId: Int!): [Group]
   }
 
-  input CreateGroupInput {
-    name: String!
-    avatarUrl: String!
-    description: String!
-    ownerId: Int!
-  }
-
   type Mutation {
     createMessage(userId: Int!, chatId: Int!, text: String!): Message
     createChat(userId: Int!, contactId: Int!): Chat
@@ -70,6 +70,7 @@ export const typeDefs = gql`
 
   type Subscription {
     messageAdded(chatId: Int): Message
+    groupAdded(userId: Int): Group
   }
 
   schema {
