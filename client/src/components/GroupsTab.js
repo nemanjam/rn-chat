@@ -52,7 +52,7 @@ const GroupsTab = props => {
         const newGroup = subscriptionData.data.groupAdded;
         const result = {
           ...previous,
-          groups: [...previous.groups, newGroup],
+          groups: [newGroup, ...previous.groups],
         };
         return result;
       },

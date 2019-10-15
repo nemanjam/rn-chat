@@ -125,7 +125,7 @@ export const resolvers = {
     },
     async chats(_, args) {
       const user = await UserModel.findOne({ where: { id: args.userId } });
-      return user.getChats({ where: { name: { [Op.eq]: null } } });
+      return user.getChats();
     },
     group(_, args) {
       return GroupModel.findOne({ where: { id: args.groupId } });
