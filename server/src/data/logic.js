@@ -41,18 +41,38 @@ export const mutationLogic = {
 };
 
 export const queryLogic = {
-  chat(_, args) {
+  async chat(_, args, ctx) {
     //if authUser belongs in that chat
-
-    return ChatModel.findOne({ where: { id: args.chatId } });
+    const authUser = await getAuthenticatedUser(ctx);
+    const chatIds = await authUser
+      .getChats({
+        attributes: ['id'],
+      })
+      .map(chat => chat.id);
+    console.log(JSON.stringify(chatIds, null, 2));
+    const isInTheChat = chatIds.find(id => id === args.chatId);
+    if (isInTheChat) {
+      return ChatModel.findOne({ where: { id: args.chatId } });
+    }
+    throw new ForbiddenError('Unauthorized');
   },
   async chats(_, args, ctx) {
     const authUser = await isUserAuth(args.userId, ctx);
     return authUser.getChats();
   },
-  group(_, args) {
+  async group(_, args, ctx) {
     //if authUser is in that group or not in banned array
-    return GroupModel.findOne({ where: { id: args.groupId } });
+    const authUser = await getAuthenticatedUser(ctx);
+    const groupIds = await authUser
+      .getGroups({
+        attributes: ['id'],
+      })
+      .map(group => group.id);
+    const isInTheGroup = groupIds.find(id => id === args.groupId);
+    if (isInTheGroup) {
+      return GroupModel.findOne({ where: { id: args.groupId } });
+    }
+    throw new ForbiddenError('Unauthorized');
   },
   async groups(_, args, ctx) {
     const authUser = await isUserAuth(args.userId, ctx);
