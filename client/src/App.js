@@ -1,4 +1,5 @@
 import React from 'react';
+import { AsyncStorage } from 'react-native';
 import { Root } from 'native-base';
 
 import { createAppContainer } from 'react-navigation';
@@ -12,12 +13,21 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { WebSocketLink } from 'apollo-link-ws';
 import { getMainDefinition } from 'apollo-utilities';
 
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux';
+import { persistStore, persistCombineReducers } from 'redux-persist';
+import thunk from 'redux-thunk';
+import { composeWithDevTools } from 'redux-devtools-extension';
+import { PersistGate } from 'redux-persist/lib/integration/react';
+
 import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import ChatsScreen from './screens/ChatsScreen';
 import UserProfileScreen from './screens/UserProfileScreen';
 import GroupDetailsScreen from './screens/GroupDetailsScreen';
+
+import authReducer from './store/reducers/authReducer';
 
 const AppNavigator = createStackNavigator(
   {
@@ -61,12 +71,33 @@ export const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
+const config = {
+  key: 'root',
+  storage: AsyncStorage,
+};
+
+const rootReducer = persistCombineReducers(config, {
+  authReducer,
+});
+
+const store = createStore(
+  rootReducer,
+  {}, // initial state
+  composeWithDevTools(applyMiddleware(thunk)),
+);
+
+const persistor = persistStore(store);
+
 const App = props => {
   return (
     <ApolloProvider client={client}>
-      <Root>
-        <AppContainer />
-      </Root>
+      <Provider store={store}>
+        <PersistGate persistor={persistor}>
+          <Root>
+            <AppContainer />
+          </Root>
+        </PersistGate>
+      </Provider>
     </ApolloProvider>
   );
 };

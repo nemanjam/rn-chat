@@ -61,6 +61,7 @@ export const REGISTER_MUTATION = gql`
       username
       avatar
       description
+      jwt
     }
   }
 `;
@@ -73,6 +74,7 @@ export const LOGIN_MUTATION = gql`
       username
       avatar
       description
+      jwt
     }
   }
 `;

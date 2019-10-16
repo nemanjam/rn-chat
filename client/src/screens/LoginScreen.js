@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import { useMutation } from '@apollo/react-hooks';
+import { connect } from 'react-redux';
 
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -28,6 +29,8 @@ import {
   Spinner,
 } from 'native-base';
 
+import { setCurrentUser } from '../store/actions/auth';
+
 import { LOGIN_MUTATION } from '../graphql/mutations';
 
 const loginSchema = Yup.object().shape({
@@ -44,13 +47,15 @@ const LoginScreen = props => {
   const [login, { ...mutationResult }] = useMutation(LOGIN_MUTATION);
 
   async function formSubmit(values) {
-    await login({
+    const { data } = await login({
       variables: {
         email: values.email,
         password: values.password,
       },
     });
-    props.navigation.navigate('Home');
+    const user = data.login;
+    props.setCurrentUser(user);
+    //props.navigation.navigate('Home');
   }
 
   if (mutationResult.loading) return <Spinner />;
@@ -75,10 +80,10 @@ const LoginScreen = props => {
           <Row size={1} />
           <Row size={2}>
             <Col>
-              <Button full iconLeft primary style={{ margin: 15 }}>
+              {/* <Button full iconLeft primary style={{ margin: 15 }}>
                 <Icon name="logo-google" />
                 <Text> Login with Google </Text>
-              </Button>
+              </Button> */}
             </Col>
           </Row>
           <Row size={3}>
@@ -165,7 +170,14 @@ const LoginScreen = props => {
               </Formik>
             </Col>
           </Row>
-          <Row size={3} />
+          <Row size={2}>
+            <Col>
+              <TouchableOpacity
+                onPress={() => props.navigation.navigate('Register')}>
+                <Text style={styles.link}> Register</Text>
+              </TouchableOpacity>
+            </Col>
+          </Row>
         </Grid>
       </Content>
     </Container>
@@ -176,5 +188,14 @@ const styles = StyleSheet.create({
     color: 'red',
     marginLeft: 15,
   },
+  link: {
+    color: 'blue',
+    textAlign: 'center',
+  },
 });
-export default LoginScreen;
+export default connect(
+  state => ({
+    auth: state.authReducer,
+  }),
+  { setCurrentUser },
+)(LoginScreen);
