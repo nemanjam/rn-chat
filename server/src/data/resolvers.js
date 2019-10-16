@@ -8,7 +8,7 @@ import faker from 'faker';
 import { ChatModel, MessageModel, UserModel, GroupModel } from './connectors';
 import { pubsub } from './subscriptions';
 import { JWT_SECRET } from '../config';
-import { queryLogic } from './logic';
+import { queryLogic, userLogic } from './logic';
 
 // connectori su orm mapiranja, a resolveri su orm upiti mapiranja na graphql
 // Group, Message, User sequelize modeli tabele
@@ -173,40 +173,26 @@ export const resolvers = {
       return chat;
     },
   },
-  // Query tip iz graphql scheme na dnu, jasno
   Query: {
     chat(_, args, ctx) {
-      // return ChatModel.findOne({ where: { id: args.chatId } });
       return queryLogic.chat(_, args);
     },
     async chats(_, args, ctx) {
-      // const user = await UserModel.findOne({ where: { id: args.userId } });
-      // return user.getChats();
       return queryLogic.chats(_, args, ctx);
     },
     group(_, args, ctx) {
-      // return GroupModel.findOne({ where: { id: args.groupId } });
       return queryLogic.group(_, args);
     },
     async groups(_, args, ctx) {
-      // const user = await UserModel.findOne({ where: { id: args.userId } });
-      // return user.getGroups();
       return queryLogic.groups(_, args, ctx);
     },
     async users(_, args, ctx) {
-      // const users = await UserModel.findAll({
-      //   where: { id: { [Op.not]: args.id } },
-      // });
-      // return users;
       return queryLogic.users(_, args, ctx);
     },
     async friends(_, args, ctx) {
-      // const user = await UserModel.findOne({ where: args });
-      // return user.getFriends();
       return queryLogic.friends(_, args, ctx);
     },
     user(_, args, ctx) {
-      // return UserModel.findOne({ where: args });
       return queryLogic.user(_, args, ctx);
     },
   },
@@ -257,14 +243,17 @@ export const resolvers = {
     },
   },
   User: {
-    chats(user) {
-      return user.getChats();
+    chats(user, args, ctx) {
+      return userLogic.chats(user, args, ctx);
     },
-    friends(user) {
-      return user.getFriends();
+    friends(user, args, ctx) {
+      return userLogic.friends(user, args, ctx);
     },
-    groups(user) {
-      return user.getGroups();
+    groups(user, args, ctx) {
+      return userLogic.groups(user, args, ctx);
+    },
+    jwt(user, args, ctx) {
+      return userLogic.jwt(user, args, ctx);
     },
   },
 };
