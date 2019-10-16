@@ -1,14 +1,16 @@
 import faker from 'faker';
 import { UserModel, ChatModel, MessageModel, GroupModel } from './connectors';
+import bcrypt from 'bcrypt';
 
-const seed = () => {
+const seed = async () => {
+  const hash = await bcrypt.hash('123456', 10);
   return Promise.all([
     UserModel.create({
       username: 'firstUser',
       email: faker.internet.email(),
       avatar: faker.internet.avatar(),
       description: faker.lorem.sentences(3),
-      password: faker.internet.password(),
+      password: hash,
       isActive: true,
       lastActiveAt: new Date(),
     }),
@@ -17,7 +19,7 @@ const seed = () => {
       email: faker.internet.email(),
       avatar: faker.internet.avatar(),
       description: faker.lorem.sentences(3),
-      password: faker.internet.password(),
+      password: hash,
       isActive: true,
       lastActiveAt: new Date(),
     }),
@@ -26,7 +28,7 @@ const seed = () => {
       email: faker.internet.email(),
       avatar: faker.internet.avatar(),
       description: faker.lorem.sentences(3),
-      password: faker.internet.password(),
+      password: hash,
       isActive: true,
       lastActiveAt: new Date(),
     }),
@@ -35,7 +37,7 @@ const seed = () => {
       email: faker.internet.email(),
       avatar: faker.internet.avatar(),
       description: faker.lorem.sentences(3),
-      password: faker.internet.password(),
+      password: hash,
       isActive: true,
       lastActiveAt: new Date(),
     }),
@@ -44,7 +46,7 @@ const seed = () => {
       email: faker.internet.email(),
       avatar: faker.internet.avatar(),
       description: faker.lorem.sentences(3),
-      password: faker.internet.password(),
+      password: hash,
       isActive: true,
       lastActiveAt: new Date(),
     }),
