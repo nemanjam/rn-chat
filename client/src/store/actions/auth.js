@@ -1,4 +1,4 @@
-import { client } from '../../App';
+import { client, wsClient } from '../../App';
 import { SET_CURRENT_USER, LOGOUT } from '../types';
 
 export const setCurrentUser = user => (dispatch, getState) => {
@@ -10,5 +10,7 @@ export const setCurrentUser = user => (dispatch, getState) => {
 
 export const logout = () => {
   client.resetStore();
+  wsClient.unsubscribeAll();
+  wsClient.close();
   return { type: LOGOUT };
 };

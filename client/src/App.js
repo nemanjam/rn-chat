@@ -13,6 +13,7 @@ import { WebSocketLink } from 'apollo-link-ws';
 import { getMainDefinition } from 'apollo-utilities';
 import { setContext } from 'apollo-link-context';
 import { onError } from 'apollo-link-error';
+import { SubscriptionClient } from 'subscriptions-transport-ws';
 
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
@@ -74,12 +75,16 @@ const uri = '10.0.2.2:5000';
 // const uri = '192.168.0.185:5000';
 const httpLink = createHttpLink({ uri: `http://${uri}` });
 
-const wsLink = new WebSocketLink({
-  uri: `ws://${uri}/graphql`,
-  options: {
-    reconnect: true,
+// client
+export const wsClient = new SubscriptionClient(`ws://${uri}/graphql`, {
+  lazy: true,
+  reconnect: true,
+  connectionParams() {
+    return { jwt: store.getState().authReducer.user.jwt };
   },
 });
+
+const wsLink = new WebSocketLink(wsClient);
 
 // middleware for requests
 const middlewareLink = setContext((req, previousContext) => {
