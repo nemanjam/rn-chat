@@ -1,5 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
+import { connect } from 'react-redux';
+import _ from 'lodash';
 
 import {
   Container,
@@ -28,8 +30,13 @@ const HomeScreen = props => {
   const [tabs, setTabs] = useState([true, false, false, false]);
   const [segment, setSegment] = useState(0);
   const [modal, setModal] = useState(false);
-
   const drawer = useRef(null);
+
+  useEffect(() => {
+    if (_.isEmpty(props.auth.user)) {
+      props.navigation.navigate('Login');
+    }
+  }, []);
 
   function openDrawer() {
     drawer.current._root.open();
@@ -157,4 +164,9 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeScreen;
+export default connect(
+  state => ({
+    auth: state.authReducer,
+  }),
+  null,
+)(HomeScreen);

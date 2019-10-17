@@ -51,5 +51,5 @@ ChatModel.belongsTo(GroupModel);
 GroupModel.hasOne(ChatModel);
 
 // db.sync({ force: true })
-//   .then(() => seed())
+//   .then(async () => await seed())
 //   .catch(error => console.log(error));

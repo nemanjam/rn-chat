@@ -1,6 +1,7 @@
 import React from 'react';
 import { AppRegistry, Image, StatusBar, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 import {
   Button,
   Text,
@@ -13,11 +14,18 @@ import {
   Badge,
   Right,
   View,
+  Spinner,
 } from 'native-base';
 
 import { logout } from '../store/actions/auth';
 
 const SideBar = props => {
+  function logout() {
+    props.logout();
+    props.navigation.navigate('Login');
+  }
+
+  if (_.isEmpty(props.auth.user)) return <Spinner />;
   return (
     <Container>
       <Content>
@@ -33,8 +41,7 @@ const SideBar = props => {
         <Image
           style={styles.avatar}
           source={{
-            uri:
-              'https://www.w3schools.com/w3images/avatar2.png' /*props.auth.user.avatar*/,
+            uri: props.auth.user.avatar,
           }}
         />
         <View style={styles.view}>
@@ -60,13 +67,13 @@ const SideBar = props => {
               </Badge>
             </Right> */}
           </ListItem>
-          <ListItem button onPress={() => props.logout()}>
+          <ListItem button onPress={() => logout()}>
             <Left>
               <Icon active name="log-out" style={styles.icon} />
               <Text style={styles.text}>Logout</Text>
             </Left>
           </ListItem>
-          <ListItem button onPress={() => props.navigation.navigate('Login')}>
+          {/* <ListItem button onPress={() => props.navigation.navigate('Login')}>
             <Left>
               <Icon active name="log-in" style={styles.icon} />
               <Text style={styles.text}>Login</Text>
@@ -79,7 +86,7 @@ const SideBar = props => {
               <Icon active name="log-in" style={styles.icon} />
               <Text style={styles.text}>Register</Text>
             </Left>
-          </ListItem>
+          </ListItem> */}
         </List>
       </Content>
     </Container>
@@ -120,7 +127,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 50,
   },
-  list: { marginTop: 190 },
+  list: { marginTop: 200 },
 });
 
 export default connect(

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { useMutation } from '@apollo/react-hooks';
 import { connect } from 'react-redux';
 
@@ -36,7 +36,7 @@ import { LOGIN_MUTATION } from '../graphql/mutations';
 const loginSchema = Yup.object().shape({
   email: Yup.string()
     .email('Invalid email.')
-    .required('Required'),
+    .required('Required.'),
   password: Yup.string()
     .min(5, 'Too Short.')
     .max(15, 'Too Long.')
@@ -55,7 +55,7 @@ const LoginScreen = props => {
     });
     const user = data.login;
     props.setCurrentUser(user);
-    //props.navigation.navigate('Home');
+    props.navigation.navigate('Home');
   }
 
   if (mutationResult.loading) return <Spinner />;
@@ -64,29 +64,32 @@ const LoginScreen = props => {
 
   return (
     <Container>
-      <Header>
-        <Left>
-          <Button transparent onPress={() => props.navigation.goBack()}>
-            <Icon name="arrow-back" />
-          </Button>
-        </Left>
-        <Body>
-          <Title>Login</Title>
-        </Body>
-        <Right />
-      </Header>
       <Content>
-        <Grid>
-          <Row size={1} />
-          <Row size={2}>
+        <Image
+          source={require('../assets/drawerBackground.jpg')}
+          style={{
+            height: 150,
+            width: '100%',
+            alignSelf: 'stretch',
+            position: 'absolute',
+          }}
+        />
+        <Text style={styles.avatar}>{'<RN>'}</Text>
+        <Text style={styles.subtitle}>React Native Chat</Text>
+        <Grid style={styles.grid}>
+          {/* <Row size={1}>
             <Col>
-              {/* <Button full iconLeft primary style={{ margin: 15 }}>
+              <Button
+                full
+                iconLeft
+                primary
+                style={{ margin: 15, marginBottom: 0 }}>
                 <Icon name="logo-google" />
                 <Text> Login with Google </Text>
-              </Button> */}
+              </Button>
             </Col>
-          </Row>
-          <Row size={3}>
+          </Row> */}
+          <Row>
             <Col>
               <Formik
                 initialValues={{
@@ -107,6 +110,7 @@ const LoginScreen = props => {
                 }) => (
                   <Form>
                     <Item
+                      style={styles.item}
                       floatingLabel
                       error={errors.email && touched.email}
                       success={
@@ -132,6 +136,7 @@ const LoginScreen = props => {
                       <Text style={styles.errorText}>{errors.email}</Text>
                     )}
                     <Item
+                      style={styles.item}
                       floatingLabel
                       error={errors.password && touched.password}
                       success={
@@ -170,7 +175,7 @@ const LoginScreen = props => {
               </Formik>
             </Col>
           </Row>
-          <Row size={2}>
+          <Row>
             <Col>
               <TouchableOpacity
                 onPress={() => props.navigation.navigate('Register')}>
@@ -192,7 +197,33 @@ const styles = StyleSheet.create({
     color: 'blue',
     textAlign: 'center',
   },
+  grid: {
+    marginTop: 150,
+    paddingBottom: 20,
+  },
+  avatar: {
+    position: 'absolute',
+    alignSelf: 'center',
+    top: 20,
+    fontSize: 60,
+    fontWeight: '700',
+    color: 'white',
+    fontFamily: 'San Francisco',
+    letterSpacing: 5,
+  },
+  subtitle: {
+    position: 'absolute',
+    alignSelf: 'center',
+    top: 105,
+    fontSize: 14,
+    fontWeight: '100',
+    color: 'white',
+  },
+  item: {
+    marginRight: 15,
+  },
 });
+
 export default connect(
   state => ({
     auth: state.authReducer,

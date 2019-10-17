@@ -7,7 +7,7 @@ const seed = async () => {
   return Promise.all([
     UserModel.create({
       username: 'firstUser',
-      email: faker.internet.email(),
+      email: 'email1@email.com',
       avatar: faker.internet.avatar(),
       description: faker.lorem.sentences(3),
       password: hash,
@@ -16,7 +16,7 @@ const seed = async () => {
     }),
     UserModel.create({
       username: 'secondUser',
-      email: faker.internet.email(),
+      email: 'email2@email.com',
       avatar: faker.internet.avatar(),
       description: faker.lorem.sentences(3),
       password: hash,
@@ -25,7 +25,7 @@ const seed = async () => {
     }),
     UserModel.create({
       username: 'thirdUser',
-      email: faker.internet.email(),
+      email: 'email3@email.com',
       avatar: faker.internet.avatar(),
       description: faker.lorem.sentences(3),
       password: hash,
@@ -34,7 +34,7 @@ const seed = async () => {
     }),
     UserModel.create({
       username: 'fourthUser',
-      email: faker.internet.email(),
+      email: 'email4@email.com',
       avatar: faker.internet.avatar(),
       description: faker.lorem.sentences(3),
       password: hash,
@@ -43,7 +43,7 @@ const seed = async () => {
     }),
     UserModel.create({
       username: 'fifthUser',
-      email: faker.internet.email(),
+      email: 'email5@email.com',
       avatar: faker.internet.avatar(),
       description: faker.lorem.sentences(3),
       password: hash,
