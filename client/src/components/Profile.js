@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
 import { useQuery } from '@apollo/react-hooks';
 import moment from 'moment';
 
@@ -22,7 +24,7 @@ import { USER_QUERY } from '../graphql/queries';
 
 const Profile = props => {
   const { data, loading, error } = useQuery(USER_QUERY, {
-    variables: { id: props.userId || 1 },
+    variables: { id: props.userId || props.auth.user.id },
   });
   if (loading) return <Spinner />;
   if (error) return <Text>{JSON.stringify(error, null, 2)}</Text>;
@@ -93,4 +95,9 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Profile;
+export default connect(
+  state => ({
+    auth: state.authReducer,
+  }),
+  null,
+)(Profile);

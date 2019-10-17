@@ -1,4 +1,6 @@
 import React from 'react';
+import { connect } from 'react-redux';
+
 import _ from 'lodash';
 import { useQuery } from '@apollo/react-hooks';
 import { StyleSheet } from 'react-native';
@@ -19,7 +21,7 @@ import { FRIENDS_QUERY } from '../graphql/queries';
 
 const FriendsTab = props => {
   const { data, loading, error } = useQuery(FRIENDS_QUERY, {
-    variables: { id: 1 },
+    variables: { id: props.auth.user.id },
   });
   if (loading) return <Spinner />;
   if (error) return <Text>{JSON.stringify(error, null, 2)}</Text>;
@@ -59,4 +61,10 @@ const styles = StyleSheet.create({
     marginLeft: 0,
   },
 });
-export default FriendsTab;
+
+export default connect(
+  state => ({
+    auth: state.authReducer,
+  }),
+  null,
+)(FriendsTab);

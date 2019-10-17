@@ -1,4 +1,6 @@
 import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
+
 import { GiftedChat } from 'react-native-gifted-chat';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import moment from 'moment';
@@ -86,7 +88,7 @@ const ChatsScreen = props => {
       <GiftedChat
         onSend={messages => onSend(messages)}
         user={{
-          _id: 2,
+          _id: props.auth.user.id,
         }}
         messages={(idx(queryResult.data, _ => _.chat.messages) || []).map(
           message => {
@@ -107,4 +109,9 @@ const ChatsScreen = props => {
   );
 };
 
-export default ChatsScreen;
+export default connect(
+  state => ({
+    auth: state.authReducer,
+  }),
+  null,
+)(ChatsScreen);

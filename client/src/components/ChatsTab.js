@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
 import _ from 'lodash';
 import { StyleSheet } from 'react-native';
 import { useQuery } from '@apollo/react-hooks';
@@ -23,7 +25,7 @@ import { CHATS_QUERY } from '../graphql/queries';
 
 const ChatsTab = props => {
   const { data, loading, error } = useQuery(CHATS_QUERY, {
-    variables: { userId: 1 },
+    variables: { userId: props.auth.user.id },
   });
   if (loading) return <Spinner />;
   if (error) return <Text>{JSON.stringify(error, null, 2)}</Text>;
@@ -66,4 +68,10 @@ const styles = StyleSheet.create({
   },
   lastMessage: {},
 });
-export default ChatsTab;
+
+export default connect(
+  state => ({
+    auth: state.authReducer,
+  }),
+  null,
+)(ChatsTab);

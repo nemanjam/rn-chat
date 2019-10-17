@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
+import { connect } from 'react-redux';
+
 import { StyleSheet, Modal, TouchableHighlight } from 'react-native';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import moment from 'moment';
@@ -38,14 +40,14 @@ const GroupsTab = props => {
   }, []);
 
   const { subscribeToMore, ...queryResult } = useQuery(GROUPS_QUERY, {
-    variables: { userId: 1 },
+    variables: { userId: props.auth.user.id },
   });
 
   function subscribeToNewGroups() {
     subscribeToMore({
       document: GROUP_ADDED_SUBSCRIPTION,
       variables: {
-        userId: 1,
+        userId: props.auth.user.id,
       },
       updateQuery: (previous, { subscriptionData }) => {
         if (!subscriptionData.data) return previous;
@@ -119,4 +121,9 @@ const styles = StyleSheet.create({
   },
   lastMessage: {},
 });
-export default GroupsTab;
+export default connect(
+  state => ({
+    auth: state.authReducer,
+  }),
+  null,
+)(GroupsTab);

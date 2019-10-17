@@ -1,4 +1,6 @@
 import React from 'react';
+import { connect } from 'react-redux';
+
 import { useMutation, useQuery } from '@apollo/react-hooks';
 
 import {
@@ -44,7 +46,9 @@ const UserProfileScreen = props => {
   const { error, loading } = mutationResult;
 
   function onFabPress() {
-    createChat({ variables: { userId: 1, contactId: userId } });
+    createChat({
+      variables: { userId: props.auth.user.id, contactId: userId },
+    });
   }
   if (loading) return <Spinner />;
   if (error) alert(JSON.stringify(error, null, 2));
@@ -76,4 +80,9 @@ const UserProfileScreen = props => {
   );
 };
 
-export default UserProfileScreen;
+export default connect(
+  state => ({
+    auth: state.authReducer,
+  }),
+  null,
+)(UserProfileScreen);

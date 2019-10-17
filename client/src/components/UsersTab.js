@@ -1,5 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
+import { connect } from 'react-redux';
+
 import { useQuery } from '@apollo/react-hooks';
 import { StyleSheet } from 'react-native';
 
@@ -19,7 +21,7 @@ import { USERS_QUERY } from '../graphql/queries';
 
 const UsersTab = props => {
   const { data, loading, error } = useQuery(USERS_QUERY, {
-    variables: { id: 1 },
+    variables: { id: props.auth.user.id },
   });
   if (loading) return <Spinner />;
   if (error) return <Text>{JSON.stringify(error, null, 2)}</Text>;
@@ -59,4 +61,10 @@ const styles = StyleSheet.create({
     marginLeft: 0,
   },
 });
-export default UsersTab;
+
+export default connect(
+  state => ({
+    auth: state.authReducer,
+  }),
+  null,
+)(UsersTab);
