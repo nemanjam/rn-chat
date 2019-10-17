@@ -47,7 +47,7 @@ const UserProfileScreen = props => {
     createChat({ variables: { userId: 1, contactId: userId } });
   }
   if (loading) return <Spinner />;
-  // console.log('error ', JSON.stringify(error, null, 2));
+  if (error) alert(JSON.stringify(error, null, 2));
   return (
     <Container>
       <Header>

@@ -90,11 +90,12 @@ export const queryLogic = {
     return authUser.getFriends();
   },
   async user(_, args, ctx) {
-    const authUser = await getAuthenticatedUser(ctx);
-    if (authUser.id === args.id || authUser.email === args.email) {
-      return authUser;
-    }
-    throw new ForbiddenError('Unauthorized');
+    //everyone can see everyones profile
+    const where = args.id ? { id: args.id } : { email: args.email };
+    const user = await UserModel.findOne({
+      where: where,
+    });
+    return user;
   },
 };
 
