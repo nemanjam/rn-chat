@@ -75,11 +75,12 @@ const CreateGroupModal = ({ modal, toggleModal, createGroup }) => {
                 <Body>
                   <Form style={styles.form}>
                     <Item
+                      floatingLabel
                       error={errors.name && touched.name}
                       success={touched.name && !(errors.name && touched.name)}
                       style={styles.input}>
+                      <Label>Group Name</Label>
                       <Input
-                        placeholder="Group Name"
                         onChangeText={handleChange('name')}
                         onBlur={handleBlur('name')}
                         value={values.name}
@@ -94,15 +95,19 @@ const CreateGroupModal = ({ modal, toggleModal, createGroup }) => {
                         }
                       />
                     </Item>
+                    {errors.name && touched.name && (
+                      <Text style={styles.errorText}>{errors.name}</Text>
+                    )}
                     <Item
+                      floatingLabel
                       error={errors.avatarUrl && touched.avatarUrl}
                       success={
                         touched.avatarUrl &&
                         !(errors.avatarUrl && touched.avatarUrl)
                       }
                       style={styles.input}>
+                      <Label>Avatar url</Label>
                       <Input
-                        placeholder="Avatar url"
                         onChangeText={handleChange('avatarUrl')}
                         onBlur={handleBlur('avatarUrl')}
                         value={values.avatarUrl}
@@ -117,7 +122,11 @@ const CreateGroupModal = ({ modal, toggleModal, createGroup }) => {
                         }
                       />
                     </Item>
+                    {errors.avatarUrl && touched.avatarUrl && (
+                      <Text style={styles.errorText}>{errors.avatarUrl}</Text>
+                    )}
                     <Item
+                      floatingLabel
                       error={errors.description && touched.description}
                       success={
                         touched.description &&
@@ -125,10 +134,10 @@ const CreateGroupModal = ({ modal, toggleModal, createGroup }) => {
                       }
                       style={styles.input}
                       last>
+                      <Label style={{ marginLeft: -15 }}>Description</Label>
                       <Input
                         multiline
                         numberOfLines={3}
-                        placeholder="Description"
                         onChangeText={handleChange('description')}
                         onBlur={handleBlur('description')}
                         value={values.namdescriptione}
@@ -143,6 +152,9 @@ const CreateGroupModal = ({ modal, toggleModal, createGroup }) => {
                         }
                       />
                     </Item>
+                    {errors.description && touched.description && (
+                      <Text style={styles.errorText}>{errors.description}</Text>
+                    )}
                   </Form>
                 </Body>
               </CardItem>
@@ -177,6 +189,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 12,
   },
 });
 export default CreateGroupModal;

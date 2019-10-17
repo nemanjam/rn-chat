@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { useMutation } from '@apollo/react-hooks';
 import { connect } from 'react-redux';
@@ -27,6 +27,7 @@ import {
   Row,
   Col,
   Spinner,
+  Toast,
 } from 'native-base';
 
 import { setCurrentUser } from '../store/actions/auth';
@@ -44,6 +45,7 @@ const loginSchema = Yup.object().shape({
 });
 
 const LoginScreen = props => {
+  //const [showToast, setShowToast] = useState(false);
   const [login, { ...mutationResult }] = useMutation(LOGIN_MUTATION);
 
   async function formSubmit(values) {
@@ -59,9 +61,15 @@ const LoginScreen = props => {
   }
 
   if (mutationResult.loading) return <Spinner />;
-  if (mutationResult.error)
-    return <Text>{JSON.stringify(mutationResult.error, null, 2)}</Text>;
-
+  if (mutationResult.error) {
+    Toast.show({
+      text: mutationResult.error.graphQLErrors[0].message,
+      buttonText: 'Ok',
+      duration: 3000,
+      type: 'warning',
+    });
+    // return <Text>{JSON.stringify(mutationResult.error, null, 2)}</Text>;
+  }
   return (
     <Container>
       <Content>
@@ -192,6 +200,7 @@ const styles = StyleSheet.create({
   errorText: {
     color: 'red',
     marginLeft: 15,
+    fontSize: 12,
   },
   link: {
     color: 'blue',

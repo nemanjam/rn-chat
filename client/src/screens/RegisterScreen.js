@@ -25,6 +25,7 @@ import {
   Row,
   Col,
   Spinner,
+  Toast,
 } from 'native-base';
 
 import { REGISTER_MUTATION } from '../graphql/mutations';
@@ -56,20 +57,35 @@ const RegisterScreen = props => {
   const [register, { ...mutationResult }] = useMutation(REGISTER_MUTATION);
 
   async function formSubmit(values) {
-    await register({
+    const { data } = await register({
       variables: {
         username: values.name,
         email: values.email,
         password: values.password,
       },
     });
-    props.navigation.navigate('Login');
+    const user = data.register;
+    Toast.show({
+      text: `New user: ${user.username}`,
+      buttonText: 'Ok',
+      duration: 3000,
+      type: 'success',
+    });
+    setTimeout(() => {
+      props.navigation.navigate('Login');
+    }, 3500);
   }
 
   if (mutationResult.loading) return <Spinner />;
-  if (mutationResult.error)
-    return <Text>{JSON.stringify(mutationResult.error, null, 2)}</Text>;
-
+  if (mutationResult.error) {
+    Toast.show({
+      text: mutationResult.error.graphQLErrors[0].message,
+      buttonText: 'Ok',
+      duration: 3000,
+      type: 'warning',
+    });
+    // return <Text>{JSON.stringify(mutationResult.error, null, 2)}</Text>;
+  }
   return (
     <Container>
       <Header>
@@ -224,6 +240,7 @@ const styles = StyleSheet.create({
   errorText: {
     color: 'red',
     marginLeft: 15,
+    fontSize: 12,
   },
   registerButton: {
     margin: 15,
