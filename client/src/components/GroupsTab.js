@@ -74,36 +74,38 @@ const GroupsTab = props => {
       <List>
         {groups.map((group, index) => {
           return (
-            <ListItem
-              style={styles.listItem}
-              avatar
-              button
-              key={index}
-              onPress={() =>
-                props.navigation.navigate('Chats', { chatId: group.id })
-              }>
-              <Left>
-                <Thumbnail square source={{ uri: group.avatar }} />
-              </Left>
-              <Body>
-                <Text>{group.name}</Text>
-                <Text note numberOfLines={2} style={styles.lastMessage}>
-                  {group.description}
-                </Text>
-              </Body>
-              <Right>
-                <Button
-                  bordered
-                  small
-                  onPress={() =>
-                    props.navigation.navigate('GroupDetails', {
-                      groupId: group.id,
-                    })
-                  }>
-                  <Text>Details</Text>
-                </Button>
-              </Right>
-            </ListItem>
+            group.name !== 'default' && (
+              <ListItem
+                style={styles.listItem}
+                avatar
+                button
+                key={index}
+                onPress={() =>
+                  props.navigation.navigate('Chats', { groupId: group.id })
+                }>
+                <Left>
+                  <Thumbnail square source={{ uri: group.avatar }} />
+                </Left>
+                <Body>
+                  <Text>{group.name}</Text>
+                  <Text note numberOfLines={2} style={styles.lastMessage}>
+                    {group.description}
+                  </Text>
+                </Body>
+                <Right>
+                  <Button
+                    bordered
+                    small
+                    onPress={() =>
+                      props.navigation.navigate('GroupDetails', {
+                        groupId: group.id,
+                      })
+                    }>
+                    <Text>Details</Text>
+                  </Button>
+                </Right>
+              </ListItem>
+            )
           );
         })}
       </List>

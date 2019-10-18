@@ -70,9 +70,13 @@ const store = createStore(
 const persistor = persistStore(store);
 
 // =========== apollo ==============
+// adb connect 192.168.0.134:5555
+// react-native run-android
+// adb shell input keyevent 82
+// 192.168.0.185:8081
 
 const uri = '10.0.2.2:5000';
-// const uri = '192.168.0.185:5000';
+//const uri = '192.168.0.185:5000';
 const httpLink = createHttpLink({ uri: `http://${uri}` });
 
 // client

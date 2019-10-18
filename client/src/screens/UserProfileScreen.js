@@ -29,25 +29,22 @@ import {
 } from 'native-base';
 
 import Profile from '../components/Profile';
-import { CREATE_CHAT_MUTATION } from '../graphql/mutations';
+import { CREATE_DEFULT_GROUP_MUTATION } from '../graphql/mutations';
 
 const UserProfileScreen = props => {
   const userId = props.navigation.getParam('userId');
-  const [createChat, { ...mutationResult }] = useMutation(
-    CREATE_CHAT_MUTATION,
-    {
-      onCompleted(data) {
-        props.navigation.navigate('Chats', {
-          chatId: data.createChat.id,
-        });
-      },
-    },
+  const [createDefaultGroup, { ...mutationResult }] = useMutation(
+    CREATE_DEFULT_GROUP_MUTATION,
   );
   const { error, loading } = mutationResult;
 
-  function onFabPress() {
-    createChat({
+  async function onFabPress() {
+    const { data } = await createDefaultGroup({
       variables: { userId: props.auth.user.id, contactId: userId },
+    });
+    console.log(data);
+    props.navigation.navigate('Chats', {
+      groupId: data.createDefaultGroup.id,
     });
   }
   if (loading) return <Spinner />;

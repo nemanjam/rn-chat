@@ -19,58 +19,69 @@ import {
   Right,
   Icon,
   Text,
-  Drawer,
+  Spinner,
 } from 'native-base';
 
 import { CREATE_MESSAGE_MUTATION } from '../graphql/mutations';
 import { MESSAGE_ADDED_SUBSCRIPTION } from '../graphql/subscriptions';
-import { CHAT_QUERY } from '../graphql/queries';
+import { GROUP_QUERY } from '../graphql/queries';
 
 const ChatsScreen = props => {
-  const chatId = props.navigation.getParam('chatId');
+  const groupId = props.navigation.getParam('groupId');
 
   const [createMessage, { ...mutationResult }] = useMutation(
     CREATE_MESSAGE_MUTATION,
   );
 
-  const { subscribeToMore, ...queryResult } = useQuery(CHAT_QUERY, {
-    variables: { chatId },
+  const { subscribeToMore, ...queryResult } = useQuery(GROUP_QUERY, {
+    variables: { groupId },
   });
 
   useEffect(() => {
-    subscribeToNewMesages();
-  }, []);
+    if (!queryResult.loading) subscribeToNewMesages();
+  }, [queryResult.loading]);
+
+  //mora loading return tu
+  if (queryResult.loading) return <Spinner />;
+  if (queryResult.error)
+    return <Text>{JSON.stringify(queryResult.error, null, 2)}</Text>;
 
   function subscribeToNewMesages() {
     subscribeToMore({
       document: MESSAGE_ADDED_SUBSCRIPTION,
       variables: {
-        chatId,
+        chatId: queryResult.data.group.chat.id,
       },
       updateQuery: (previous, { subscriptionData }) => {
         if (!subscriptionData.data) return previous;
         const newMessage = subscriptionData.data.messageAdded;
-
+        console.log(newMessage);
+        console.log(previous);
         const result = {
           ...previous,
-          chat: {
-            ...previous.chat,
-            messages: [newMessage, ...previous.chat.messages],
+          group: {
+            ...previous.group,
+            chat: {
+              ...previous.group.chat,
+              messages: [newMessage, ...previous.group.chat.messages],
+            },
           },
         };
+        console.log(result);
         return result;
       },
     });
   }
-  function onSend(messages) {
+  async function onSend(messages) {
     const userId = messages[0].user._id;
     const text = messages[0].text;
 
-    createMessage({ variables: { userId, chatId, text } });
+    await createMessage({
+      variables: { userId, chatId: queryResult.data.group.chat.id, text },
+    });
   }
 
-  // console.log('queryResult ', queryResult.data);
-  // console.log('error ', JSON.stringify(error, null, 2));
+  const { group } = queryResult.data;
 
   return (
     <Container>
@@ -81,7 +92,11 @@ const ChatsScreen = props => {
           </Button>
         </Left>
         <Body>
-          <Title>Chats</Title>
+          <Title>
+            {group.name === 'default'
+              ? group.chat.users[1].username
+              : group.name}
+          </Title>
         </Body>
         <Right />
       </Header>
@@ -90,7 +105,7 @@ const ChatsScreen = props => {
         user={{
           _id: props.auth.user.id,
         }}
-        messages={(idx(queryResult.data, _ => _.chat.messages) || []).map(
+        messages={(idx(queryResult, _ => _.data.group.chat.messages) || []).map(
           message => {
             return {
               _id: message.id,

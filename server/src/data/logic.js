@@ -78,6 +78,10 @@ export const queryLogic = {
     const authUser = await isUserAuth(args.userId, ctx);
     return authUser.getGroups();
   },
+  async defaultGroups(_, args, ctx) {
+    const authUser = await isUserAuth(args.userId, ctx);
+    return authUser.getGroups({ where: { name: 'default' } });
+  },
   async users(_, args, ctx) {
     const user = await getAuthenticatedUser(ctx);
     const users = UserModel.findAll({

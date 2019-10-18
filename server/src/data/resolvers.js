@@ -5,7 +5,13 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import faker from 'faker';
 
-import { ChatModel, MessageModel, UserModel, GroupModel } from './connectors';
+import {
+  ChatModel,
+  MessageModel,
+  UserModel,
+  GroupModel,
+  db,
+} from './connectors';
 import { pubsub } from './subscriptions';
 import { JWT_SECRET } from '../config';
 import { queryLogic, userLogic } from './logic';
@@ -41,6 +47,41 @@ export const resolvers = {
   },
 
   Mutation: {
+    async createDefaultGroup(_, { userId, contactId }, ctx) {
+      //alredy in default group
+      const existingDefaultGroup = await db.query(
+        `(SELECT g.id FROM groups g, users u, groupuser gu
+          where g.id = gu."groupId" and u.id = gu."userId" 
+          and g.name = 'default' and u.id = :userId)
+          intersect
+          (SELECT g.id FROM groups g, users u, groupuser gu
+          where g.id = gu."groupId" and u.id = gu."userId" 
+          and g.name = 'default' and u.id = :contactId)`,
+        {
+          replacements: { userId: userId, contactId: contactId },
+          type: Sequelize.QueryTypes.SELECT,
+        },
+      );
+
+      if (existingDefaultGroup.length > 0) {
+        return GroupModel.findOne({
+          where: { id: existingDefaultGroup[0].id },
+        });
+      }
+
+      //create chat
+      const chat = await ChatModel.create({});
+      const user = await UserModel.findOne({ where: { id: userId } });
+      const contact = await UserModel.findOne({ where: { id: contactId } });
+      await user.addChat(chat);
+      await contact.addChat(chat);
+      // create group
+      const group = await GroupModel.create({ name: 'default' });
+      await chat.setGroup(group);
+      await user.addGroup(group);
+      await contact.addGroup(group);
+      return group;
+    },
     login(_, { email, password }, ctx) {
       return UserModel.findOne({ where: { email } }).then(user => {
         if (user) {
@@ -88,15 +129,14 @@ export const resolvers = {
         return Promise.reject('email already exists'); // email already exists
       });
     },
-    createMessage(_, { userId, chatId, text }) {
-      return MessageModel.create({
+    async createMessage(_, { userId, chatId, text }) {
+      const message = await MessageModel.create({
         userId,
         chatId,
         text,
-      }).then(message => {
-        pubsub.publish(MESSAGE_ADDED_TOPIC, { [MESSAGE_ADDED_TOPIC]: message });
-        return message;
       });
+      pubsub.publish(MESSAGE_ADDED_TOPIC, { [MESSAGE_ADDED_TOPIC]: message });
+      return message;
     },
     createGroup(_, { group }) {
       return Promise.all([
@@ -185,6 +225,9 @@ export const resolvers = {
     },
     async groups(_, args, ctx) {
       return queryLogic.groups(_, args, ctx);
+    },
+    async defaultGroups(_, args, ctx) {
+      return queryLogic.defaultGroups(_, args, ctx);
     },
     async users(_, args, ctx) {
       return queryLogic.users(_, args, ctx);
@@ -290,4 +333,13 @@ export default resolvers;
       pubsub.publish(GROUP_ADDED_TOPIC, { [GROUP_ADDED_TOPIC]: _group });
       return _group;
     },
+*/
+/*
+(SELECT g.id FROM groups g, users u, groupuser gu
+where g.id = gu."groupId" and u.id = gu."userId" 
+and g.name = 'default' and u.id = 1)
+intersect
+(SELECT g.id FROM groups g, users u, groupuser gu
+where g.id = gu."groupId" and u.id = gu."userId" 
+and g.name = 'default' and u.id = 3)
 */

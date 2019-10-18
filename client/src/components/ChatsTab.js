@@ -5,6 +5,7 @@ import _ from 'lodash';
 import { StyleSheet } from 'react-native';
 import { useQuery } from '@apollo/react-hooks';
 import moment from 'moment';
+import idx from 'idx';
 
 import {
   Container,
@@ -21,18 +22,20 @@ import {
   Spinner,
 } from 'native-base';
 
-import { CHATS_QUERY } from '../graphql/queries';
+import { DEFAULT_GROUPS_QUERY } from '../graphql/queries';
 
 const ChatsTab = props => {
-  const { data, loading, error } = useQuery(CHATS_QUERY, {
+  const { data, loading, error } = useQuery(DEFAULT_GROUPS_QUERY, {
     variables: { userId: props.auth.user.id },
   });
   if (loading) return <Spinner />;
   if (error) return <Text>{JSON.stringify(error, null, 2)}</Text>;
-  const { chats } = data;
+  const { defaultGroups } = data;
   return (
     <List>
-      {chats.map((chat, index) => {
+      {defaultGroups.map((group, index) => {
+        const { chat } = group;
+        console.log(chat);
         return (
           <ListItem
             style={styles.listItem}
@@ -40,20 +43,21 @@ const ChatsTab = props => {
             button
             key={index}
             onPress={() =>
-              props.navigation.navigate('Chats', { chatId: chat.id })
+              props.navigation.navigate('Chats', { groupId: group.id })
             }>
             <Left>
-              <Thumbnail source={{ uri: chat.users[0].avatar }} />
+              <Thumbnail source={{ uri: chat.users[1].avatar }} />
             </Left>
             <Body>
-              <Text>{chat.users[0].username}</Text>
+              <Text>{chat.users[1].username}</Text>
               <Text note numberOfLines={2} style={styles.lastMessage}>
-                {chat.lastMessage.text}
+                {idx(chat, _ => _.lastMessage.text) || ''}
               </Text>
             </Body>
             <Right>
               <Text note>
-                {moment(chat.lastMessage.createdAt).format('LT')}
+                {idx(chat, _ => moment(_.lastMessage.createdAt).format('LT')) ||
+                  'never'}
               </Text>
             </Right>
           </ListItem>

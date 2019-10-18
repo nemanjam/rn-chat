@@ -78,3 +78,18 @@ export const LOGIN_MUTATION = gql`
     }
   }
 `;
+
+export const CREATE_DEFULT_GROUP_MUTATION = gql`
+  mutation createDefaultGroup($userId: Int!, $contactId: Int!) {
+    createDefaultGroup(userId: $userId, contactId: $contactId) {
+      id
+      chat {
+        id
+      }
+      users {
+        id
+        username
+      }
+    }
+  }
+`;

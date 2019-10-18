@@ -61,6 +61,7 @@ export const typeDefs = gql`
     chats(userId: Int!): [Chat]
     group(groupId: Int!): Group
     groups(userId: Int!): [Group]
+    defaultGroups(userId: Int!): [Group]
   }
 
   type Mutation {
@@ -69,6 +70,7 @@ export const typeDefs = gql`
     createGroup(group: CreateGroupInput!): Group
     login(email: String!, password: String!): User
     register(username: String!, email: String!, password: String!): User
+    createDefaultGroup(userId: Int!, contactId: Int!): Group
   }
 
   type Subscription {

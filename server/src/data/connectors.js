@@ -2,9 +2,12 @@ import Sequelize from 'sequelize';
 import { _ } from 'lodash';
 import seed from './seed';
 
-const db = new Sequelize('postgres://postgres:root@localhost:5432/chat', {
-  logging: false,
-});
+export const db = new Sequelize(
+  'postgres://postgres:root@localhost:5432/chat',
+  {
+    logging: false,
+  },
+);
 
 // tabele, osnovni tipovi od kojih su sacinjeni ostali iz graphql scheme
 
@@ -29,21 +32,21 @@ export const MessageModel = db.define('message', {
   text: { type: Sequelize.TEXT },
 });
 
-UserModel.belongsToMany(ChatModel, { through: 'ChatUser' });
-UserModel.belongsToMany(UserModel, { through: 'Friends', as: 'friends' });
+UserModel.belongsToMany(ChatModel, { through: 'chatuser' });
+UserModel.belongsToMany(UserModel, { through: 'friendstable', as: 'friends' });
 MessageModel.belongsTo(UserModel);
 UserModel.hasOne(MessageModel);
 
-ChatModel.belongsToMany(UserModel, { through: 'ChatUser' });
+ChatModel.belongsToMany(UserModel, { through: 'chatuser' });
 
 MessageModel.belongsTo(ChatModel);
 ChatModel.hasMany(MessageModel);
 
-GroupModel.belongsToMany(UserModel, { through: 'GroupUser' });
-UserModel.belongsToMany(GroupModel, { through: 'GroupUser' });
+GroupModel.belongsToMany(UserModel, { through: 'groupuser' });
+UserModel.belongsToMany(GroupModel, { through: 'groupuser' });
 UserModel.belongsToMany(GroupModel, {
-  through: 'BannedGroupUser',
-  as: 'bannedUsers',
+  through: 'bannedgroupuser',
+  as: 'bannedusers',
 });
 GroupModel.belongsTo(UserModel);
 UserModel.hasOne(GroupModel);

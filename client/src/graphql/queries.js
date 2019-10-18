@@ -97,6 +97,49 @@ export const GROUP_QUERY = gql`
         username
       }
       chat {
+        id
+        createdAt
+        updatedAt
+        users {
+          username
+          avatar
+        }
+        messages {
+          id
+          text
+          createdAt
+          from {
+            id
+            username
+            avatar
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const DEFAULT_GROUPS_QUERY = gql`
+  query defaultGroupsQuery($userId: Int!) {
+    defaultGroups(userId: $userId) {
+      id
+      name
+      users {
+        username
+        avatar
+      }
+      chat {
+        id
+        createdAt
+        updatedAt
+        lastMessage {
+          text
+          createdAt
+        }
+        users {
+          username
+          avatar
+        }
         messages {
           id
           text
