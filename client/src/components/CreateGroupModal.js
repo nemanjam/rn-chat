@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
+
 import { StyleSheet, Modal } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -21,25 +23,24 @@ import {
 
 const createSchema = Yup.object().shape({
   name: Yup.string()
-    .min(5, 'Too Short!')
-    .max(15, 'Too Long!')
+    .min(5, 'Too Short.')
+    .max(15, 'Too Long.')
     .required('Required'),
   avatarUrl: Yup.string()
     .url('Invalid url')
     .required('Required'),
   description: Yup.string()
-    .min(10, 'Too Short!')
-    .max(100, 'Too Long!')
+    .min(10, 'Too Short.')
+    .max(100, 'Too Long.')
     .required('Required'),
 });
 
-const CreateGroupModal = ({ modal, toggleModal, createGroup }) => {
+const CreateGroupModal = ({ modal, toggleModal, createGroup, auth }) => {
   async function formSubmit(values) {
-    // console.log(values);
     await createGroup({
       variables: {
         group: {
-          ownerId: 1,
+          ownerId: auth.user.id,
           name: values.name,
           avatarUrl: values.avatarUrl,
           description: values.description,
@@ -195,4 +196,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
 });
-export default CreateGroupModal;
+
+export default connect(
+  state => ({
+    auth: state.authReducer,
+  }),
+  null,
+)(CreateGroupModal);

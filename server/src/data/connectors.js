@@ -32,24 +32,31 @@ export const MessageModel = db.define('message', {
   text: { type: Sequelize.TEXT },
 });
 
-UserModel.belongsToMany(ChatModel, { through: 'chatuser' });
-UserModel.belongsToMany(UserModel, { through: 'friendstable', as: 'friends' });
+UserModel.belongsToMany(ChatModel, { through: 'ChatUser' });
+UserModel.belongsToMany(UserModel, { through: 'Friends', as: 'friends' });
 MessageModel.belongsTo(UserModel);
 UserModel.hasOne(MessageModel);
 
-ChatModel.belongsToMany(UserModel, { through: 'chatuser' });
+ChatModel.belongsToMany(UserModel, { through: 'ChatUser' });
 
 MessageModel.belongsTo(ChatModel);
 ChatModel.hasMany(MessageModel);
 
-GroupModel.belongsToMany(UserModel, { through: 'groupuser' });
-UserModel.belongsToMany(GroupModel, { through: 'groupuser' });
+GroupModel.belongsToMany(UserModel, { through: 'GroupUser' });
+UserModel.belongsToMany(GroupModel, { through: 'GroupUser' });
 UserModel.belongsToMany(GroupModel, {
-  through: 'bannedgroupuser',
-  as: 'bannedusers',
+  through: 'BannedGroupUser',
+  as: 'bannedUsers',
 });
-GroupModel.belongsTo(UserModel);
-UserModel.hasOne(GroupModel);
+GroupModel.belongsTo(UserModel, {
+  as: 'owner',
+  foreignKey: 'ownerId',
+  targetKey: 'id',
+});
+UserModel.hasOne(GroupModel, {
+  foreignKey: 'ownerId',
+  sourceKey: 'id',
+});
 ChatModel.belongsTo(GroupModel);
 GroupModel.hasOne(ChatModel);
 

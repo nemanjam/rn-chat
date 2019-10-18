@@ -177,7 +177,7 @@ const seed = async () => {
           thirdChat.setGroup(firstGroup),
           firstUser.setMessage(sixthMessage),
           fourthUser.setMessage(fifthMessage),
-          firstUser.setGroup(firstGroup),
+          firstGroup.setOwner(firstUser),
 
           firstUser.addGroup(secondGroup),
           fifthUser.addGroup(secondGroup),
@@ -186,7 +186,7 @@ const seed = async () => {
           fourthChat.setGroup(secondGroup),
           firstUser.setMessage(eighthMessage),
           fifthUser.setMessage(seventhMessage),
-          firstUser.setGroup(secondGroup),
+          secondGroup.setOwner(firstUser),
         ]);
       },
     )

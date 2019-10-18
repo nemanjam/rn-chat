@@ -50,11 +50,11 @@ export const resolvers = {
     async createDefaultGroup(_, { userId, contactId }, ctx) {
       //alredy in default group
       const existingDefaultGroup = await db.query(
-        `(SELECT g.id FROM groups g, users u, groupuser gu
+        `(SELECT g.id FROM groups g, users u, "GroupUser" gu
           where g.id = gu."groupId" and u.id = gu."userId" 
           and g.name = 'default' and u.id = :userId)
           intersect
-          (SELECT g.id FROM groups g, users u, groupuser gu
+          (SELECT g.id FROM groups g, users u, "GroupUser" gu
           where g.id = gu."groupId" and u.id = gu."userId" 
           and g.name = 'default' and u.id = :contactId)`,
         {
@@ -138,27 +138,21 @@ export const resolvers = {
       pubsub.publish(MESSAGE_ADDED_TOPIC, { [MESSAGE_ADDED_TOPIC]: message });
       return message;
     },
-    createGroup(_, { group }) {
-      return Promise.all([
-        UserModel.findOne({ where: { id: group.ownerId } }),
-        ChatModel.create({}),
-        GroupModel.create({
-          name: group.name,
-          avatar: group.avatarUrl,
-          description: group.description,
-        }),
-      ])
-        .then(([owner, chat, _group]) => {
-          return Promise.all([
-            owner.addGroup(_group),
-            owner.setGroup(_group),
-            chat.setGroup(_group),
-          ]);
-        })
-        .then(([groupUser, _group, chats]) => {
-          pubsub.publish(GROUP_ADDED_TOPIC, { [GROUP_ADDED_TOPIC]: _group });
-          return _group;
-        });
+    async createGroup(_, { group }) {
+      const owner = await UserModel.findOne({ where: { id: group.ownerId } });
+      const chat = await ChatModel.create({});
+      const _group = await GroupModel.create({
+        name: group.name,
+        avatar: group.avatarUrl,
+        description: group.description,
+      });
+
+      await owner.addGroup(_group);
+      await _group.setOwner(owner);
+      await chat.setGroup(_group);
+
+      pubsub.publish(GROUP_ADDED_TOPIC, { [GROUP_ADDED_TOPIC]: _group });
+      return _group;
     },
     async createChat(_, { userId, contactId }) {
       //check if users are in the chat already
@@ -274,7 +268,7 @@ export const resolvers = {
       return group.getBannedUsers();
     },
     owner(group) {
-      return group.getUser();
+      return group.getOwner();
     },
     chat(group) {
       return group.getChat();

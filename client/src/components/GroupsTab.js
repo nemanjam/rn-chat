@@ -35,13 +35,13 @@ import { CREATE_GROUP_MUTATION } from '../graphql/mutations';
 import { GROUP_ADDED_SUBSCRIPTION } from '../graphql/subscriptions';
 
 const GroupsTab = props => {
-  useEffect(() => {
-    subscribeToNewGroups();
-  }, []);
-
   const { subscribeToMore, ...queryResult } = useQuery(GROUPS_QUERY, {
     variables: { userId: props.auth.user.id },
   });
+
+  useEffect(() => {
+    if (!queryResult.loading) subscribeToNewGroups();
+  }, [queryResult.loading]);
 
   function subscribeToNewGroups() {
     subscribeToMore({
@@ -123,6 +123,7 @@ const styles = StyleSheet.create({
   },
   lastMessage: {},
 });
+
 export default connect(
   state => ({
     auth: state.authReducer,

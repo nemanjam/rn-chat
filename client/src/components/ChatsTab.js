@@ -35,7 +35,6 @@ const ChatsTab = props => {
     <List>
       {defaultGroups.map((group, index) => {
         const { chat } = group;
-        console.log(chat);
         return (
           <ListItem
             style={styles.listItem}
