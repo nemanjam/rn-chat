@@ -13,10 +13,10 @@ export const CREATE_MESSAGE_MUTATION = gql`
     }
   }
 `;
-
-export const CREATE_CHAT_MUTATION = gql`
-  mutation createChat($userId: Int!, $contactId: Int!) {
-    createChat(userId: $userId, contactId: $contactId) {
+/*
+export const CREATE_DEFAULT_CHAT_MUTATION = gql`
+  mutation createDefaultChat($userId: Int!, $contactId: Int!) {
+    createDefaultChat(userId: $userId, contactId: $contactId) {
       id
       users {
         id
@@ -25,7 +25,7 @@ export const CREATE_CHAT_MUTATION = gql`
     }
   }
 `;
-
+*/
 export const CREATE_GROUP_MUTATION = gql`
   mutation createGroup($group: CreateGroupInput!) {
     createGroup(group: $group) {

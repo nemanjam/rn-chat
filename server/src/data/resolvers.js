@@ -47,6 +47,11 @@ export const resolvers = {
   },
 
   Mutation: {
+    async addUserToGroup(_, { userId }, ctx) {
+      const users = await UserModel.findAll({
+        where: { id: { [Op.in]: userIds } },
+      });
+    },
     async createDefaultGroup(_, { userId, contactId }, ctx) {
       //alredy in default group
       const existingDefaultGroup = await db.query(
@@ -153,58 +158,6 @@ export const resolvers = {
 
       pubsub.publish(GROUP_ADDED_TOPIC, { [GROUP_ADDED_TOPIC]: _group });
       return _group;
-    },
-    async createChat(_, { userId, contactId }) {
-      //check if users are in the chat already
-      const usersChatIds = await ChatModel.findAll({
-        attributes: ['id'],
-        include: [
-          {
-            model: UserModel,
-            through: {
-              where: { userId },
-            },
-            where: { id: { [Op.not]: null } },
-            attributes: [],
-          },
-        ],
-      }).map(item => item.id);
-      const contactsChatIds = await ChatModel.findAll({
-        attributes: ['id'],
-        include: [
-          {
-            model: UserModel,
-            through: {
-              where: { userId: contactId },
-            },
-            where: { id: { [Op.not]: null } },
-            attributes: [],
-          },
-        ],
-      }).map(item => item.id);
-      const chatIdExists = usersChatIds.filter(value =>
-        contactsChatIds.includes(value),
-      );
-
-      // console.log(JSON.stringify(usersChatIds));
-      // console.log(JSON.stringify(contactsChatIds));
-      // console.log(JSON.stringify(chatIdExists));
-      if (chatIdExists.length > 0)
-        return await ChatModel.findOne({ where: { id: chatIdExists[0] } });
-
-      const chat = await ChatModel.create({});
-      const user = await UserModel.findOne({ where: { id: userId } });
-      const contact = await UserModel.findOne({ where: { id: contactId } });
-      const message = await MessageModel.create({
-        text: 'Hello, I would like to start conversation.',
-      });
-      user.addChat(chat);
-      contact.addChat(chat);
-      message.setChat(chat);
-      //add contact?
-      user.addContact(contact);
-      contact.addContact(user);
-      return chat;
     },
   },
   Query: {

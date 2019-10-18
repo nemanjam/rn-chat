@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
+
 import { useMutation, useQuery } from '@apollo/react-hooks';
-import { StyleSheet, Image } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity } from 'react-native';
 
 import {
   Container,
@@ -18,28 +20,51 @@ import {
   Card,
   CardItem,
   Spinner,
+  Thumbnail,
+  Footer,
+  FooterTab,
+  Tabs,
+  Tab,
 } from 'native-base';
+import { Grid, Col } from 'react-native-easy-grid';
+
 import CreateGroupModal from '../components/CreateGroupModal';
 
-import { GROUP_QUERY } from '../graphql/queries';
+import { GROUP_QUERY, USERS_QUERY } from '../graphql/queries';
 
 const GroupDetailsScreen = props => {
   const groupId = props.navigation.getParam('groupId');
   const [modal, setModal] = useState(false);
+  const [tabs, setTabs] = useState([true, false]);
 
-  const { data, error, loading } = useQuery(GROUP_QUERY, {
+  const { ...groupQueryResult } = useQuery(GROUP_QUERY, {
     variables: { groupId },
   });
 
-  if (loading) return <Spinner />;
-  if (error) return <Text>{JSON.stringify(error, null, 2)}</Text>;
+  const { ...usersQueryResult } = useQuery(USERS_QUERY, {
+    variables: { id: props.auth.user.id },
+  });
+
+  if (groupQueryResult.loading) return <Spinner />;
+  if (groupQueryResult.error)
+    return <Text>{JSON.stringify(groupQueryResult.error, null, 2)}</Text>;
+
+  if (usersQueryResult.loading) return <Spinner />;
+  if (usersQueryResult.error)
+    return <Text>{JSON.stringify(usersQueryResult.error, null, 2)}</Text>;
 
   function toggleModal() {
     setModal(!modal);
   }
-
-  const { group } = data;
-  //   console.log(data);
+  function toggleTab1() {
+    setTabs([true, false]);
+  }
+  function toggleTab2() {
+    setTabs([false, true]);
+  }
+  const { users } = usersQueryResult.data;
+  const { group } = groupQueryResult.data;
+  // console.log(group);
   return (
     <Container>
       <Header>
@@ -86,7 +111,68 @@ const GroupDetailsScreen = props => {
             </Right>
           </CardItem>
         </Card>
+        {tabs[0] && (
+          <List>
+            {users.map((user, index) => {
+              return (
+                <ListItem style={styles.listItem} key={index} thumbnail>
+                  <Left>
+                    <Thumbnail source={{ uri: user.avatar }} />
+                  </Left>
+                  <Body>
+                    <Text>{user.username}</Text>
+                    <Text note numberOfLines={1}>
+                      {user.description}
+                    </Text>
+                  </Body>
+                  <Right>
+                    <Button small bordered>
+                      <Text>Add</Text>
+                    </Button>
+                  </Right>
+                </ListItem>
+              );
+            })}
+          </List>
+        )}
+        {tabs[1] && (
+          <List>
+            {group.users.map((user, index) => {
+              return (
+                <ListItem style={styles.listItem} key={index}>
+                  <Grid>
+                    <Col size={1} style={styles.col}>
+                      <Text style={{ alignSelf: 'flex-start' }}>
+                        {user.username}
+                      </Text>
+                    </Col>
+                    <Col size={1}>
+                      <Button small bordered style={styles.removeBanButton}>
+                        <Text>Remove</Text>
+                      </Button>
+                    </Col>
+                    <Col size={1}>
+                      <Button small bordered style={styles.removeBanButton}>
+                        <Text>Ban</Text>
+                      </Button>
+                    </Col>
+                  </Grid>
+                </ListItem>
+              );
+            })}
+          </List>
+        )}
       </Content>
+      <Footer>
+        <FooterTab>
+          <Button active={tabs[0]} onPress={() => toggleTab1()}>
+            <Text style={styles.tabText}>All Users</Text>
+          </Button>
+          <Button active={tabs[1]} onPress={() => toggleTab2()}>
+            <Text style={styles.tabText}>Group Users</Text>
+          </Button>
+        </FooterTab>
+      </Footer>
       <CreateGroupModal modal={modal} toggleModal={toggleModal} />
     </Container>
   );
@@ -103,5 +189,18 @@ const styles = StyleSheet.create({
     flex: 1,
     alignSelf: 'stretch',
   },
+  tabText: {
+    fontSize: 14,
+  },
+  removeBanButton: {
+    alignSelf: 'flex-end',
+  },
+  col: { justifyContent: 'center' },
 });
-export default GroupDetailsScreen;
+
+export default connect(
+  state => ({
+    auth: state.authReducer,
+  }),
+  null,
+)(GroupDetailsScreen);

@@ -96,6 +96,13 @@ export const GROUP_QUERY = gql`
         id
         username
       }
+      users {
+        id
+        username
+        avatar
+        description
+        lastActiveAt
+      }
       chat {
         id
         createdAt
