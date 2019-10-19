@@ -70,12 +70,14 @@ export const typeDefs = gql`
     login(email: String!, password: String!): User
     register(username: String!, email: String!, password: String!): User
     createDefaultGroup(userId: Int!, contactId: Int!): Group
-    addUserToGroup(userId: Int!): Group
+    addUserToGroup(groupId: Int!, userId: Int!): User
+    removeUserFromGroup(groupId: Int!, userId: Int!): User
   }
 
   type Subscription {
-    messageAdded(chatId: Int): Message
-    groupAdded(userId: Int): Group
+    messageAdded(chatId: Int!): Message
+    groupAdded(userId: Int!): Group
+    userAddedToGroup(groupId: Int): [User]
   }
 
   schema {

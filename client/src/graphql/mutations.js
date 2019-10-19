@@ -13,19 +13,7 @@ export const CREATE_MESSAGE_MUTATION = gql`
     }
   }
 `;
-/*
-export const CREATE_DEFAULT_CHAT_MUTATION = gql`
-  mutation createDefaultChat($userId: Int!, $contactId: Int!) {
-    createDefaultChat(userId: $userId, contactId: $contactId) {
-      id
-      users {
-        id
-        username
-      }
-    }
-  }
-`;
-*/
+
 export const CREATE_GROUP_MUTATION = gql`
   mutation createGroup($group: CreateGroupInput!) {
     createGroup(group: $group) {
@@ -90,6 +78,24 @@ export const CREATE_DEFULT_GROUP_MUTATION = gql`
         id
         username
       }
+    }
+  }
+`;
+
+export const ADD_USER_TO_GROUP_MUTATION = gql`
+  mutation addUserToGroup($groupId: Int!, $userId: Int!) {
+    addUserToGroup(groupId: $groupId, userId: $userId) {
+      id
+      username
+    }
+  }
+`;
+
+export const REMOVE_USER_FROM_GROUP_MUTATION = gql`
+  mutation removeUserFromGroup($groupId: Int!, $userId: Int!) {
+    removeUserFromGroup(groupId: $groupId, userId: $userId) {
+      id
+      username
     }
   }
 `;

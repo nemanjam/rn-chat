@@ -47,9 +47,9 @@ const ChatsTab = props => {
             <Left>
               <Thumbnail source={{ uri: chat.users[1].avatar }} />
             </Left>
-            <Body>
+            <Body style={styles.body}>
               <Text>{chat.users[1].username}</Text>
-              <Text note numberOfLines={2} style={styles.lastMessage}>
+              <Text note numberOfLines={1} style={styles.lastMessage}>
                 {idx(chat, _ => _.lastMessage.text) || ''}
               </Text>
             </Body>
@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
     marginLeft: 0,
   },
   lastMessage: {},
+  body: { alignSelf: 'stretch' },
 });
 
 export default connect(

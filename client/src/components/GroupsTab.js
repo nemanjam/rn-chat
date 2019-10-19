@@ -86,7 +86,7 @@ const GroupsTab = props => {
                 <Left>
                   <Thumbnail square source={{ uri: group.avatar }} />
                 </Left>
-                <Body>
+                <Body style={styles.body}>
                   <Text>{group.name}</Text>
                   <Text note numberOfLines={2} style={styles.lastMessage}>
                     {group.description}
@@ -122,6 +122,7 @@ const styles = StyleSheet.create({
     marginLeft: 0,
   },
   lastMessage: {},
+  body: { alignSelf: 'stretch' },
 });
 
 export default connect(
