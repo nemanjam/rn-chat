@@ -77,7 +77,6 @@ export const typeDefs = gql`
   type Subscription {
     messageAdded(chatId: Int!): Message
     groupAdded(userId: Int!): Group
-    userAddedToGroup(groupId: Int): [User]
   }
 
   schema {

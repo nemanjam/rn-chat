@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import { useMutation, useQuery } from '@apollo/react-hooks';
@@ -46,28 +46,57 @@ const GroupDetailsScreen = props => {
     variables: { groupId },
   });
 
-  const { ...usersQueryResult } = useQuery(USERS_QUERY, {
+  const { subscribeToMore, ...usersQueryResult } = useQuery(USERS_QUERY, {
     variables: { id: props.auth.user.id },
   });
 
   const [addUserToGroup, { ...mutationAddUserToGroupResult }] = useMutation(
     ADD_USER_TO_GROUP_MUTATION,
+    {
+      update(cache, { data }) {
+        const { group } = cache.readQuery({
+          query: GROUP_QUERY,
+          variables: { groupId },
+        });
+        const newUser = data.addUserToGroup;
+        const newUsers = [...group.users, newUser];
+        const result = { group: { ...group, users: newUsers } };
+        cache.writeQuery({
+          query: GROUP_QUERY,
+          data: result,
+        });
+      },
+    },
   );
 
   const [removeUserFromGroup, { ...mutationRemoveUserFromGroup }] = useMutation(
     REMOVE_USER_FROM_GROUP_MUTATION,
+    {
+      update(cache, { data }) {
+        const { group } = cache.readQuery({
+          query: GROUP_QUERY,
+          variables: { groupId },
+        });
+        const newUser = data.removeUserFromGroup;
+        console.log(newUser);
+        const newUsers = group.users.filter(user => user.id !== newUser.id);
+        const result = { group: { ...group, users: newUsers } };
+        cache.writeQuery({
+          query: GROUP_QUERY,
+          data: result,
+        });
+      },
+    },
   );
 
-  const loading =
-    groupQueryResult.loading ||
-    usersQueryResult.loading ||
-    mutationAddUserToGroupResult.loading ||
-    mutationRemoveUserFromGroup.loading;
+  const loading = groupQueryResult.loading || usersQueryResult.loading;
+  // mutationAddUserToGroupResult.loading ||
+  // mutationRemoveUserFromGroup.loading;
 
   const error =
     groupQueryResult.error ||
-    usersQueryResult.loading ||
-    mutationAddUserToGroupResult.loading ||
+    usersQueryResult.error ||
+    mutationAddUserToGroupResult.error ||
     mutationRemoveUserFromGroup.error;
 
   if (loading) return <Spinner />;
@@ -112,7 +141,7 @@ const GroupDetailsScreen = props => {
   }
   const { users } = usersQueryResult.data;
   const { group } = groupQueryResult.data;
-  // console.log(group);
+
   return (
     <Container>
       <Header>

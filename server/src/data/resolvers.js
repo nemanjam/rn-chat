@@ -21,7 +21,6 @@ import { queryLogic, userLogic } from './logic';
 //
 const MESSAGE_ADDED_TOPIC = 'messageAdded';
 const GROUP_ADDED_TOPIC = 'groupAdded';
-const USER_ADDED_TO_GROUP_TOPIC = 'userAddedToGroup';
 const Op = Sequelize.Op;
 
 export const resolvers = {
@@ -45,15 +44,6 @@ export const resolvers = {
         },
       ),
     },
-    userAddedToGroup: {
-      subscribe: withFilter(
-        () => pubsub.asyncIterator(USER_ADDED_TO_GROUP_TOPIC),
-        (payload, args) => {
-          // console.log(JSON.stringify(payload, null, 2));
-          return Boolean(true /*args.userId === payload.groupAdded.userId*/);
-        },
-      ),
-    },
   },
 
   Mutation: {
@@ -67,9 +57,6 @@ export const resolvers = {
       const chat = await group.getChat();
       await user.addChat(chat);
       await user.addGroup(group);
-      pubsub.publish(USER_ADDED_TO_GROUP_TOPIC, {
-        [USER_ADDED_TO_GROUP_TOPIC]: user,
-      });
       return user;
     },
     async removeUserFromGroup(_, { groupId, userId }, ctx) {

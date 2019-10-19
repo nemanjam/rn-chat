@@ -86,7 +86,11 @@ export const ADD_USER_TO_GROUP_MUTATION = gql`
   mutation addUserToGroup($groupId: Int!, $userId: Int!) {
     addUserToGroup(groupId: $groupId, userId: $userId) {
       id
+      email
       username
+      avatar
+      description
+      lastActiveAt
     }
   }
 `;
@@ -95,7 +99,11 @@ export const REMOVE_USER_FROM_GROUP_MUTATION = gql`
   mutation removeUserFromGroup($groupId: Int!, $userId: Int!) {
     removeUserFromGroup(groupId: $groupId, userId: $userId) {
       id
+      email
       username
+      avatar
+      description
+      lastActiveAt
     }
   }
 `;
