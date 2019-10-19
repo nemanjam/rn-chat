@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import { connect } from 'react-redux';
 
 import { useMutation, useQuery } from '@apollo/react-hooks';
@@ -60,7 +60,7 @@ const GroupDetailsScreen = props => {
           variables: { groupId },
         });
         const newGroup = data.editGroup;
-        const result = { ...group, ...newGroup };
+        const result = { group: { ...group, ...newGroup } };
         cache.writeQuery({
           query: GROUP_QUERY,
           data: result,
@@ -234,9 +234,9 @@ const GroupDetailsScreen = props => {
             <List>
               {group.users.map((user, index) => {
                 return (
-                  <>
+                  <Fragment key={index}>
                     {user.id !== props.auth.user.id && (
-                      <ListItem style={styles.listItem} key={index}>
+                      <ListItem style={styles.listItem}>
                         <Grid>
                           <Col size={1} style={styles.col}>
                             <Text style={{ alignSelf: 'flex-start' }}>
@@ -265,7 +265,7 @@ const GroupDetailsScreen = props => {
                         </Grid>
                       </ListItem>
                     )}
-                  </>
+                  </Fragment>
                 );
               })}
             </List>

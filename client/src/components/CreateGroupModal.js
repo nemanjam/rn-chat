@@ -82,11 +82,11 @@ const CreateGroupModal = ({
       }}>
       <Content contentContainerStyle={styles.content}>
         <Formik
-          enableReinitialize={true}
+          enableReinitialize={false}
           initialValues={{
-            name: (group && group.name) || '',
-            avatarUrl: (group && group.avatar) || '',
-            description: (group && group.description) || '',
+            name: group && group.name,
+            avatarUrl: group && group.avatar,
+            description: group && group.description,
           }}
           validationSchema={createSchema}
           onSubmit={values => formSubmit(values)}>
@@ -138,7 +138,7 @@ const CreateGroupModal = ({
                       <Input
                         onChangeText={handleChange('avatarUrl')}
                         onBlur={handleBlur('avatarUrl')}
-                        value={values.avatarUrl || (group && group.avatar)}
+                        value={values.avatarUrl}
                       />
                       <Icon
                         name={
@@ -168,9 +168,7 @@ const CreateGroupModal = ({
                         numberOfLines={3}
                         onChangeText={handleChange('description')}
                         onBlur={handleBlur('description')}
-                        value={
-                          values.description || (group && group.description)
-                        }
+                        value={values.description}
                       />
                       <Icon
                         name={
