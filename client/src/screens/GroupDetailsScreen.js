@@ -35,6 +35,7 @@ import { GROUP_QUERY, USERS_QUERY } from '../graphql/queries';
 import {
   ADD_USER_TO_GROUP_MUTATION,
   REMOVE_USER_FROM_GROUP_MUTATION,
+  EDIT_GROUP_MUTATION,
 } from '../graphql/mutations';
 
 const GroupDetailsScreen = props => {
@@ -49,6 +50,24 @@ const GroupDetailsScreen = props => {
   const { subscribeToMore, ...usersQueryResult } = useQuery(USERS_QUERY, {
     variables: { id: props.auth.user.id },
   });
+
+  const [editGroup, { ...mutationEditGroupResult }] = useMutation(
+    EDIT_GROUP_MUTATION,
+    {
+      update(cache, { data }) {
+        const { group } = cache.readQuery({
+          query: GROUP_QUERY,
+          variables: { groupId },
+        });
+        const newGroup = data.editGroup;
+        const result = { ...group, ...newGroup };
+        cache.writeQuery({
+          query: GROUP_QUERY,
+          data: result,
+        });
+      },
+    },
+  );
 
   const [addUserToGroup, { ...mutationAddUserToGroupResult }] = useMutation(
     ADD_USER_TO_GROUP_MUTATION,
@@ -215,25 +234,38 @@ const GroupDetailsScreen = props => {
             <List>
               {group.users.map((user, index) => {
                 return (
-                  <ListItem style={styles.listItem} key={index}>
-                    <Grid>
-                      <Col size={1} style={styles.col}>
-                        <Text style={{ alignSelf: 'flex-start' }}>
-                          {user.username}
-                        </Text>
-                      </Col>
-                      <Col size={1}>
-                        <Button small bordered style={styles.removeBanButton}>
-                          <Text>Remove</Text>
-                        </Button>
-                      </Col>
-                      <Col size={1}>
-                        <Button small bordered style={styles.removeBanButton}>
-                          <Text>Ban</Text>
-                        </Button>
-                      </Col>
-                    </Grid>
-                  </ListItem>
+                  <>
+                    {user.id !== props.auth.user.id && (
+                      <ListItem style={styles.listItem} key={index}>
+                        <Grid>
+                          <Col size={1} style={styles.col}>
+                            <Text style={{ alignSelf: 'flex-start' }}>
+                              {user.username}
+                            </Text>
+                          </Col>
+                          <Col size={1}>
+                            <Button
+                              onPress={() =>
+                                addUserToGroupPress(group, user.id)
+                              }
+                              small
+                              bordered
+                              style={styles.removeBanButton}>
+                              <Text>Remove</Text>
+                            </Button>
+                          </Col>
+                          <Col size={1}>
+                            <Button
+                              small
+                              bordered
+                              style={styles.removeBanButton}>
+                              <Text>Ban</Text>
+                            </Button>
+                          </Col>
+                        </Grid>
+                      </ListItem>
+                    )}
+                  </>
                 );
               })}
             </List>
@@ -250,7 +282,13 @@ const GroupDetailsScreen = props => {
           </Button>
         </FooterTab>
       </Footer>
-      <CreateGroupModal modal={modal} toggleModal={toggleModal} />
+      <CreateGroupModal
+        editGroup={editGroup}
+        isEdit={true}
+        group={group}
+        modal={modal}
+        toggleModal={toggleModal}
+      />
     </Container>
   );
 };

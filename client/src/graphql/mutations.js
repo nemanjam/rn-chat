@@ -41,6 +41,21 @@ export const CREATE_GROUP_MUTATION = gql`
   }
 `;
 
+export const EDIT_GROUP_MUTATION = gql`
+  mutation editGroup($groupId: Int!, $group: CreateGroupInput!) {
+    editGroup(groupId: $groupId, group: $group) {
+      id
+      name
+      avatar
+      description
+      owner {
+        id
+        username
+      }
+    }
+  }
+`;
+
 export const REGISTER_MUTATION = gql`
   mutation register($username: String!, $email: String!, $password: String!) {
     register(username: $username, email: $email, password: $password) {

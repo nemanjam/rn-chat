@@ -60,9 +60,13 @@ export const resolvers = {
       return user;
     },
     async removeUserFromGroup(_, { groupId, userId }, ctx) {
+      //move to logic and check if userId !== ownerId
       const group = await GroupModel.findOne({
         where: { id: groupId },
       });
+      if (group.ownerId === userId)
+        throw new Error('cannot remove owner from the group');
+
       const user = await UserModel.findOne({
         where: { id: userId },
       });
@@ -181,6 +185,17 @@ export const resolvers = {
       await chat.setGroup(_group);
 
       pubsub.publish(GROUP_ADDED_TOPIC, { [GROUP_ADDED_TOPIC]: _group });
+      return _group;
+    },
+    async editGroup(_, { group, groupId }) {
+      const _group = await GroupModel.findOne({
+        where: { id: groupId },
+      });
+
+      _group.name = group.name;
+      _group.avatar = group.avatarUrl;
+      _group.description = group.description;
+      await _group.save();
       return _group;
     },
   },

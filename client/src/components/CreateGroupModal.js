@@ -35,18 +35,40 @@ const createSchema = Yup.object().shape({
     .required('Required'),
 });
 
-const CreateGroupModal = ({ modal, toggleModal, createGroup, auth }) => {
+const CreateGroupModal = ({
+  modal,
+  toggleModal,
+  createGroup,
+  auth,
+  group,
+  isEdit,
+  editGroup,
+}) => {
   async function formSubmit(values) {
-    await createGroup({
-      variables: {
-        group: {
-          ownerId: auth.user.id,
-          name: values.name,
-          avatarUrl: values.avatarUrl,
-          description: values.description,
+    if (!isEdit) {
+      await createGroup({
+        variables: {
+          group: {
+            ownerId: auth.user.id,
+            name: values.name,
+            avatarUrl: values.avatarUrl,
+            description: values.description,
+          },
         },
-      },
-    });
+      });
+    } else {
+      await editGroup({
+        variables: {
+          groupId: group.id,
+          group: {
+            ownerId: auth.user.id,
+            name: values.name,
+            avatarUrl: values.avatarUrl,
+            description: values.description,
+          },
+        },
+      });
+    }
     toggleModal();
   }
 
@@ -60,7 +82,12 @@ const CreateGroupModal = ({ modal, toggleModal, createGroup, auth }) => {
       }}>
       <Content contentContainerStyle={styles.content}>
         <Formik
-          initialValues={{ name: '', avatarUrl: '', description: '' }}
+          enableReinitialize={true}
+          initialValues={{
+            name: (group && group.name) || '',
+            avatarUrl: (group && group.avatar) || '',
+            description: (group && group.description) || '',
+          }}
           validationSchema={createSchema}
           onSubmit={values => formSubmit(values)}>
           {({
@@ -111,7 +138,7 @@ const CreateGroupModal = ({ modal, toggleModal, createGroup, auth }) => {
                       <Input
                         onChangeText={handleChange('avatarUrl')}
                         onBlur={handleBlur('avatarUrl')}
-                        value={values.avatarUrl}
+                        value={values.avatarUrl || (group && group.avatar)}
                       />
                       <Icon
                         name={
@@ -141,7 +168,9 @@ const CreateGroupModal = ({ modal, toggleModal, createGroup, auth }) => {
                         numberOfLines={3}
                         onChangeText={handleChange('description')}
                         onBlur={handleBlur('description')}
-                        value={values.namdescriptione}
+                        value={
+                          values.description || (group && group.description)
+                        }
                       />
                       <Icon
                         name={

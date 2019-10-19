@@ -66,10 +66,11 @@ export const typeDefs = gql`
 
   type Mutation {
     createMessage(userId: Int!, chatId: Int!, text: String!): Message
-    createGroup(group: CreateGroupInput!): Group
     login(email: String!, password: String!): User
     register(username: String!, email: String!, password: String!): User
     createDefaultGroup(userId: Int!, contactId: Int!): Group
+    createGroup(group: CreateGroupInput!): Group
+    editGroup(groupId: Int!, group: CreateGroupInput!): Group
     addUserToGroup(groupId: Int!, userId: Int!): User
     removeUserFromGroup(groupId: Int!, userId: Int!): User
   }
