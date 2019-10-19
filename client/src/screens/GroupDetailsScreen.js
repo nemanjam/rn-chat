@@ -31,11 +31,12 @@ import { Grid, Col } from 'react-native-easy-grid';
 
 import CreateGroupModal from '../components/CreateGroupModal';
 
-import { GROUP_QUERY, USERS_QUERY } from '../graphql/queries';
+import { GROUP_QUERY, USERS_QUERY, GROUPS_QUERY } from '../graphql/queries';
 import {
   ADD_USER_TO_GROUP_MUTATION,
   REMOVE_USER_FROM_GROUP_MUTATION,
   EDIT_GROUP_MUTATION,
+  DELETE_GROUP_MUTATION,
 } from '../graphql/mutations';
 
 const GroupDetailsScreen = props => {
@@ -63,6 +64,28 @@ const GroupDetailsScreen = props => {
         const result = { group: { ...group, ...newGroup } };
         cache.writeQuery({
           query: GROUP_QUERY,
+          data: result,
+        });
+      },
+    },
+  );
+
+  const [deleteGroup, { ...mutationDeleteGroupResult }] = useMutation(
+    DELETE_GROUP_MUTATION,
+    {
+      update(cache, { data }) {
+        const { groups } = cache.readQuery({
+          query: GROUPS_QUERY,
+          variables: { userId: props.auth.user.id },
+        });
+        const newGroups = groups.filter(
+          group => group.id !== data.deleteGroup.id,
+        );
+        const result = { groups: newGroups };
+        console.log(groups);
+        console.log(newGroups);
+        cache.writeQuery({
+          query: GROUPS_QUERY,
           data: result,
         });
       },
@@ -123,6 +146,11 @@ const GroupDetailsScreen = props => {
 
   function isUserInGroup(group, userId) {
     return group.users.map(user => user.id).includes(userId);
+  }
+
+  async function deleteGroupPress(groupId) {
+    const { data } = await deleteGroup({ variables: { groupId } });
+    props.navigation.goBack();
   }
 
   async function addUserToGroupPress(group, userId) {
@@ -196,7 +224,7 @@ const GroupDetailsScreen = props => {
               </Button>
             </Left>
             <Right style={{ flex: 1 }}>
-              <Button small bordered>
+              <Button onPress={() => deleteGroupPress(group.id)} small bordered>
                 <Text>Delete</Text>
               </Button>
             </Right>

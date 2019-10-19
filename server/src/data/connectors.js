@@ -44,10 +44,16 @@ ChatModel.hasMany(MessageModel);
 
 GroupModel.belongsToMany(UserModel, { through: 'GroupUser' });
 UserModel.belongsToMany(GroupModel, { through: 'GroupUser' });
+
 UserModel.belongsToMany(GroupModel, {
   through: 'BannedGroupUser',
   as: 'bannedUsers',
 });
+GroupModel.belongsToMany(UserModel, {
+  through: 'BannedGroupUser',
+  as: 'bannedUsers',
+});
+
 GroupModel.belongsTo(UserModel, {
   as: 'owner',
   foreignKey: 'ownerId',

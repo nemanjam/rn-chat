@@ -56,6 +56,15 @@ export const EDIT_GROUP_MUTATION = gql`
   }
 `;
 
+export const DELETE_GROUP_MUTATION = gql`
+  mutation deleteGroup($groupId: Int!) {
+    deleteGroup(groupId: $groupId) {
+      id
+      name
+    }
+  }
+`;
+
 export const REGISTER_MUTATION = gql`
   mutation register($username: String!, $email: String!, $password: String!) {
     register(username: $username, email: $email, password: $password) {

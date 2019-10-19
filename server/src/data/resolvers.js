@@ -198,6 +198,20 @@ export const resolvers = {
       await _group.save();
       return _group;
     },
+    async deleteGroup(_, { groupId }) {
+      const group = await GroupModel.findOne({
+        where: { id: groupId },
+      });
+
+      const users = await group.getUsers();
+      const bannedUsers = await group.getBannedUsers();
+      const chat = await group.getChat();
+      await group.removeBannedUsers(bannedUsers);
+      await group.removeUsers(users);
+      await chat.destroy();
+      await group.destroy();
+      return group;
+    },
   },
   Query: {
     chat(_, args, ctx) {
