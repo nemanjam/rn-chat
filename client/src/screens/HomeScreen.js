@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, Fragment } from 'react';
 import { StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -29,7 +29,6 @@ import FriendsTab from '../components/FriendsTab';
 const HomeScreen = props => {
   const [tabs, setTabs] = useState([true, false, false, false]);
   const [segment, setSegment] = useState(0);
-  const [groupSegment, setGroupSegment] = useState(0);
   const [modal, setModal] = useState(false);
   const drawer = useRef(null);
 
@@ -69,14 +68,7 @@ const HomeScreen = props => {
       if (segment === 1) return <FriendsTab {...props} />;
     }
     if (tabs[1])
-      return (
-        <GroupsTab
-          groupSegment={groupSegment}
-          toggleModal={toggleModal}
-          modal={modal}
-          {...props}
-        />
-      );
+      return <GroupsTab toggleModal={toggleModal} modal={modal} {...props} />;
     if (tabs[2]) return <ChatsTab {...props} />;
     if (tabs[3]) return <Profile {...props} />;
   }
@@ -131,26 +123,8 @@ adb connect 127.0.0.1:62001
             <Right />
           </Header>
         )}
-        {tabs[1] && (
-          <Segment>
-            <Button
-              first
-              active={groupSegment === 0 ? true : false}
-              onPress={() => setGroupSegment(0)}>
-              <Text>All Groups</Text>
-            </Button>
-            <Button
-              last
-              active={groupSegment === 1 ? true : false}
-              onPress={() => setGroupSegment(1)}>
-              <Text>My Groups</Text>
-            </Button>
-          </Segment>
-        )}
 
-        <Content padder={!tabs[3]} contentContainerStyle={{ paddingTop: 0 }}>
-          {getContentComponent()}
-        </Content>
+        <Fragment>{getContentComponent()}</Fragment>
 
         <Footer>
           <FooterTab>

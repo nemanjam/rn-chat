@@ -235,8 +235,17 @@ const GroupDetailsScreen = props => {
           ) : (
             <CardItem footer bordered>
               <Left>
-                <Button small bordered onPress={() => {}}>
-                  <Text>Join</Text>
+                <Button
+                  small
+                  bordered
+                  onPress={() =>
+                    addUserToGroupPress(group, props.auth.user.id)
+                  }>
+                  <Text>
+                    {!isUserInGroup(group, props.auth.user.id)
+                      ? 'Join'
+                      : 'Leave'}
+                  </Text>
                 </Button>
               </Left>
             </CardItem>

@@ -18,6 +18,7 @@ import {
   Row,
   Col,
   Spinner,
+  Content,
 } from 'native-base';
 
 import { USER_QUERY } from '../graphql/queries';
@@ -30,36 +31,39 @@ const Profile = props => {
   if (error) return <Text>{JSON.stringify(error, null, 2)}</Text>;
   const { user } = data;
   return (
-    <Card style={styles.card}>
-      <CardItem style={styles.cardItem}>
-        <Body>
-          <Image source={{ uri: user.avatar }} style={styles.image} />
-        </Body>
-      </CardItem>
-      <CardItem>
-        <Left>
-          <Col>
-            <Text style={styles.usernameText}>{user.username}</Text>
-            <Text style={styles.timeAgo}>{`• ${moment(
-              user.lastActiveAt,
-            ).fromNow()}`}</Text>
-          </Col>
-        </Left>
-        <Body />
-        <Right>
-          <Button bordered small style={styles.friendButton}>
-            <Text style={styles.buttonText}>Add As Friend</Text>
-          </Button>
-        </Right>
-      </CardItem>
-      <CardItem>
-        <Text>{user.description}</Text>
-      </CardItem>
-    </Card>
+    <Content contentContainerStyle={styles.content}>
+      <Card style={styles.card}>
+        <CardItem style={styles.cardItem}>
+          <Body>
+            <Image source={{ uri: user.avatar }} style={styles.image} />
+          </Body>
+        </CardItem>
+        <CardItem>
+          <Left>
+            <Col>
+              <Text style={styles.usernameText}>{user.username}</Text>
+              <Text style={styles.timeAgo}>{`• ${moment(
+                user.lastActiveAt,
+              ).fromNow()}`}</Text>
+            </Col>
+          </Left>
+          <Body />
+          <Right>
+            <Button bordered small style={styles.friendButton}>
+              <Text style={styles.buttonText}>Add As Friend</Text>
+            </Button>
+          </Right>
+        </CardItem>
+        <CardItem>
+          <Text>{user.description}</Text>
+        </CardItem>
+      </Card>
+    </Content>
   );
 };
 
 const styles = StyleSheet.create({
+  content: { paddingTop: 0 },
   usernameText: {
     fontWeight: 'bold',
     fontSize: 18,

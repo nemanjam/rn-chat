@@ -1,6 +1,6 @@
 import Sequelize from 'sequelize';
 import GraphQLDate from 'graphql-date';
-import { withFilter } from 'apollo-server';
+import { withFilter, ApolloError } from 'apollo-server';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import faker from 'faker';
@@ -60,12 +60,17 @@ export const resolvers = {
       return user;
     },
     async removeUserFromGroup(_, { groupId, userId }, ctx) {
-      //move to logic and check if userId !== ownerId
+      //move to logic
       const group = await GroupModel.findOne({
         where: { id: groupId },
       });
       if (group.ownerId === userId)
-        throw new Error('cannot remove owner from the group');
+        throw new ApolloError('owner can delete but not leave group', 404);
+
+      const users = await group.getUsers();
+      const isInTheUsers = users.map(user => user.id).includes(userId);
+
+      if (!isInTheUsers) throw new ApolloError('user is not in the group', 404);
 
       const user = await UserModel.findOne({
         where: { id: userId },
@@ -73,11 +78,6 @@ export const resolvers = {
       const chat = await group.getChat();
       await user.removeChat(chat);
       await user.removeGroup(group);
-      const users = await group.getUsers();
-      if (users.length === 0) {
-        chat.destroy();
-        group.destroy();
-      }
       return user;
     },
     async createDefaultGroup(_, { userId, contactId }, ctx) {

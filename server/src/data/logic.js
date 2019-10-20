@@ -82,7 +82,9 @@ export const queryLogic = {
     return authUser.getGroups({ where: { name: { [Op.not]: 'default' } } });
   },
   async allGroups(_, args, ctx) {
-    return GroupModel.findAll({ where: { name: { [Op.not]: 'default' } } });
+    return GroupModel.findAll({
+      where: { name: { [Op.not]: 'default' }, isPrivate: false },
+    });
   },
   async defaultGroups(_, args, ctx) {
     const authUser = await isUserAuth(args.userId, ctx);
