@@ -95,6 +95,7 @@ const GroupDetailsScreen = props => {
     ADD_USER_TO_GROUP_MUTATION,
     {
       update(cache, { data }) {
+        // first query
         const { group } = cache.readQuery({
           query: GROUP_QUERY,
           variables: { groupId },
@@ -106,6 +107,21 @@ const GroupDetailsScreen = props => {
           query: GROUP_QUERY,
           data: result,
         });
+
+        //second query
+        const { groups } = cache.readQuery({
+          query: GROUPS_QUERY,
+          variables: { userId: newUser.id },
+        });
+
+        const addedGroup = newUser.groups.find(group => group.id === groupId);
+        const result1 = { groups: [...groups, addedGroup] };
+
+        cache.writeQuery({
+          query: GROUPS_QUERY,
+          variables: { userId: newUser.id },
+          data: result1,
+        });
       },
     },
   );
@@ -114,6 +130,7 @@ const GroupDetailsScreen = props => {
     REMOVE_USER_FROM_GROUP_MUTATION,
     {
       update(cache, { data }) {
+        // first query
         const { group } = cache.readQuery({
           query: GROUP_QUERY,
           variables: { groupId },
@@ -124,6 +141,21 @@ const GroupDetailsScreen = props => {
         cache.writeQuery({
           query: GROUP_QUERY,
           data: result,
+        });
+
+        //second query
+        const { groups } = cache.readQuery({
+          query: GROUPS_QUERY,
+          variables: { userId: newUser.id },
+        });
+
+        const restGroups = groups.filter(group => group.id !== groupId);
+        const result1 = { groups: [...restGroups] };
+
+        cache.writeQuery({
+          query: GROUPS_QUERY,
+          variables: { userId: newUser.id },
+          data: result1,
         });
       },
     },

@@ -67,12 +67,17 @@ const GroupsTab = props => {
   if (loading) return <Spinner />;
   if (error) return <Text>{JSON.stringify(error, null, 2)}</Text>;
 
+  function tabChanged(tabNo) {
+    // if (tabNo === 0) allGroupsQueryResult.refetch();
+    // if (tabNo === 1) myGroupsQueryResult.refetch();
+  }
+
   const { groups } = myGroupsQueryResult.data;
   const allGroups = allGroupsQueryResult.data.allGroups;
 
   return (
     <>
-      <Tabs onChangeTab={({ i, ref, from }) => console.log(i)}>
+      <Tabs onChangeTab={({ i, ref, from }) => tabChanged(i)}>
         <Tab heading="All Groups">
           <List style={styles.list}>
             {allGroups.map((group, index) => {
