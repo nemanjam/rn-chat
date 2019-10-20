@@ -226,6 +226,9 @@ export const resolvers = {
     async groups(_, args, ctx) {
       return queryLogic.groups(_, args, ctx);
     },
+    async allGroups(_, args, ctx) {
+      return queryLogic.allGroups(_, args, ctx);
+    },
     async defaultGroups(_, args, ctx) {
       return queryLogic.defaultGroups(_, args, ctx);
     },

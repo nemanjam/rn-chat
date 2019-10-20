@@ -61,6 +61,7 @@ export const typeDefs = gql`
     chats(userId: Int!): [Chat]
     group(groupId: Int!): Group
     groups(userId: Int!): [Group]
+    allGroups: [Group]
     defaultGroups(userId: Int!): [Group]
   }
 

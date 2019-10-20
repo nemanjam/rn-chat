@@ -60,7 +60,9 @@ export const queryLogic = {
     return authUser.getChats();
   },
   async group(_, args, ctx) {
+    /*
     //if authUser is in that group or not in banned array
+    //treba public private group
     const authUser = await getAuthenticatedUser(ctx);
     const groupIds = await authUser
       .getGroups({
@@ -72,10 +74,15 @@ export const queryLogic = {
       return GroupModel.findOne({ where: { id: args.groupId } });
     }
     throw new ForbiddenError('Unauthorized');
+    */
+    return GroupModel.findOne({ where: { id: args.groupId } });
   },
   async groups(_, args, ctx) {
     const authUser = await isUserAuth(args.userId, ctx);
-    return authUser.getGroups();
+    return authUser.getGroups({ where: { name: { [Op.not]: 'default' } } });
+  },
+  async allGroups(_, args, ctx) {
+    return GroupModel.findAll({ where: { name: { [Op.not]: 'default' } } });
   },
   async defaultGroups(_, args, ctx) {
     const authUser = await isUserAuth(args.userId, ctx);

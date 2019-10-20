@@ -52,6 +52,17 @@ export const GROUPS_QUERY = gql`
   }
 `;
 
+export const ALL_GROUPS_QUERY = gql`
+  query AllGroupsQuery {
+    allGroups {
+      id
+      name
+      avatar
+      description
+    }
+  }
+`;
+
 export const USER_QUERY = gql`
   query UserQuery($id: Int!) {
     user(id: $id) {
