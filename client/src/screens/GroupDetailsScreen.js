@@ -82,10 +82,9 @@ const GroupDetailsScreen = props => {
           group => group.id !== data.deleteGroup.id,
         );
         const result = { groups: newGroups };
-        console.log(groups);
-        console.log(newGroups);
         cache.writeQuery({
           query: GROUPS_QUERY,
+          variables: { userId: props.auth.user.id }, //needed
           data: result,
         });
       },
@@ -120,7 +119,6 @@ const GroupDetailsScreen = props => {
           variables: { groupId },
         });
         const newUser = data.removeUserFromGroup;
-        console.log(newUser);
         const newUsers = group.users.filter(user => user.id !== newUser.id);
         const result = { group: { ...group, users: newUsers } };
         cache.writeQuery({

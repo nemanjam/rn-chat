@@ -39,6 +39,8 @@ const GroupsTab = props => {
     variables: { userId: props.auth.user.id },
   });
 
+  useEffect(() => {}, []);
+
   useEffect(() => {
     if (!queryResult.loading) subscribeToNewGroups();
   }, [queryResult.loading]);

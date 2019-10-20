@@ -31,7 +31,7 @@ const createSchema = Yup.object().shape({
     .required('Required'),
   description: Yup.string()
     .min(10, 'Too Short.')
-    .max(100, 'Too Long.')
+    .max(150, 'Too Long.')
     .required('Required'),
 });
 

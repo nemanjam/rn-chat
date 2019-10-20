@@ -66,6 +66,6 @@ UserModel.hasOne(GroupModel, {
 ChatModel.belongsTo(GroupModel);
 GroupModel.hasOne(ChatModel);
 
-// db.sync({ force: true })
-//   .then(async () => await seed())
-//   .catch(error => console.log(error));
+db.sync({ force: true })
+  .then(async () => await seed())
+  .catch(error => console.log(error));

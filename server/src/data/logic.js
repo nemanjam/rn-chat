@@ -113,7 +113,7 @@ export const userLogic = {
     return user.getFriends();
   },
   async groups(user, args, ctx) {
-    // await isUserAuth(user.id, ctx);
+    await isUserAuth(user.id, ctx);
     return user.getGroups();
   },
   jwt(user, args, ctx) {
