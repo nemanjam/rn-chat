@@ -124,7 +124,11 @@ adb connect 127.0.0.1:62001
           </Header>
         )}
 
-        <Fragment>{getContentComponent()}</Fragment>
+        <Content
+          padder={tabs[0] || tabs[2]}
+          contentContainerStyle={styles.content}>
+          {getContentComponent()}
+        </Content>
 
         <Footer>
           <FooterTab>
@@ -152,6 +156,7 @@ adb connect 127.0.0.1:62001
 };
 
 const styles = StyleSheet.create({
+  content: { paddingTop: 0 },
   tabText: {
     fontSize: 10,
   },

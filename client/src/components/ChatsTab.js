@@ -32,44 +32,40 @@ const ChatsTab = props => {
   if (error) return <Text>{JSON.stringify(error, null, 2)}</Text>;
   const { defaultGroups } = data;
   return (
-    <Content padder contentContainerStyle={styles.content}>
-      <List>
-        {defaultGroups.map((group, index) => {
-          const { chat } = group;
-          return (
-            <ListItem
-              style={styles.listItem}
-              avatar
-              button
-              key={index}
-              onPress={() =>
-                props.navigation.navigate('Chats', { groupId: group.id })
-              }>
-              <Left>
-                <Thumbnail source={{ uri: chat.users[1].avatar }} />
-              </Left>
-              <Body style={styles.body}>
-                <Text>{chat.users[1].username}</Text>
-                <Text note numberOfLines={1} style={styles.lastMessage}>
-                  {idx(chat, _ => _.lastMessage.text) || ''}
-                </Text>
-              </Body>
-              <Right>
-                <Text note>
-                  {idx(chat, _ =>
-                    moment(_.lastMessage.createdAt).format('LT'),
-                  ) || 'never'}
-                </Text>
-              </Right>
-            </ListItem>
-          );
-        })}
-      </List>
-    </Content>
+    <List>
+      {defaultGroups.map((group, index) => {
+        const { chat } = group;
+        return (
+          <ListItem
+            style={styles.listItem}
+            avatar
+            button
+            key={index}
+            onPress={() =>
+              props.navigation.navigate('Chats', { groupId: group.id })
+            }>
+            <Left>
+              <Thumbnail source={{ uri: chat.users[1].avatar }} />
+            </Left>
+            <Body style={styles.body}>
+              <Text>{chat.users[1].username}</Text>
+              <Text note numberOfLines={1} style={styles.lastMessage}>
+                {idx(chat, _ => _.lastMessage.text) || ''}
+              </Text>
+            </Body>
+            <Right>
+              <Text note>
+                {idx(chat, _ => moment(_.lastMessage.createdAt).format('LT')) ||
+                  'never'}
+              </Text>
+            </Right>
+          </ListItem>
+        );
+      })}
+    </List>
   );
 };
 const styles = StyleSheet.create({
-  content: { paddingTop: 0 },
   listItem: {
     marginLeft: 0,
   },

@@ -28,34 +28,32 @@ const UsersTab = props => {
   if (error) return <Text>{JSON.stringify(error, null, 2)}</Text>;
   const { users } = data;
   return (
-    <Content padder contentContainerStyle={styles.content}>
-      <List>
-        {users.map((user, index) => {
-          return (
-            <ListItem
-              style={styles.listItem}
-              key={index}
-              thumbnail
-              button
-              onPress={() =>
-                props.navigation.navigate('UserProfile', {
-                  userId: user.id,
-                })
-              }>
-              <Left>
-                <Thumbnail source={{ uri: user.avatar }} />
-              </Left>
-              <Body>
-                <Text>{user.username}</Text>
-                <Text note numberOfLines={2}>
-                  {user.description}
-                </Text>
-              </Body>
-            </ListItem>
-          );
-        })}
-      </List>
-    </Content>
+    <List>
+      {users.map((user, index) => {
+        return (
+          <ListItem
+            style={styles.listItem}
+            key={index}
+            thumbnail
+            button
+            onPress={() =>
+              props.navigation.navigate('UserProfile', {
+                userId: user.id,
+              })
+            }>
+            <Left>
+              <Thumbnail source={{ uri: user.avatar }} />
+            </Left>
+            <Body>
+              <Text>{user.username}</Text>
+              <Text note numberOfLines={2}>
+                {user.description}
+              </Text>
+            </Body>
+          </ListItem>
+        );
+      })}
+    </List>
   );
 };
 
@@ -63,7 +61,6 @@ const styles = StyleSheet.create({
   listItem: {
     marginLeft: 0,
   },
-  content: { paddingTop: 0 },
 });
 
 export default connect(

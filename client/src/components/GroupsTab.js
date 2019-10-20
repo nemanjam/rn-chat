@@ -72,9 +72,9 @@ const GroupsTab = props => {
 
   return (
     <>
-      <Tabs>
+      <Tabs onChangeTab={({ i, ref, from }) => console.log(i)}>
         <Tab heading="All Groups">
-          <List>
+          <List style={styles.list}>
             {allGroups.map((group, index) => {
               return (
                 <ListItem
@@ -112,7 +112,7 @@ const GroupsTab = props => {
           </List>
         </Tab>
         <Tab heading="My Groups">
-          <List>
+          <List style={styles.list}>
             {groups.map((group, index) => {
               return (
                 <ListItem
@@ -150,18 +150,16 @@ const GroupsTab = props => {
           </List>
         </Tab>
       </Tabs>
-      <Content padder contentContainerStyle={styles.content}>
-        <CreateGroupModal
-          createGroup={createGroup}
-          modal={props.modal}
-          toggleModal={props.toggleModal}
-        />
-      </Content>
+      <CreateGroupModal
+        createGroup={createGroup}
+        modal={props.modal}
+        toggleModal={props.toggleModal}
+      />
     </>
   );
 };
 const styles = StyleSheet.create({
-  content: { paddingTop: 0 },
+  list: { marginLeft: 8 },
   listItem: {
     marginLeft: 0,
   },
