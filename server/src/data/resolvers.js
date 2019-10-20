@@ -215,13 +215,13 @@ export const resolvers = {
   },
   Query: {
     chat(_, args, ctx) {
-      return queryLogic.chat(_, args);
+      return queryLogic.chat(_, args, ctx);
     },
     async chats(_, args, ctx) {
       return queryLogic.chats(_, args, ctx);
     },
     group(_, args, ctx) {
-      return queryLogic.group(_, args);
+      return queryLogic.group(_, args, ctx);
     },
     async groups(_, args, ctx) {
       return queryLogic.groups(_, args, ctx);

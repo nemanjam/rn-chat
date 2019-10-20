@@ -215,21 +215,34 @@ const GroupDetailsScreen = props => {
               <Text style={styles.description}>{group.description}</Text>
             </Body>
           </CardItem>
-          <CardItem footer bordered>
-            <Left>
-              <Button small bordered onPress={() => setModal(true)}>
-                <Text>Edit</Text>
-              </Button>
-            </Left>
-            <Right style={{ flex: 1 }}>
-              <Button onPress={() => deleteGroupPress(group.id)} small bordered>
-                <Text>Delete</Text>
-              </Button>
-            </Right>
-          </CardItem>
-          {tabs[0] && (
+          {group.owner.id === props.auth.user.id ? (
+            <CardItem footer bordered>
+              <Left>
+                <Button small bordered onPress={() => setModal(true)}>
+                  <Text>Edit</Text>
+                </Button>
+              </Left>
+              <Right style={{ flex: 1 }}>
+                <Button
+                  onPress={() => deleteGroupPress(group.id)}
+                  small
+                  bordered>
+                  <Text>Delete</Text>
+                </Button>
+              </Right>
+            </CardItem>
+          ) : (
+            <CardItem footer bordered>
+              <Left>
+                <Button small bordered onPress={() => {}}>
+                  <Text>Join</Text>
+                </Button>
+              </Left>
+            </CardItem>
+          )}
+          {group.owner.id !== props.auth.user.id && (
             <List>
-              {users.map((user, index) => {
+              {group.users.map((user, index) => {
                 return (
                   <ListItem style={styles.listItem} key={index} thumbnail>
                     <Left>
@@ -241,73 +254,98 @@ const GroupDetailsScreen = props => {
                         {user.description}
                       </Text>
                     </Body>
-                    <Right>
-                      <Button
-                        small
-                        bordered={!isUserInGroup(group, user.id)}
-                        onPress={() => addUserToGroupPress(group, user.id)}>
-                        <Text>
-                          {isUserInGroup(group, user.id) ? 'Remove' : 'Add'}
-                        </Text>
-                      </Button>
-                    </Right>
                   </ListItem>
                 );
               })}
             </List>
           )}
-          {tabs[1] && (
-            <List>
-              {group.users.map((user, index) => {
-                return (
-                  <Fragment key={index}>
-                    {user.id !== props.auth.user.id && (
-                      <ListItem style={styles.listItem}>
-                        <Grid>
-                          <Col size={1} style={styles.col}>
-                            <Text style={{ alignSelf: 'flex-start' }}>
-                              {user.username}
+          {group.owner.id === props.auth.user.id && (
+            <Fragment>
+              {tabs[0] && (
+                <List>
+                  {users.map((user, index) => {
+                    return (
+                      <ListItem style={styles.listItem} key={index} thumbnail>
+                        <Left>
+                          <Thumbnail source={{ uri: user.avatar }} />
+                        </Left>
+                        <Body>
+                          <Text>{user.username}</Text>
+                          <Text note numberOfLines={1}>
+                            {user.description}
+                          </Text>
+                        </Body>
+                        <Right>
+                          <Button
+                            small
+                            bordered={!isUserInGroup(group, user.id)}
+                            onPress={() => addUserToGroupPress(group, user.id)}>
+                            <Text>
+                              {isUserInGroup(group, user.id) ? 'Remove' : 'Add'}
                             </Text>
-                          </Col>
-                          <Col size={1}>
-                            <Button
-                              onPress={() =>
-                                addUserToGroupPress(group, user.id)
-                              }
-                              small
-                              bordered
-                              style={styles.removeBanButton}>
-                              <Text>Remove</Text>
-                            </Button>
-                          </Col>
-                          <Col size={1}>
-                            <Button
-                              small
-                              bordered
-                              style={styles.removeBanButton}>
-                              <Text>Ban</Text>
-                            </Button>
-                          </Col>
-                        </Grid>
+                          </Button>
+                        </Right>
                       </ListItem>
-                    )}
-                  </Fragment>
-                );
-              })}
-            </List>
+                    );
+                  })}
+                </List>
+              )}
+              {tabs[1] && (
+                <List>
+                  {group.users.map((user, index) => {
+                    return (
+                      <Fragment key={index}>
+                        {user.id !== props.auth.user.id && (
+                          <ListItem style={styles.listItem}>
+                            <Grid>
+                              <Col size={1} style={styles.col}>
+                                <Text style={{ alignSelf: 'flex-start' }}>
+                                  {user.username}
+                                </Text>
+                              </Col>
+                              <Col size={1}>
+                                <Button
+                                  onPress={() =>
+                                    addUserToGroupPress(group, user.id)
+                                  }
+                                  small
+                                  bordered
+                                  style={styles.removeBanButton}>
+                                  <Text>Remove</Text>
+                                </Button>
+                              </Col>
+                              <Col size={1}>
+                                <Button
+                                  small
+                                  bordered
+                                  style={styles.removeBanButton}>
+                                  <Text>Ban</Text>
+                                </Button>
+                              </Col>
+                            </Grid>
+                          </ListItem>
+                        )}
+                      </Fragment>
+                    );
+                  })}
+                </List>
+              )}
+            </Fragment>
           )}
         </Card>
       </Content>
-      <Footer>
-        <FooterTab>
-          <Button active={tabs[0]} onPress={() => toggleTab1()}>
-            <Text style={styles.tabText}>All Users</Text>
-          </Button>
-          <Button active={tabs[1]} onPress={() => toggleTab2()}>
-            <Text style={styles.tabText}>Group Users</Text>
-          </Button>
-        </FooterTab>
-      </Footer>
+      {group.owner.id === props.auth.user.id && (
+        <Footer>
+          <FooterTab>
+            <Button active={tabs[0]} onPress={() => toggleTab1()}>
+              <Text style={styles.tabText}>All Users</Text>
+            </Button>
+            <Button active={tabs[1]} onPress={() => toggleTab2()}>
+              <Text style={styles.tabText}>Group Users</Text>
+            </Button>
+          </FooterTab>
+        </Footer>
+      )}
       <CreateGroupModal
         editGroup={editGroup}
         isEdit={true}
@@ -339,6 +377,9 @@ const styles = StyleSheet.create({
   col: { justifyContent: 'center' },
   ownerText: { fontWeight: 'bold' },
   description: { fontSize: 14 },
+  listItem: {
+    marginLeft: 10,
+  },
 });
 
 export default connect(
