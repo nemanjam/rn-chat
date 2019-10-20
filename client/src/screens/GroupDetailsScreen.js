@@ -31,7 +31,12 @@ import { Grid, Col } from 'react-native-easy-grid';
 
 import CreateGroupModal from '../components/CreateGroupModal';
 
-import { GROUP_QUERY, USERS_QUERY, GROUPS_QUERY } from '../graphql/queries';
+import {
+  GROUP_QUERY,
+  USERS_QUERY,
+  GROUPS_QUERY,
+  ALL_GROUPS_QUERY,
+} from '../graphql/queries';
 import {
   ADD_USER_TO_GROUP_MUTATION,
   REMOVE_USER_FROM_GROUP_MUTATION,
@@ -48,7 +53,7 @@ const GroupDetailsScreen = props => {
     variables: { groupId },
   });
 
-  const { subscribeToMore, ...usersQueryResult } = useQuery(USERS_QUERY, {
+  const { ...usersQueryResult } = useQuery(USERS_QUERY, {
     variables: { id: props.auth.user.id },
   });
 
@@ -86,6 +91,20 @@ const GroupDetailsScreen = props => {
           query: GROUPS_QUERY,
           variables: { userId: props.auth.user.id }, //needed
           data: result,
+        });
+
+        const { allGroups } = cache.readQuery({
+          query: ALL_GROUPS_QUERY,
+          variables: {},
+        });
+        const newGroups1 = allGroups.filter(
+          group => group.id !== data.deleteGroup.id,
+        );
+        const result1 = { allGroups: newGroups1 };
+        cache.writeQuery({
+          query: ALL_GROUPS_QUERY,
+          variables: {},
+          data: result1,
         });
       },
     },

@@ -27,7 +27,7 @@ import { CREATE_GROUP_MUTATION } from '../graphql/mutations';
 import { GROUP_ADDED_SUBSCRIPTION } from '../graphql/subscriptions';
 
 const GroupsTab = props => {
-  const { subscribeToMore, ...myGroupsQueryResult } = useQuery(GROUPS_QUERY, {
+  const { ...myGroupsQueryResult } = useQuery(GROUPS_QUERY, {
     variables: { userId: props.auth.user.id },
   });
 
@@ -39,8 +39,12 @@ const GroupsTab = props => {
     if (!myGroupsQueryResult.loading) subscribeToNewGroups();
   }, [myGroupsQueryResult.loading]);
 
+  useEffect(() => {
+    if (!allGroupsQueryResult.loading) subscribeToAllNewGroups();
+  }, [allGroupsQueryResult.loading]);
+
   function subscribeToNewGroups() {
-    subscribeToMore({
+    myGroupsQueryResult.subscribeToMore({
       document: GROUP_ADDED_SUBSCRIPTION,
       variables: {
         userId: props.auth.user.id,
@@ -51,6 +55,24 @@ const GroupsTab = props => {
         const result = {
           ...previous,
           groups: [newGroup, ...previous.groups],
+        };
+        return result;
+      },
+    });
+  }
+
+  function subscribeToAllNewGroups() {
+    allGroupsQueryResult.subscribeToMore({
+      document: GROUP_ADDED_SUBSCRIPTION,
+      variables: {
+        userId: props.auth.user.id,
+      },
+      updateQuery: (previous, { subscriptionData }) => {
+        if (!subscriptionData.data) return previous;
+        const newGroup = subscriptionData.data.groupAdded;
+        const result = {
+          ...previous,
+          allGroups: [newGroup, ...previous.allGroups],
         };
         return result;
       },
