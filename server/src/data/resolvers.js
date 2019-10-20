@@ -21,6 +21,8 @@ import { queryLogic, userLogic } from './logic';
 //
 const MESSAGE_ADDED_TOPIC = 'messageAdded';
 const GROUP_ADDED_TOPIC = 'groupAdded';
+const DEFAULT_GROUP_ADDED_TOPIC = 'defaultGroupAdded';
+
 const Op = Sequelize.Op;
 
 export const resolvers = {
@@ -30,8 +32,12 @@ export const resolvers = {
     messageAdded: {
       subscribe: withFilter(
         () => pubsub.asyncIterator(MESSAGE_ADDED_TOPIC),
-        (payload, args) => {
-          return Boolean(args.chatId === payload.messageAdded.chatId);
+        async (payload, args) => {
+          const group = await GroupModel.findOne({
+            where: { id: args.groupId },
+          });
+          const chat = await group.getChat();
+          return Boolean(chat.id === payload.messageAdded.chatId);
         },
       ),
     },
@@ -41,6 +47,17 @@ export const resolvers = {
         (payload, args) => {
           // console.log(JSON.stringify(payload, null, 2));
           return Boolean(true /*args.userId === payload.groupAdded.userId*/);
+        },
+      ),
+    },
+    defaultGroupAdded: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(DEFAULT_GROUP_ADDED_TOPIC),
+        (payload, args) => {
+          console.log(JSON.stringify(payload, null, 2));
+          return Boolean(
+            true /*args.userId === payload.defaultGroupAdded.userId*/,
+          );
         },
       ),
     },
@@ -112,7 +129,7 @@ export const resolvers = {
       const group = await GroupModel.create({ name: 'default' });
       await chat.setGroup(group);
       await user.addGroup(group);
-      await contact.addGroup(group);
+      await contact.addGroup(group); //
       return group;
     },
     login(_, { email, password }, ctx) {
@@ -162,11 +179,17 @@ export const resolvers = {
         return Promise.reject('email already exists'); // email already exists
       });
     },
-    async createMessage(_, { userId, chatId, text }) {
+    async createMessage(_, { userId, groupId, text }) {
+      //treba default group id mesto chat id
+      const group = await GroupModel.findOne({ where: { id: groupId } });
+      const chat = await group.getChat();
       const message = await MessageModel.create({
         userId,
-        chatId,
+        chatId: chat.id,
         text,
+      });
+      pubsub.publish(DEFAULT_GROUP_ADDED_TOPIC, {
+        [DEFAULT_GROUP_ADDED_TOPIC]: group,
       });
       pubsub.publish(MESSAGE_ADDED_TOPIC, { [MESSAGE_ADDED_TOPIC]: message });
       return message;

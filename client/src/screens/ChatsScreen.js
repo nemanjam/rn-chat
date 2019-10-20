@@ -50,13 +50,11 @@ const ChatsScreen = props => {
     subscribeToMore({
       document: MESSAGE_ADDED_SUBSCRIPTION,
       variables: {
-        chatId: queryResult.data.group.chat.id,
+        groupId: queryResult.data.group.id,
       },
       updateQuery: (previous, { subscriptionData }) => {
         if (!subscriptionData.data) return previous;
         const newMessage = subscriptionData.data.messageAdded;
-        console.log(newMessage);
-        console.log(previous);
         const result = {
           ...previous,
           group: {
@@ -67,7 +65,6 @@ const ChatsScreen = props => {
             },
           },
         };
-        console.log(result);
         return result;
       },
     });
@@ -77,7 +74,7 @@ const ChatsScreen = props => {
     const text = messages[0].text;
 
     await createMessage({
-      variables: { userId, chatId: queryResult.data.group.chat.id, text },
+      variables: { userId, groupId: queryResult.data.group.id, text },
     });
   }
 

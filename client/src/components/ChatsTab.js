@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import _ from 'lodash';
@@ -23,13 +23,44 @@ import {
 } from 'native-base';
 
 import { DEFAULT_GROUPS_QUERY } from '../graphql/queries';
+import { DEFAULT_GROUP_ADDED_SUBSCRIPTION } from '../graphql/subscriptions';
 
 const ChatsTab = props => {
-  const { data, loading, error } = useQuery(DEFAULT_GROUPS_QUERY, {
-    variables: { userId: props.auth.user.id },
-  });
+  const { subscribeToMore, data, loading, error } = useQuery(
+    DEFAULT_GROUPS_QUERY,
+    {
+      variables: { userId: props.auth.user.id },
+    },
+  );
+
+  useEffect(() => {
+    if (!loading) subscribeToNewChats();
+    console.log(loading);
+  }, [loading]);
+
+  function subscribeToNewChats() {
+    subscribeToMore({
+      document: DEFAULT_GROUP_ADDED_SUBSCRIPTION,
+      variables: {
+        userId: props.auth.user.id,
+      },
+      updateQuery: (previous, { subscriptionData }) => {
+        if (!subscriptionData.data) return previous;
+        const newDefaultGroup = subscriptionData.data.defaultGroupAdded;
+        const result = {
+          ...previous,
+          defaultGroups: [newDefaultGroup, ...previous.defaultGroups],
+        };
+        console.log(previous);
+        console.log(newDefaultGroup);
+        console.log(result);
+        return result;
+      },
+    });
+  }
   if (loading) return <Spinner />;
   if (error) return <Text>{JSON.stringify(error, null, 2)}</Text>;
+
   const { defaultGroups } = data;
   return (
     <List>

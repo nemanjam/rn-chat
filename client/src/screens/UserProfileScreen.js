@@ -42,7 +42,6 @@ const UserProfileScreen = props => {
     const { data } = await createDefaultGroup({
       variables: { userId: props.auth.user.id, contactId: userId },
     });
-    console.log(data);
     props.navigation.navigate('Chats', {
       groupId: data.createDefaultGroup.id,
     });

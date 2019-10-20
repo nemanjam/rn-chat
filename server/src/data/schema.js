@@ -68,7 +68,7 @@ export const typeDefs = gql`
   }
 
   type Mutation {
-    createMessage(userId: Int!, chatId: Int!, text: String!): Message
+    createMessage(userId: Int!, groupId: Int!, text: String!): Message
     login(email: String!, password: String!): User
     register(username: String!, email: String!, password: String!): User
     createDefaultGroup(userId: Int!, contactId: Int!): Group
@@ -80,8 +80,9 @@ export const typeDefs = gql`
   }
 
   type Subscription {
-    messageAdded(chatId: Int!): Message
+    messageAdded(groupId: Int!): Message
     groupAdded(userId: Int!): Group
+    defaultGroupAdded(userId: Int!): Group
   }
 
   schema {

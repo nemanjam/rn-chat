@@ -145,10 +145,6 @@ export const DEFAULT_GROUPS_QUERY = gql`
     defaultGroups(userId: $userId) {
       id
       name
-      users {
-        username
-        avatar
-      }
       chat {
         id
         createdAt
@@ -160,16 +156,6 @@ export const DEFAULT_GROUPS_QUERY = gql`
         users {
           username
           avatar
-        }
-        messages {
-          id
-          text
-          createdAt
-          from {
-            id
-            username
-            avatar
-          }
         }
       }
     }
