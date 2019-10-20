@@ -22,6 +22,7 @@ export const GROUP_ADDED_SUBSCRIPTION = gql`
       name
       avatar
       description
+      isPrivate
       owner {
         id
         username

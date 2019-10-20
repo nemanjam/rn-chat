@@ -209,6 +209,7 @@ const GroupDetailsScreen = props => {
           </CardItem>
           <CardItem>
             <Text style={styles.ownerText}>Owner: {group.owner.username}</Text>
+            <Text note>{group.isPrivate ? 'Private' : 'Public'}</Text>
           </CardItem>
           <CardItem>
             <Body>
@@ -375,7 +376,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
   },
   col: { justifyContent: 'center' },
-  ownerText: { fontWeight: 'bold' },
+  ownerText: { fontWeight: 'bold', marginRight: 5 },
   description: { fontSize: 14 },
   listItem: {
     marginLeft: 10,

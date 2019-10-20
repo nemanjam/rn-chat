@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Fragment } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 
@@ -73,36 +73,39 @@ const GroupsTab = props => {
         <List>
           {allGroups.map((group, index) => {
             return (
-              <ListItem
-                style={styles.listItem}
-                avatar
-                button
-                key={index}
-                onPress={() =>
-                  props.navigation.navigate('Chats', { groupId: group.id })
-                }>
-                <Left>
-                  <Thumbnail square source={{ uri: group.avatar }} />
-                </Left>
-                <Body style={styles.body}>
-                  <Text>{group.name}</Text>
-                  <Text note numberOfLines={2} style={styles.lastMessage}>
-                    {group.description}
-                  </Text>
-                </Body>
-                <Right>
-                  <Button
-                    bordered
-                    small
+              <Fragment key={index}>
+                {!group.isPrivate && (
+                  <ListItem
+                    style={styles.listItem}
+                    avatar
+                    button
                     onPress={() =>
-                      props.navigation.navigate('GroupDetails', {
-                        groupId: group.id,
-                      })
+                      props.navigation.navigate('Chats', { groupId: group.id })
                     }>
-                    <Text>Details</Text>
-                  </Button>
-                </Right>
-              </ListItem>
+                    <Left>
+                      <Thumbnail square source={{ uri: group.avatar }} />
+                    </Left>
+                    <Body style={styles.body}>
+                      <Text>{group.name}</Text>
+                      <Text note numberOfLines={2} style={styles.lastMessage}>
+                        {group.description}
+                      </Text>
+                    </Body>
+                    <Right>
+                      <Button
+                        bordered
+                        small
+                        onPress={() =>
+                          props.navigation.navigate('GroupDetails', {
+                            groupId: group.id,
+                          })
+                        }>
+                        <Text>Details</Text>
+                      </Button>
+                    </Right>
+                  </ListItem>
+                )}
+              </Fragment>
             );
           })}
         </List>

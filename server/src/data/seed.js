@@ -102,11 +102,13 @@ const seed = async () => {
       name: 'firstGroup',
       avatar: faker.internet.avatar(),
       description: faker.lorem.sentences(3),
+      isPrivate: true,
     }),
     GroupModel.create({
       name: 'secondGroup',
       avatar: faker.internet.avatar(),
       description: faker.lorem.sentences(3),
+      isPrivate: false,
     }),
   ])
     .then(

@@ -48,6 +48,7 @@ export const GROUPS_QUERY = gql`
       name
       avatar
       description
+      isPrivate
     }
   }
 `;
@@ -59,6 +60,7 @@ export const ALL_GROUPS_QUERY = gql`
       name
       avatar
       description
+      isPrivate
     }
   }
 `;
@@ -103,6 +105,7 @@ export const GROUP_QUERY = gql`
       name
       avatar
       description
+      isPrivate
       owner {
         id
         username

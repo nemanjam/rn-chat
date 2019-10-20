@@ -19,6 +19,8 @@ import {
   Label,
   Input,
   Icon,
+  CheckBox,
+  ListItem,
 } from 'native-base';
 
 const createSchema = Yup.object().shape({
@@ -53,6 +55,7 @@ const CreateGroupModal = ({
             name: values.name,
             avatarUrl: values.avatarUrl,
             description: values.description,
+            isPrivate: values.isPrivate,
           },
         },
       });
@@ -65,6 +68,7 @@ const CreateGroupModal = ({
             name: values.name,
             avatarUrl: values.avatarUrl,
             description: values.description,
+            isPrivate: values.isPrivate,
           },
         },
       });
@@ -84,9 +88,10 @@ const CreateGroupModal = ({
         <Formik
           enableReinitialize={false}
           initialValues={{
-            name: group && group.name,
-            avatarUrl: group && group.avatar,
-            description: group && group.description,
+            name: (group && group.name) || '',
+            avatarUrl: (group && group.avatar) || '',
+            description: (group && group.description) || '',
+            isPrivate: (group && group.description) || false,
           }}
           validationSchema={createSchema}
           onSubmit={values => formSubmit(values)}>
@@ -97,6 +102,7 @@ const CreateGroupModal = ({
             handleBlur,
             values,
             handleSubmit,
+            setFieldValue,
           }) => (
             <Card>
               <CardItem bordered>
@@ -183,6 +189,18 @@ const CreateGroupModal = ({
                     {errors.description && touched.description && (
                       <Text style={styles.errorText}>{errors.description}</Text>
                     )}
+                    <ListItem>
+                      <CheckBox
+                        onPress={() =>
+                          setFieldValue('isPrivate', !values.isPrivate)
+                        }
+                        checked={values.isPrivate}
+                        style={{ marginLeft: -20 }}
+                      />
+                      <Body>
+                        <Text>Private</Text>
+                      </Body>
+                    </ListItem>
                   </Form>
                 </Body>
               </CardItem>

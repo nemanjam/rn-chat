@@ -26,6 +26,7 @@ export const GroupModel = db.define('group', {
   name: { type: Sequelize.STRING },
   avatar: { type: Sequelize.STRING },
   description: { type: Sequelize.STRING },
+  isPrivate: { type: Sequelize.BOOLEAN },
 });
 
 export const MessageModel = db.define('message', {

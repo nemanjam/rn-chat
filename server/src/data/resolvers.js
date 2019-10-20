@@ -178,6 +178,7 @@ export const resolvers = {
         name: group.name,
         avatar: group.avatarUrl,
         description: group.description,
+        isPrivate: group.isPrivate,
       });
 
       await owner.addGroup(_group);
@@ -195,6 +196,7 @@ export const resolvers = {
       _group.name = group.name;
       _group.avatar = group.avatarUrl;
       _group.description = group.description;
+      _group.isPrivate = group.isPrivate;
       await _group.save();
       return _group;
     },

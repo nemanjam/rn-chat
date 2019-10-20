@@ -35,6 +35,7 @@ export const typeDefs = gql`
     users: [User]
     bannedUsers: [User]
     chat: Chat
+    isPrivate: Boolean
     createdAt: Date!
     updatedAt: Date!
   }
@@ -51,6 +52,7 @@ export const typeDefs = gql`
     avatarUrl: String!
     description: String!
     ownerId: Int!
+    isPrivate: Boolean!
   }
 
   type Query {
