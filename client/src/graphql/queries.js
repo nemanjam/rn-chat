@@ -140,9 +140,9 @@ export const GROUP_QUERY = gql`
   }
 `;
 
-export const DEFAULT_GROUPS_QUERY = gql`
-  query defaultGroupsQuery($userId: Int!) {
-    defaultGroups(userId: $userId) {
+export const CHAT_GROUPS_QUERY = gql`
+  query chatGroupsQuery($userId: Int!) {
+    chatGroups(userId: $userId) {
       id
       name
       chat {
@@ -152,6 +152,11 @@ export const DEFAULT_GROUPS_QUERY = gql`
         lastMessage {
           text
           createdAt
+          from {
+            id
+            username
+            avatar
+          }
         }
         users {
           username

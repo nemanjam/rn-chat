@@ -234,8 +234,6 @@ const styles = StyleSheet.create({
 });
 
 export default connect(
-  state => ({
-    auth: state.authReducer,
-  }),
+  null,
   { setCurrentUser },
 )(LoginScreen);

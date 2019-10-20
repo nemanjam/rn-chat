@@ -206,6 +206,8 @@ export const resolvers = {
 
       await owner.addGroup(_group);
       await _group.setOwner(owner);
+      await _group.addUser(owner);
+      await chat.addUser(owner);
       await chat.setGroup(_group);
 
       pubsub.publish(GROUP_ADDED_TOPIC, { [GROUP_ADDED_TOPIC]: _group });
@@ -254,8 +256,8 @@ export const resolvers = {
     async allGroups(_, args, ctx) {
       return queryLogic.allGroups(_, args, ctx);
     },
-    async defaultGroups(_, args, ctx) {
-      return queryLogic.defaultGroups(_, args, ctx);
+    async chatGroups(_, args, ctx) {
+      return queryLogic.chatGroups(_, args, ctx);
     },
     async users(_, args, ctx) {
       return queryLogic.users(_, args, ctx);
@@ -279,7 +281,9 @@ export const resolvers = {
 
   Chat: {
     users(chat) {
-      return chat.getUsers(); //sortiraj prema created at message, pa current user na kraj
+      //sortiraj prema created at message, pa current user na kraj
+      //da bi mogao user[0] na avatar
+      return chat.getUsers();
     },
     messages(chat) {
       return MessageModel.findAll({

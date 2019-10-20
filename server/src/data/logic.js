@@ -86,9 +86,9 @@ export const queryLogic = {
       where: { name: { [Op.not]: 'default' }, isPrivate: false },
     });
   },
-  async defaultGroups(_, args, ctx) {
+  async chatGroups(_, args, ctx) {
     const authUser = await isUserAuth(args.userId, ctx);
-    return authUser.getGroups({ where: { name: 'default' } });
+    return authUser.getGroups();
   },
   async users(_, args, ctx) {
     const user = await getAuthenticatedUser(ctx);

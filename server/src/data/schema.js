@@ -64,7 +64,7 @@ export const typeDefs = gql`
     group(groupId: Int!): Group
     groups(userId: Int!): [Group]
     allGroups: [Group]
-    defaultGroups(userId: Int!): [Group]
+    chatGroups(userId: Int!): [Group]
   }
 
   type Mutation {
