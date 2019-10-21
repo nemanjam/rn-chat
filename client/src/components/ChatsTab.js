@@ -23,10 +23,10 @@ import {
 } from 'native-base';
 
 import { CHAT_GROUPS_QUERY } from '../graphql/queries';
-import { DEFAULT_GROUP_ADDED_SUBSCRIPTION } from '../graphql/subscriptions';
+import { MESSAGE_IN_GROUP_ADDED_SUBSCRIPTION } from '../graphql/subscriptions';
 
 const ChatsTab = props => {
-  const { subscribeToMore, data, loading, error } = useQuery(
+  const { subscribeToMore, data, loading, error, refetch } = useQuery(
     CHAT_GROUPS_QUERY,
     {
       variables: { userId: props.auth.user.id },
@@ -34,26 +34,40 @@ const ChatsTab = props => {
   );
 
   useEffect(() => {
+    if (props.tab2) refetch();
+  }, [props.tab2]);
+
+  useEffect(() => {
     if (!loading) subscribeToNewChats();
-    console.log(loading);
   }, [loading]);
 
   function subscribeToNewChats() {
     subscribeToMore({
-      document: DEFAULT_GROUP_ADDED_SUBSCRIPTION,
+      document: MESSAGE_IN_GROUP_ADDED_SUBSCRIPTION,
       variables: {
         userId: props.auth.user.id,
       },
       updateQuery: (previous, { subscriptionData }) => {
         if (!subscriptionData.data) return previous;
-        const newDefaultGroup = subscriptionData.data.defaultGroupAdded;
+        const newChatGroup = subscriptionData.data.messageInGroupAdded;
+
+        //update or apend
+        const isInTheGroups = previous.chatGroups.find(
+          group => group.id === newChatGroup.id,
+        );
+        let groups;
+        if (isInTheGroups) {
+          groups = previous.chatGroups.map(group =>
+            group.id === newChatGroup.id ? newChatGroup : group,
+          );
+        } else {
+          groups = [newDefaultGroup, ...previous.chatGroups];
+        }
+        //obelezi css neprocitanu poruku
         const result = {
           ...previous,
-          defaultGroups: [newDefaultGroup, ...previous.defaultGroups],
+          chatGroups: groups,
         };
-        console.log(previous);
-        console.log(newDefaultGroup);
-        console.log(result);
         return result;
       },
     });
@@ -68,6 +82,21 @@ const ChatsTab = props => {
     <List>
       {chatGroups.map((group, index) => {
         const { chat } = group;
+        let username, avatar, isGroup;
+        if (group.name === 'default') {
+          isGroup = false;
+          if (chat.users.length > 1) {
+            avatar = chat.users[1].avatar;
+            username = chat.users[1].username;
+          } else {
+            avatar = chat.users[0].avatar;
+            username = chat.users[0].username;
+          }
+        } else {
+          isGroup = true;
+          avatar = group.avatar;
+          username = group.name;
+        }
         return (
           <Fragment key={index}>
             {chat.lastMessage && (
@@ -79,19 +108,17 @@ const ChatsTab = props => {
                   props.navigation.navigate('Chats', { groupId: group.id })
                 }>
                 <Left>
-                  <Thumbnail source={{ uri: chat.lastMessage.from.avatar }} />
+                  <Thumbnail square={isGroup} source={{ uri: avatar }} />
                 </Left>
                 <Body style={styles.body}>
-                  <Text>{chat.lastMessage.from.username}</Text>
+                  <Text>{username}</Text>
                   <Text note numberOfLines={1} style={styles.lastMessage}>
-                    {idx(chat, _ => _.lastMessage.text) || ''}
+                    {chat.lastMessage.text}
                   </Text>
                 </Body>
                 <Right>
                   <Text note>
-                    {idx(chat, _ =>
-                      moment(_.lastMessage.createdAt).format('LT'),
-                    ) || 'never'}
+                    {moment(chat.lastMessage.createdAt).format('LT')}
                   </Text>
                 </Right>
               </ListItem>

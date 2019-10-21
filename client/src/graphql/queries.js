@@ -145,6 +145,7 @@ export const CHAT_GROUPS_QUERY = gql`
     chatGroups(userId: $userId) {
       id
       name
+      avatar
       chat {
         id
         createdAt

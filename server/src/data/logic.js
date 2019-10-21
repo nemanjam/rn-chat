@@ -10,14 +10,15 @@ const Op = Sequelize.Op;
 
 // reusable function to check for a user with context
 function getAuthenticatedUser(ctx) {
-  //return UserModel.findOne({ where: { id: 1 } });
-
+  return UserModel.findOne({ where: { id: 1 } });
+  /*
   return ctx.user.then(user => {
     if (!user) {
       throw new AuthenticationError('Unauthenticated');
     }
     return user;
   });
+  */
 }
 
 async function isUserAuth(userId, ctx) {

@@ -82,7 +82,7 @@ export const typeDefs = gql`
   type Subscription {
     messageAdded(groupId: Int!): Message
     groupAdded(userId: Int!): Group
-    defaultGroupAdded(userId: Int!): Group
+    messageInGroupAdded(userId: Int!): Group
   }
 
   schema {

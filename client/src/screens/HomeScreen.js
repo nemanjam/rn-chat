@@ -36,7 +36,7 @@ const HomeScreen = props => {
     if (_.isEmpty(props.auth.user)) {
       props.navigation.navigate('Login');
     }
-  }, []);
+  }, [props.auth]);
 
   function openDrawer() {
     drawer.current._root.open();
@@ -68,8 +68,15 @@ const HomeScreen = props => {
       if (segment === 1) return <FriendsTab {...props} />;
     }
     if (tabs[1])
-      return <GroupsTab toggleModal={toggleModal} modal={modal} {...props} />;
-    if (tabs[2]) return <ChatsTab {...props} />;
+      return (
+        <GroupsTab
+          tab1={tabs[1]}
+          toggleModal={toggleModal}
+          modal={modal}
+          {...props}
+        />
+      );
+    if (tabs[2]) return <ChatsTab tab2={tabs[2]} {...props} />;
     if (tabs[3]) return <Profile {...props} />;
   }
   /*

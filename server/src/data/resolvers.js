@@ -21,7 +21,7 @@ import { queryLogic, userLogic } from './logic';
 //
 const MESSAGE_ADDED_TOPIC = 'messageAdded';
 const GROUP_ADDED_TOPIC = 'groupAdded';
-const DEFAULT_GROUP_ADDED_TOPIC = 'defaultGroupAdded';
+const MESSAGE_IN_GROUP_ADDED_TOPIC = 'messageInGroupAdded';
 
 const Op = Sequelize.Op;
 
@@ -50,9 +50,9 @@ export const resolvers = {
         },
       ),
     },
-    defaultGroupAdded: {
+    messageInGroupAdded: {
       subscribe: withFilter(
-        () => pubsub.asyncIterator(DEFAULT_GROUP_ADDED_TOPIC),
+        () => pubsub.asyncIterator(MESSAGE_IN_GROUP_ADDED_TOPIC),
         (payload, args) => {
           console.log(JSON.stringify(payload, null, 2));
           return Boolean(
@@ -188,8 +188,8 @@ export const resolvers = {
         chatId: chat.id,
         text,
       });
-      pubsub.publish(DEFAULT_GROUP_ADDED_TOPIC, {
-        [DEFAULT_GROUP_ADDED_TOPIC]: group,
+      pubsub.publish(MESSAGE_IN_GROUP_ADDED_TOPIC, {
+        [MESSAGE_IN_GROUP_ADDED_TOPIC]: group,
       });
       pubsub.publish(MESSAGE_ADDED_TOPIC, { [MESSAGE_ADDED_TOPIC]: message });
       return message;

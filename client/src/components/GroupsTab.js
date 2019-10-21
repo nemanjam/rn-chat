@@ -36,6 +36,13 @@ const GroupsTab = props => {
   });
 
   useEffect(() => {
+    if (props.tab1) {
+      //always first tab is selected on nav
+      allGroupsQueryResult.refetch();
+    }
+  }, [props.tab1]);
+
+  useEffect(() => {
     if (!myGroupsQueryResult.loading) subscribeToNewGroups();
   }, [myGroupsQueryResult.loading]);
 
@@ -90,8 +97,8 @@ const GroupsTab = props => {
   if (error) return <Text>{JSON.stringify(error, null, 2)}</Text>;
 
   function tabChanged(tabNo) {
-    // if (tabNo === 0) allGroupsQueryResult.refetch();
-    // if (tabNo === 1) myGroupsQueryResult.refetch();
+    if (tabNo === 0) allGroupsQueryResult.refetch();
+    if (tabNo === 1) myGroupsQueryResult.refetch();
   }
 
   const { groups } = myGroupsQueryResult.data;

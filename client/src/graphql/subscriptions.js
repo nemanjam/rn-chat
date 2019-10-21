@@ -31,9 +31,9 @@ export const GROUP_ADDED_SUBSCRIPTION = gql`
   }
 `;
 
-export const DEFAULT_GROUP_ADDED_SUBSCRIPTION = gql`
-  subscription defaultGroupAdded($userId: Int!) {
-    defaultGroupAdded(userId: $userId) {
+export const MESSAGE_IN_GROUP_ADDED_SUBSCRIPTION = gql`
+  subscription messageInGroupAdded($userId: Int!) {
+    messageInGroupAdded(userId: $userId) {
       id
       name
       chat {
@@ -43,6 +43,11 @@ export const DEFAULT_GROUP_ADDED_SUBSCRIPTION = gql`
         lastMessage {
           text
           createdAt
+          from {
+            id
+            username
+            avatar
+          }
         }
         users {
           username
