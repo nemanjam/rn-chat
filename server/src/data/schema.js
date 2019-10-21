@@ -77,6 +77,8 @@ export const typeDefs = gql`
     addUserToGroup(groupId: Int!, userId: Int!): User
     removeUserFromGroup(groupId: Int!, userId: Int!): User
     deleteGroup(groupId: Int!): Group
+    addFriend(userId: Int!, friendId: Int!): User
+    removeFriend(userId: Int!, friendId: Int!): User
   }
 
   type Subscription {

@@ -64,6 +64,38 @@ export const resolvers = {
   },
 
   Mutation: {
+    async addFriend(_, { userId, friendId }, ctx) {
+      const user = await UserModel.findOne({
+        where: { id: userId },
+      });
+      const friendAlreadyExists = await user.getFriends({
+        where: { id: friendId },
+      });
+      if (friendAlreadyExists.length > 0)
+        throw new ApolloError('user with that friendId is already friend', 404);
+
+      const friend = await UserModel.findOne({
+        where: { id: friendId },
+      });
+      await user.addFriend(friend);
+      return user;
+    },
+    async removeFriend(_, { userId, friendId }, ctx) {
+      const user = await UserModel.findOne({
+        where: { id: userId },
+      });
+      const friendAlreadyExists = await user.getFriends({
+        where: { id: friendId },
+      });
+      if (friendAlreadyExists.length === 0)
+        throw new ApolloError('user with that friendId is not friend', 404);
+
+      const friend = await UserModel.findOne({
+        where: { id: friendId },
+      });
+      await user.removeFriend(friend);
+      return user;
+    },
     async addUserToGroup(_, { groupId, userId }, ctx) {
       const group = await GroupModel.findOne({
         where: { id: groupId },

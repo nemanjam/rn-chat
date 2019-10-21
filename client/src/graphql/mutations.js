@@ -145,3 +145,45 @@ export const REMOVE_USER_FROM_GROUP_MUTATION = gql`
     }
   }
 `;
+
+export const ADD_FRIEND_MUTATION = gql`
+  mutation addFriend($userId: Int!, $friendId: Int!) {
+    addFriend(userId: $userId, friendId: $friendId) {
+      id
+      email
+      username
+      avatar
+      description
+      lastActiveAt
+      friends {
+        id
+        email
+        username
+        avatar
+        description
+        lastActiveAt
+      }
+    }
+  }
+`;
+
+export const REMOVE_FRIEND_MUTATION = gql`
+  mutation removeFriend($userId: Int!, $friendId: Int!) {
+    removeFriend(userId: $userId, friendId: $friendId) {
+      id
+      email
+      username
+      avatar
+      description
+      lastActiveAt
+      friends {
+        id
+        email
+        username
+        avatar
+        description
+        lastActiveAt
+      }
+    }
+  }
+`;

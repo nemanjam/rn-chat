@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery, useMutation } from '@apollo/react-hooks';
 import moment from 'moment';
 
 import { Image, StyleSheet } from 'react-native';
@@ -22,6 +22,10 @@ import {
 } from 'native-base';
 
 import { USER_QUERY, FRIENDS_QUERY } from '../graphql/queries';
+import {
+  ADD_FRIEND_MUTATION,
+  REMOVE_FRIEND_MUTATION,
+} from '../graphql/mutations';
 
 const Profile = props => {
   const { ...userQueryResult } = useQuery(USER_QUERY, {
@@ -33,9 +37,57 @@ const Profile = props => {
     skip: !props.userId,
   });
 
+  const [addFriend, { ...mutationAddFriendpResult }] = useMutation(
+    ADD_FRIEND_MUTATION,
+    {
+      update(cache, { data }) {
+        const { friends } = cache.readQuery({
+          query: FRIENDS_QUERY,
+          variables: { id: props.auth.user.id },
+        });
+        const newFriends = data.addFriend.friends;
+        const result = { friends: [...newFriends] };
+        cache.writeQuery({
+          query: FRIENDS_QUERY,
+          variables: { id: props.auth.user.id },
+          data: result,
+        });
+      },
+    },
+  );
+
+  const [removeFriend, { ...mutationremoveFriendpResult }] = useMutation(
+    REMOVE_FRIEND_MUTATION,
+    {
+      update(cache, { data }) {
+        const { friends } = cache.readQuery({
+          query: FRIENDS_QUERY,
+          variables: { id: props.auth.user.id },
+        });
+        const newFriends = data.removeFriend.friends;
+        const result = { friends: [...newFriends] };
+        cache.writeQuery({
+          query: FRIENDS_QUERY,
+          variables: { id: props.auth.user.id },
+          data: result,
+        });
+      },
+    },
+  );
+
+  async function toggleFriendPress(userId, friendId, isAdd) {
+    if (isAdd) {
+      await addFriend({
+        variables: { userId, friendId },
+      });
+    } else {
+      await removeFriend({
+        variables: { userId, friendId },
+      });
+    }
+  }
+
   function isFriend(friends, userId) {
-    console.log(friends);
-    console.log(userId);
     return friends.map(friend => friend.id).includes(userId);
   }
 
@@ -66,12 +118,21 @@ const Profile = props => {
             ).fromNow()}`}</Text>
           </Col>
         </Left>
-        <Body />
         {props.userId && (
           <Right>
-            <Button bordered small style={styles.friendButton}>
+            <Button
+              onPress={() =>
+                toggleFriendPress(
+                  props.auth.user.id,
+                  props.userId,
+                  !isFriend(friends, user.id),
+                )
+              }
+              bordered
+              small
+              style={styles.friendButton}>
               <Text style={styles.buttonText}>
-                {isFriend(friends, user.id) ? 'Unfriend' : 'Add As Friend'}
+                {isFriend(friends, user.id) ? 'Unfriend' : 'Add Friend'}
               </Text>
             </Button>
           </Right>
@@ -113,11 +174,8 @@ const styles = StyleSheet.create({
     color: 'green',
     alignSelf: 'flex-start',
   },
-
   buttonText: {},
-  friendButton: {
-    width: 140,
-  },
+  friendButton: {},
 });
 
 export default connect(
