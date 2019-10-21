@@ -21,15 +21,35 @@ import {
   Content,
 } from 'native-base';
 
-import { USER_QUERY } from '../graphql/queries';
+import { USER_QUERY, FRIENDS_QUERY } from '../graphql/queries';
 
 const Profile = props => {
-  const { data, loading, error } = useQuery(USER_QUERY, {
-    variables: { id: props.userId || props.auth.user.id },
+  const { ...userQueryResult } = useQuery(USER_QUERY, {
+    variables: { id: props.userId || props.auth.user.id }, //one is undefined
   });
+
+  const { ...friendsQueryResult } = useQuery(FRIENDS_QUERY, {
+    variables: { id: props.auth.user.id },
+    skip: !props.userId,
+  });
+
+  function isFriend(friends, userId) {
+    console.log(friends);
+    console.log(userId);
+    return friends.map(friend => friend.id).includes(userId);
+  }
+
+  const loading = userQueryResult.loading || friendsQueryResult.loading;
+  const error = userQueryResult.error || friendsQueryResult.error;
+
   if (loading) return <Spinner />;
   if (error) return <Text>{JSON.stringify(error, null, 2)}</Text>;
-  const { user } = data;
+
+  const { user } = userQueryResult.data;
+  const friends = friendsQueryResult.data
+    ? friendsQueryResult.data.friends
+    : [];
+
   return (
     <Card style={styles.card}>
       <CardItem style={styles.cardItem}>
@@ -47,11 +67,15 @@ const Profile = props => {
           </Col>
         </Left>
         <Body />
-        <Right>
-          <Button bordered small style={styles.friendButton}>
-            <Text style={styles.buttonText}>Add As Friend</Text>
-          </Button>
-        </Right>
+        {props.userId && (
+          <Right>
+            <Button bordered small style={styles.friendButton}>
+              <Text style={styles.buttonText}>
+                {isFriend(friends, user.id) ? 'Unfriend' : 'Add As Friend'}
+              </Text>
+            </Button>
+          </Right>
+        )}
       </CardItem>
       <CardItem>
         <Text>{user.description}</Text>
