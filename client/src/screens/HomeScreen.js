@@ -33,7 +33,7 @@ const HomeScreen = props => {
   const drawer = useRef(null);
 
   useEffect(() => {
-    if (_.isEmpty(props.auth.user)) {
+    if (_.isEmpty(props.auth.user) || !props.auth.user.jwt) {
       props.navigation.navigate('Login');
     }
   }, [props.auth]);
@@ -64,7 +64,7 @@ const HomeScreen = props => {
 
   function getContentComponent() {
     if (tabs[0]) {
-      if (segment === 0) return <UsersTab {...props} />;
+      if (segment === 0) return <UsersTab tab0={tabs[0]} {...props} />;
       if (segment === 1) return <FriendsTab {...props} />;
     }
     if (tabs[1])

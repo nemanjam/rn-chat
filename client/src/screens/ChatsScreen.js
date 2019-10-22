@@ -41,11 +41,6 @@ const ChatsScreen = props => {
     if (!queryResult.loading) subscribeToNewMesages();
   }, [queryResult.loading]);
 
-  //mora loading return tu
-  if (queryResult.loading) return <Spinner />;
-  if (queryResult.error)
-    return <Text>{JSON.stringify(queryResult.error, null, 2)}</Text>;
-
   function subscribeToNewMesages() {
     subscribeToMore({
       document: MESSAGE_ADDED_SUBSCRIPTION,
@@ -77,6 +72,9 @@ const ChatsScreen = props => {
       variables: { userId, groupId: queryResult.data.group.id, text },
     });
   }
+  if (queryResult.loading) return <Spinner />;
+  if (queryResult.error)
+    return <Text>{JSON.stringify(queryResult.error, null, 2)}</Text>;
 
   const { group } = queryResult.data;
 

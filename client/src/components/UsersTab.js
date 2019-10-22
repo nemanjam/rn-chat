@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 
@@ -21,9 +21,16 @@ import {
 import { USERS_QUERY } from '../graphql/queries';
 
 const UsersTab = props => {
-  const { data, loading, error } = useQuery(USERS_QUERY, {
+  const { data, loading, error, refetch } = useQuery(USERS_QUERY, {
     variables: { id: props.auth.user.id },
   });
+
+  useEffect(() => {
+    if (props.tab0) {
+      refetch();
+    }
+  }, [props.tab0]);
+
   if (loading) return <Spinner />;
   if (error) return <Text>{JSON.stringify(error, null, 2)}</Text>;
   const { users } = data;

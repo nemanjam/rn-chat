@@ -91,7 +91,7 @@ const CreateGroupModal = ({
             name: (group && group.name) || '',
             avatarUrl: (group && group.avatar) || '',
             description: (group && group.description) || '',
-            isPrivate: (group && group.description) || false,
+            isPrivate: (group && group.isPrivate) || false,
           }}
           validationSchema={createSchema}
           onSubmit={values => formSubmit(values)}>

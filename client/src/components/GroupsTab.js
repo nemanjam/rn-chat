@@ -19,6 +19,7 @@ import {
   Content,
   Tabs,
   Tab,
+  TabHeading,
 } from 'native-base';
 
 import CreateGroupModal from './CreateGroupModal';
@@ -107,7 +108,12 @@ const GroupsTab = props => {
   return (
     <>
       <Tabs onChangeTab={({ i, ref, from }) => tabChanged(i)}>
-        <Tab heading="All Groups">
+        <Tab
+          heading={
+            <TabHeading>
+              <Text style={styles.tabText}>ALL GROUPS</Text>
+            </TabHeading>
+          }>
           <List style={styles.list}>
             {allGroups.map((group, index) => {
               return (
@@ -145,7 +151,12 @@ const GroupsTab = props => {
             })}
           </List>
         </Tab>
-        <Tab heading="My Groups">
+        <Tab
+          heading={
+            <TabHeading>
+              <Text style={styles.tabText}>MY GROUPS</Text>
+            </TabHeading>
+          }>
           <List style={styles.list}>
             {groups.map((group, index) => {
               return (
@@ -199,6 +210,9 @@ const styles = StyleSheet.create({
   },
   lastMessage: {},
   body: { alignSelf: 'stretch' },
+  tabText: {
+    fontSize: 12,
+  },
 });
 
 export default connect(

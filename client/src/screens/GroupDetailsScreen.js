@@ -2,7 +2,7 @@ import React, { useState, useEffect, Fragment } from 'react';
 import { connect } from 'react-redux';
 
 import { useMutation, useQuery } from '@apollo/react-hooks';
-import { StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Image } from 'react-native';
 
 import {
   Container,
@@ -126,7 +126,7 @@ const GroupDetailsScreen = props => {
           query: GROUP_QUERY,
           data: result,
         });
-
+        /*
         //second query
         const { groups } = cache.readQuery({
           query: GROUPS_QUERY,
@@ -140,7 +140,7 @@ const GroupDetailsScreen = props => {
           query: GROUPS_QUERY,
           variables: { userId: newUser.id },
           data: result1,
-        });
+        });*/
       },
     },
   );
@@ -161,8 +161,8 @@ const GroupDetailsScreen = props => {
           query: GROUP_QUERY,
           data: result,
         });
-
-        //second query
+        /*
+        //second query //leave/join group from another owner
         const { groups } = cache.readQuery({
           query: GROUPS_QUERY,
           variables: { userId: newUser.id },
@@ -176,6 +176,7 @@ const GroupDetailsScreen = props => {
           variables: { userId: newUser.id },
           data: result1,
         });
+*/
       },
     },
   );
@@ -206,6 +207,7 @@ const GroupDetailsScreen = props => {
     if (!isUserInGroup(group, userId)) {
       const { data } = await addUserToGroup({
         variables: { groupId: group.id, userId },
+        refetchQueries: ['GroupsQuery'],
       });
       Toast.show({
         text: `${data.addUserToGroup.username} added to the group.`,
@@ -216,6 +218,7 @@ const GroupDetailsScreen = props => {
     } else {
       const { data } = await removeUserFromGroup({
         variables: { groupId: group.id, userId },
+        refetchQueries: ['GroupsQuery'],
       });
       Toast.show({
         text: `${data.removeUserFromGroup.username} removed from the group.`,
@@ -251,7 +254,7 @@ const GroupDetailsScreen = props => {
         </Body>
         <Right />
       </Header>
-      <Content>
+      <Content contentContainerStyle={styles.content}>
         <Card style={styles.card}>
           <CardItem>
             <Body>
@@ -419,6 +422,8 @@ const GroupDetailsScreen = props => {
 };
 
 const styles = StyleSheet.create({
+  content: {},
+  card: {},
   usernameText: {
     fontWeight: 'bold',
     fontSize: 18,
@@ -426,11 +431,10 @@ const styles = StyleSheet.create({
   image: {
     height: 100,
     width: null,
-    flex: 1,
     alignSelf: 'stretch',
   },
   tabText: {
-    fontSize: 14,
+    fontSize: 12,
   },
   removeBanButton: {
     alignSelf: 'flex-end',

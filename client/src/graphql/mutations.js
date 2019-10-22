@@ -115,17 +115,16 @@ export const ADD_USER_TO_GROUP_MUTATION = gql`
       avatar
       description
       lastActiveAt
-      groups {
-        id
-        name
-        avatar
-        description
-        isPrivate
-      }
     }
   }
 `;
-
+//  groups {
+//     id
+//     name
+//     avatar
+//     description
+//     isPrivate
+//   }
 export const REMOVE_USER_FROM_GROUP_MUTATION = gql`
   mutation removeUserFromGroup($groupId: Int!, $userId: Int!) {
     removeUserFromGroup(groupId: $groupId, userId: $userId) {
@@ -135,13 +134,6 @@ export const REMOVE_USER_FROM_GROUP_MUTATION = gql`
       avatar
       description
       lastActiveAt
-      groups {
-        id
-        name
-        avatar
-        description
-        isPrivate
-      }
     }
   }
 `;

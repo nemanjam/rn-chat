@@ -139,7 +139,7 @@ const Profile = props => {
         )}
       </CardItem>
       <CardItem>
-        <Text>{user.description}</Text>
+        <Text style={styles.description}>{user.description}</Text>
       </CardItem>
     </Card>
   );
@@ -173,6 +173,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: 'green',
     alignSelf: 'flex-start',
+  },
+  description: {
+    fontSize: 14,
   },
   buttonText: {},
   friendButton: {},
