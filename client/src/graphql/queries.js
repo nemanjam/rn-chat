@@ -24,6 +24,27 @@ export const USERS_QUERY = gql`
   }
 `;
 
+export const PAGINATED_USERS_QUERY = gql`
+  query PaginatedUsersQuery($userConnection: UserConnectionInput) {
+    paginatedUsers(userConnection: $userConnection) {
+      edges {
+        cursor
+        node {
+          id
+          email
+          username
+          avatar
+          description
+        }
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+      }
+    }
+  }
+`;
+
 export const CHATS_QUERY = gql`
   query ChatsQuery($userId: Int!) {
     chats(userId: $userId) {

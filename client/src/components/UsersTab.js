@@ -18,13 +18,35 @@ import {
   Content,
 } from 'native-base';
 
-import { USERS_QUERY } from '../graphql/queries';
+import { USERS_QUERY, PAGINATED_USERS_QUERY } from '../graphql/queries';
 
 const UsersTab = props => {
   const { data, loading, error, refetch } = useQuery(USERS_QUERY, {
     variables: { id: props.auth.user.id },
   });
+  /*
+  const { ...puqr } = useQuery(PAGINATED_USERS_QUERY, {
+    variables: { userConnection: { first: 4 } },
+  });
 
+  useEffect(() => {
+    if (puqr.loading) return;
+    puqr.fetchMore({
+      variables: {
+        userConnection: {
+          after:
+            puqr.data.paginatedUser.edges[
+              puqr.data.paginatedUser.edges.length - 1
+            ].cursor,
+        },
+      },
+      updateQuery: (previousResult, { fetchMoreResult }) => {
+        console.log(previousResult);
+        console.log(fetchMoreResult);
+      },
+    });
+  }, [props.page]);
+*/
   useEffect(() => {
     if (props.tab0) {
       refetch();

@@ -30,6 +30,7 @@ const HomeScreen = props => {
   const [tabs, setTabs] = useState([true, false, false, false]);
   const [segment, setSegment] = useState(0);
   const [modal, setModal] = useState(false);
+  const [page, setPage] = useState(1);
   const drawer = useRef(null);
 
   useEffect(() => {
@@ -62,9 +63,19 @@ const HomeScreen = props => {
     setModal(!modal);
   }
 
+  function onScrollHandler(event) {
+    const itemHeight = 100;
+    const itemNo = 4;
+    const currentOffset = Math.floor(event.nativeEvent.contentOffset.y);
+    const _page = Math.ceil(currentOffset / (itemHeight * itemNo));
+    setPage(_page);
+    // console.log(_page);
+  }
+
   function getContentComponent() {
     if (tabs[0]) {
-      if (segment === 0) return <UsersTab tab0={tabs[0]} {...props} />;
+      if (segment === 0)
+        return <UsersTab page={page} tab0={tabs[0]} {...props} />;
       if (segment === 1) return <FriendsTab {...props} />;
     }
     if (tabs[1])
@@ -131,11 +142,22 @@ adb connect 127.0.0.1:62001
           </Header>
         )}
 
-        <Content
-          padder={tabs[0] || tabs[2]}
-          contentContainerStyle={styles.content}>
-          {getContentComponent()}
-        </Content>
+        {tabs[0] && (
+          <Content
+            scrollEventThrottle={300}
+            onScroll={onScrollHandler}
+            removeClippedSubviews={true}
+            padder
+            contentContainerStyle={styles.content}>
+            {getContentComponent()}
+          </Content>
+        )}
+
+        {!tabs[0] && (
+          <Content padder={tabs[2]} contentContainerStyle={styles.content}>
+            {getContentComponent()}
+          </Content>
+        )}
 
         <Footer>
           <FooterTab>
