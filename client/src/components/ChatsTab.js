@@ -108,7 +108,11 @@ const ChatsTab = props => {
                   props.navigation.navigate('Chats', { groupId: group.id })
                 }>
                 <Left>
-                  <Thumbnail square={isGroup} source={{ uri: avatar }} />
+                  <Thumbnail
+                    square={isGroup}
+                    style={styles.thumb}
+                    source={{ uri: avatar }}
+                  />
                 </Left>
                 <Body style={styles.body}>
                   <Text>{username}</Text>
@@ -135,6 +139,7 @@ const styles = StyleSheet.create({
   },
   lastMessage: {},
   body: { alignSelf: 'stretch' },
+  thumb: { marginBottom: 10 },
 });
 
 export default connect(
