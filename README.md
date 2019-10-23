@@ -6,7 +6,7 @@ Chat app made with React Native, NativeBase, Apollo Hooks and Sequelize.
 
 - JWT auth with email and password strategy
 - Users, Groups, Chats, Profile, Login, Register, Group Details screens
-- Users/Friends, Public/Private Groups, All Users/Group Users tabs, Drawer
+- Users/Friends, Public/Private Groups, All Users/Group Users tabs, Drawer, Toasts
 - queries for users, friends, chats, public and private groups
 - create, edit, delete group, add, remove user from group mutations with cache updates
 - add, remove friend mutations with cache updates
@@ -31,8 +31,8 @@ Chat app made with React Native, NativeBase, Apollo Hooks and Sequelize.
 ### Server
 
 - `cd server` and `npm install` to install the dependecies
-- set database connection in the `server/src/data/connectors.js'` for example `new Sequelize('postgres://dbuser:password@localhost:5432/chat',...`
-- uncomment `db.sync({ force: true }).then(async () => await seed()).catch(error => console.log(error));` in the `server/src/data/connectors.js'` to seed the database
+- set database connection in the `server/src/data/connectors.js` for example `new Sequelize('postgres://dbuser:password@localhost:5432/chat',...`
+- uncomment `db.sync({ force: true }).then(async () => await seed()).catch(error => console.log(error));` in the `server/src/data/connectors.js` to seed the database
 - `npm run start` http server and GraphQL playground wil be loaded on `http://localhost:5000` and subscriptions on the `ws://localhost/graphql`
 
 ### Client
