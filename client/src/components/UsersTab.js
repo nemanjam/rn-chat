@@ -24,38 +24,48 @@ const UsersTab = props => {
   const { data, loading, error, refetch } = useQuery(USERS_QUERY, {
     variables: { id: props.auth.user.id },
   });
-  /*
+
   const { ...puqr } = useQuery(PAGINATED_USERS_QUERY, {
-    variables: { userConnection: { first: 4 } },
+    variables: { first: 5 },
   });
 
   useEffect(() => {
     if (puqr.loading) return;
+    if (!puqr.data.paginatedUsers.pageInfo.hasNextPage) return;
     puqr.fetchMore({
       variables: {
-        userConnection: {
-          after:
-            puqr.data.paginatedUser.edges[
-              puqr.data.paginatedUser.edges.length - 1
-            ].cursor,
-        },
+        after: puqr.data.paginatedUsers.pageInfo.cursor,
       },
       updateQuery: (previousResult, { fetchMoreResult }) => {
-        console.log(previousResult);
-        console.log(fetchMoreResult);
+        const newEdges = fetchMoreResult.paginatedUsers.edges;
+        const pageInfo = fetchMoreResult.paginatedUsers.pageInfo;
+        if (!newEdges.length) return previousResult;
+        const result = {
+          paginatedUsers: {
+            __typename: previousResult.paginatedUsers.__typename,
+            edges: [...previousResult.paginatedUsers.edges, ...newEdges],
+            pageInfo,
+          },
+        };
+        // console.log('result', result);
+        return result;
       },
     });
   }, [props.page]);
-*/
+
   useEffect(() => {
     if (props.tab0) {
       refetch();
     }
   }, [props.tab0]);
 
+  if (puqr.loading) return <Spinner />;
+  if (puqr.error) return <Text>{JSON.stringify(puqr.error, null, 2)}</Text>;
+
   if (loading) return <Spinner />;
   if (error) return <Text>{JSON.stringify(error, null, 2)}</Text>;
-  const { users } = data;
+  const users = puqr.data.paginatedUsers.edges.map(edge => edge.node);
+
   return (
     <List>
       {users.map((user, index) => {

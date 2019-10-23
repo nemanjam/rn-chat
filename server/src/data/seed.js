@@ -13,7 +13,7 @@ const seed = async () => {
       password: hash,
       lastActiveAt: new Date(),
     });
-    [...Array(10).keys()].map(async (index, i) => {
+    [...Array(15).keys()].map(async (index, i) => {
       const user2 = await UserModel.create({
         username: `user${index}`,
         email: `email${index}@email.com`,

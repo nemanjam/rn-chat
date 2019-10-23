@@ -63,27 +63,20 @@ export const typeDefs = gql`
   }
 
   type UserEdge {
-    cursor: Int!
     node: User!
   }
 
   type PageInfo {
+    cursor: Int!
     hasNextPage: Boolean!
-    hasPreviousPage: Boolean!
   }
 
-  input UserConnectionInput {
-    first: Int
-    after: Int
-    last: Int
-    before: Int
-  }
   #======= /pagination =========
 
   type Query {
     user(email: String, id: Int): User
     users(id: Int!): [User]
-    paginatedUsers(userConnection: UserConnectionInput): UserConnection
+    paginatedUsers(first: Int, after: Int): UserConnection
     friends(id: Int!): [User]
     chat(chatId: Int!): Chat
     chats(userId: Int!): [Chat]

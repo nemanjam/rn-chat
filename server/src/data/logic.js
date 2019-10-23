@@ -109,6 +109,72 @@ export const queryLogic = {
     });
     return user;
   },
+  async paginatedUsers(_, { first, after }, ctx) {
+    const authUser = await getAuthenticatedUser(ctx);
+    let where;
+    if (after) {
+      where = {
+        [Op.and]: [
+          { id: { [Op.gt]: after } },
+          { id: { [Op.ne]: authUser.id } },
+        ],
+      };
+    } else {
+      const firstUser = await UserModel.findOne({
+        where: { id: { [Op.ne]: authUser.id } },
+        order: [['id', 'ASC']],
+      });
+      where = {
+        [Op.and]: [
+          { id: { [Op.gte]: firstUser.id } },
+          { id: { [Op.ne]: authUser.id } },
+        ],
+      };
+    }
+
+    const users = await UserModel.findAll({
+      where,
+      order: [['id', 'ASC']],
+      limit: first,
+    });
+
+    const edges = users.map(user => ({
+      node: user,
+    }));
+
+    let hasNextPage, cursor;
+    cursor = users[users.length - 1].id; //last elem id
+    if (users.length < first) {
+      hasNextPage = false;
+    } else {
+      const user = await UserModel.findOne({
+        where: {
+          [Op.and]: [
+            {
+              id: {
+                [Op.gt]: users[users.length - 1].id,
+              },
+            },
+            { id: { [Op.ne]: authUser.id } },
+          ],
+        },
+        order: [['id', 'ASC']],
+      });
+      hasNextPage = !!user;
+    }
+    const pageInfo = {
+      hasNextPage() {
+        return hasNextPage;
+      },
+      cursor() {
+        return cursor;
+      },
+    };
+    return {
+      edges,
+      pageInfo,
+    };
+  },
 };
 
 export const userLogic = {

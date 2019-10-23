@@ -30,7 +30,7 @@ const HomeScreen = props => {
   const [tabs, setTabs] = useState([true, false, false, false]);
   const [segment, setSegment] = useState(0);
   const [modal, setModal] = useState(false);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const drawer = useRef(null);
 
   useEffect(() => {
@@ -65,11 +65,20 @@ const HomeScreen = props => {
 
   function onScrollHandler(event) {
     const itemHeight = 100;
-    const itemNo = 4;
+    const itemNo = 5;
+    const startOffset = 0;
     const currentOffset = Math.floor(event.nativeEvent.contentOffset.y);
-    const _page = Math.ceil(currentOffset / (itemHeight * itemNo));
-    setPage(_page);
-    // console.log(_page);
+    const _page =
+      Math.ceil(
+        (startOffset + currentOffset + itemHeight * itemNo) /
+          (itemHeight * itemNo),
+      ) - 1;
+    if (_page > page) {
+      setPage(_page);
+      //console.log(_page);
+    }
+    //console.log(_page);
+    //console.log(currentOffset);
   }
 
   function getContentComponent() {

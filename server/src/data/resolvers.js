@@ -300,61 +300,8 @@ export const resolvers = {
     user(_, args, ctx) {
       return queryLogic.user(_, args, ctx);
     },
-    async paginatedUsers(_, { userConnection = {} }, ctx) {
-      const { first, last, before, after } = userConnection;
-
-      const firstUser = await UserModel.findOne({ order: [['id', 'DESC']] });
-
-      let where = { id: firstUser.id };
-      if (before) {
-        where = { id: { [Op.gt]: before } };
-      }
-
-      if (after) {
-        where = { id: { [Op.lt]: after } };
-      }
-
-      const users = await UserModel.findAll({
-        where,
-        order: [['id', 'DESC']],
-        limit: first || last,
-      });
-
-      const edges = users.map(user => ({
-        cursor: user.id,
-        node: user,
-      }));
-
-      const pageInfo = {
-        async hasNextPage() {
-          if (users.length < (last || first)) {
-            return false;
-          }
-
-          const user = await UserModel.findOne({
-            where: {
-              id: {
-                [before ? Op.gt : Op.lt]: users[users.length - 1].id,
-              },
-            },
-            order: [['id', 'DESC']],
-          });
-          return !!user;
-        },
-        async hasPreviousPage() {
-          const user = await UserModel.findOne({
-            where: {
-              id: where.id,
-            },
-            order: [['id']],
-          });
-          return !!user;
-        },
-      };
-      return {
-        edges,
-        pageInfo,
-      };
+    async paginatedUsers(_, args, ctx) {
+      return queryLogic.paginatedUsers(_, args, ctx);
     },
   },
   //prouci apollo state
@@ -420,11 +367,11 @@ export const resolvers = {
     },
   },
   PageInfo: {
-    hasNextPage(connection, args) {
+    hasNextPage(connection, args, ctx) {
       return connection.hasNextPage();
     },
-    hasPreviousPage(connection, args) {
-      return connection.hasPreviousPage();
+    cursor(connection, args, ctx) {
+      return connection.cursor();
     },
   },
 };

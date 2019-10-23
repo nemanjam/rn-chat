@@ -25,10 +25,9 @@ export const USERS_QUERY = gql`
 `;
 
 export const PAGINATED_USERS_QUERY = gql`
-  query PaginatedUsersQuery($userConnection: UserConnectionInput) {
-    paginatedUsers(userConnection: $userConnection) {
+  query PaginatedUsersQuery($first: Int, $after: Int) {
+    paginatedUsers(first: $first, after: $after) {
       edges {
-        cursor
         node {
           id
           email
@@ -38,8 +37,8 @@ export const PAGINATED_USERS_QUERY = gql`
         }
       }
       pageInfo {
+        cursor
         hasNextPage
-        hasPreviousPage
       }
     }
   }
