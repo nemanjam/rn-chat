@@ -51,3 +51,7 @@ Chat app made with React Native, NativeBase, Apollo Hooks and Sequelize.
 <img src="/screenshots/Screenshot_7.png" width="270"/> <img src="/screenshots/Screenshot_8.png" width="270"/> <img src="/screenshots/Screenshot_9.png" width="270"/>
 
 <img src="/screenshots/Screenshot_10.png" width="270"/> <img src="/screenshots/Screenshot_11.png" width="270"/> <img src="/screenshots/Screenshot_12.png" width="270"/>
+
+## Database ER diagram
+
+<img src="/screenshots/database.png" />
