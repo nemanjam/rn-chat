@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 
@@ -21,17 +21,16 @@ import {
 import { USERS_QUERY, PAGINATED_USERS_QUERY } from '../graphql/queries';
 
 const UsersTab = props => {
-  const { data, loading, error, refetch } = useQuery(USERS_QUERY, {
-    variables: { id: props.auth.user.id },
-  });
+  // const { data, loading, error, refetch } = useQuery(USERS_QUERY, {
+  //   variables: { id: props.auth.user.id },
+  // });
 
   const { ...puqr } = useQuery(PAGINATED_USERS_QUERY, {
     variables: { first: 5 },
   });
 
   useEffect(() => {
-    if (puqr.loading) return;
-    if (!puqr.data.paginatedUsers.pageInfo.hasNextPage) return;
+    if (puqr.loading || !puqr.data.paginatedUsers.pageInfo.hasNextPage) return;
     puqr.fetchMore({
       variables: {
         after: puqr.data.paginatedUsers.pageInfo.cursor,
@@ -55,15 +54,15 @@ const UsersTab = props => {
 
   useEffect(() => {
     if (props.tab0) {
-      refetch();
+      puqr.refetch({
+        variables: { first: 5 },
+      });
     }
   }, [props.tab0]);
 
   if (puqr.loading) return <Spinner />;
   if (puqr.error) return <Text>{JSON.stringify(puqr.error, null, 2)}</Text>;
 
-  if (loading) return <Spinner />;
-  if (error) return <Text>{JSON.stringify(error, null, 2)}</Text>;
   const users = puqr.data.paginatedUsers.edges.map(edge => edge.node);
 
   return (

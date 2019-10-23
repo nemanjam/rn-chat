@@ -48,6 +48,7 @@ const HomeScreen = props => {
 
   function toggleTab1() {
     setTabs([true, false, false, false]);
+    if (page > 0) setPage(0); //set page 0 on refetch
   }
   function toggleTab2() {
     setTabs([false, true, false, false]);
@@ -66,7 +67,7 @@ const HomeScreen = props => {
   function onScrollHandler(event) {
     const itemHeight = 100;
     const itemNo = 5;
-    const startOffset = 0;
+    const startOffset = -50;
     const currentOffset = Math.floor(event.nativeEvent.contentOffset.y);
     const _page =
       Math.ceil(
@@ -77,14 +78,15 @@ const HomeScreen = props => {
       setPage(_page);
       //console.log(_page);
     }
-    //console.log(_page);
+    // console.log(page);
     //console.log(currentOffset);
   }
 
   function getContentComponent() {
     if (tabs[0]) {
-      if (segment === 0)
+      if (segment === 0) {
         return <UsersTab page={page} tab0={tabs[0]} {...props} />;
+      }
       if (segment === 1) return <FriendsTab {...props} />;
     }
     if (tabs[1])
