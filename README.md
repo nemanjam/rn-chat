@@ -44,12 +44,10 @@ Chat app made with React Native, NativeBase, Apollo Hooks and Sequelize.
 
 ## Screenshots
 
-![Screenshot1](/screenshots/Screenshot_1.png) ![Screenshot2](/screenshots/Screenshot_2.png)
+<img src="/screenshots/Screenshot_1.png" width="300"/> <img src="/screenshots/Screenshot_2.png" width="300"/> <img src="/screenshots/Screenshot_3.png" width="300"/>
 
-![Screenshot3](/screenshots/Screenshot_3.png) ![Screenshot4](/screenshots/Screenshot_4.png)
+<img src="/screenshots/Screenshot_4.png" width="300"/> <img src="/screenshots/Screenshot_5.png" width="300"/> <img src="/screenshots/Screenshot_6.png" width="300"/>
 
-![Screenshot5](/screenshots/Screenshot_5.png) ![Screenshot6](/screenshots/Screenshot_6.png)
+<img src="/screenshots/Screenshot_7.png" width="300"/> <img src="/screenshots/Screenshot_8.png" width="300"/> <img src="/screenshots/Screenshot_9.png" width="300"/>
 
-![Screenshot7](/screenshots/Screenshot_7.png) ![Screenshot8](/screenshots/Screenshot_8.png)
-
-![Screenshot9](/screenshots/Screenshot_9.png) ![Screenshot10](/screenshots/Screenshot_10.png)
+<img src="/screenshots/Screenshot_10.png" width="300"/>
