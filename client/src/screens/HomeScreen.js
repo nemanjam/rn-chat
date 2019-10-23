@@ -76,10 +76,7 @@ const HomeScreen = props => {
       ) - 1;
     if (_page > page) {
       setPage(_page);
-      //console.log(_page);
     }
-    // console.log(page);
-    //console.log(currentOffset);
   }
 
   function getContentComponent() {
